@@ -20,11 +20,11 @@ namespace Screenshots
         {
             if (String.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Please provide your Urlbox.io API Key");
+                throw new ArgumentException("Please provide your Urlbox.com API Key");
             }
             if (String.IsNullOrEmpty(secret))
             {
-                throw new ArgumentException("Please provide your Urlbox.io API Secret");
+                throw new ArgumentException("Please provide your Urlbox.com API Secret");
             }
             this.key = key;
             this.secret = secret;

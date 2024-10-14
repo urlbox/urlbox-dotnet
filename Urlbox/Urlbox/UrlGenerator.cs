@@ -51,9 +51,9 @@ namespace Screenshots
         public string GenerateUrlboxUrl(IDictionary<string, object> options, string format = "png")
         {
             var qs = ToQueryString(options);
-            return string.Format("https://api.urlbox.io/v1/{0}/{1}/{2}?{3}", 
-                                 this.key, 
-                                 generateToken(qs), 
+            return string.Format("https://api.urlbox.com/v1/{0}/{1}/{2}?{3}",
+                                 this.key,
+                                 generateToken(qs),
                                  format,
                                  qs
                                  );
