@@ -70,33 +70,35 @@ namespace UrlboxTest
                 { "url", "https://urlbox.com/screenshot-behind-login" },
             };
 
-            // Example 1: Download screenshot as a Base64 string
+            // Download as base64
             string base64Screenshot = await urlbox.DownloadAsBase64(options);
             Console.WriteLine("Screenshot as Base64: " + base64Screenshot);
 
-            // Example 2: Download screenshot to a file
+            // Download to a filepath
             string filePath = "screenshot.png";
             string result = await urlbox.DownloadToFile(options, filePath);
             Console.WriteLine($"Screenshot saved to {filePath}");
 
-            // Optionally generate URL for the image without downloading
+            // Generate a PNG render link Url
             string pngUrl = urlbox.GeneratePNGUrl(options);
             Console.WriteLine("Generated PNG URL: " + pngUrl);
 
-            // Generate a PDF image without downloading
+            // Generate a PDF render link Url
             string pdfUrl = urlbox.GeneratePDFUrl(options);
             Console.WriteLine("Generated PDF URL: " + pdfUrl);
 
+            // Generate JPEG render link Url
             string jpegUrl = urlbox.GenerateJPEGUrl(options);
             Console.WriteLine("Generated JPEG URL: " + jpegUrl);
 
-            // Define the options for the screenshot
+            // Define more options for the screenshot, to render different formats
             var optionsWithFormat = new Dictionary<string, object>
             {
                 {"url", "https://urlbox.com/screenshot-behind-login"},
                 { "format", "png" }, // One of png, jpeg, webp, avif, svg, pdf, html, mp4, webm or md
                 { "full_page", true }, // Takes a full page screenshot
             };
+
             string url = urlbox.GenerateUrlboxUrl(optionsWithFormat);
             Console.WriteLine("Generated URL: " + url);
         }

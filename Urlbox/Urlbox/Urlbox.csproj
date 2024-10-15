@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>Urlbox.sdk.dotnet</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
 
     <Author>Urlbox</Author>
     <Company>Urlbox</Company>
@@ -18,7 +18,7 @@
 
     <PackageIcon>icon-128x128.png</PackageIcon>
     <PackageTags>screenshot, urlbox, automation, api, puppeteers, screenshots, playwright, url to png </PackageTags>
-    <ReleaseNotes>Patch README.md</ReleaseNotes>
+    <ReleaseNotes>Patch README.md with clarified code comments</ReleaseNotes>
     <Copyright>© 2024 Urlbox</Copyright>
   </PropertyGroup>
 
