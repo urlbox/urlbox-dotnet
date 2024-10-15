@@ -1,7 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>Urlbox.sdk.dotnet</PackageId>
+    <Version>1.0.3</Version>
+
+    <Author>Urlbox</Author>
+    <Company>Urlbox</Company>
+    <Product>urlbox-dotnet</Product>
+    <Description>Urlbox captures flawless full page automated screenshots. Get web data from the screenshot API you can depend on.</Description>
+
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <RepositoryUrl>https://github.com/urlbox/urlbox-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://urlbox.com</PackageProjectUrl>
+
+    <PackageIcon>icon-128x128.png</PackageIcon>
+    <PackageTags>screenshot, urlbox, automation, api, puppeteers, screenshots, playwright, url to png </PackageTags>
+    <ReleaseNotes>Patch README.md with clarified code comments</ReleaseNotes>
+    <Copyright>© 2024 Urlbox</Copyright>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Update="icon-128x128.png">
+      <Pack>true</Pack>
+      <PackagePath>./</PackagePath>
+    </None>
+
+    <None Update="LICENSE.txt">
+      <Pack>true</Pack>
+      <PackagePath>./</PackagePath>
+    </None>
+
+    <None Update="README.md">
+      <Pack>true</Pack>
+      <PackagePath>./</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
