@@ -176,7 +176,137 @@ namespace Screenshots
         {
             return urlGenerator.GenerateUrlboxUrl(options, format);
         }
+
+        /// <summary>
+        /// Sends a synchronous render request to the Urlbox API and returns the rendered screenshot url and size.
+        /// </summary>
+        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
+        /// <returns>A <see cref="SyncUrlboxResponse"/> containing the result of the render request.</returns>
+        /// <exception cref="Exception">Thrown when the response is of an asynchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the v1/render/sync endpoint, expecting a synchronous response. 
+        /// </remarks>
+        public async Task<SyncUrlboxResponse> Render(UrlboxOptions options)
+        {
+            IUrlboxResponse result = await this.MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
+            if (result is SyncUrlboxResponse syncResponse)
+            {
+                return syncResponse;
+            }
+            throw new Exception("Rendered /async when should've rendered /sync.");
+        }
+
+        /// <summary>
+        /// Sends an asynchronous render request to the Urlbox API and returns the status of the render request, as 
+        /// well as a renderId and a statusUrl which can be polled to find out when the render succeeds.
+        /// </summary>
+        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
+        /// <returns>A <see cref="AsyncUrlboxResponse"/> containing the result of the asynchronous render request, including the statusUrl, status and renderId.</returns>
+        /// <exception cref="Exception">Thrown when the response is of a synchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the /render/async endpoint, expecting an asynchronous response. 
+        /// </remarks>
+        public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
+        {
+            IUrlboxResponse result = await this.MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
+            if (result is AsyncUrlboxResponse asyncResponse)
+            {
+                return asyncResponse;
+            }
+            throw new Exception("Rendered /sync when should've rendered /async.");
+        }
+
+        /// <summary>
+        /// Makes an HTTP POST request to the Urlbox API endpoint and returns the response as a <see cref="UrlboxResponse"/> object.
+        /// </summary>
+        /// <param name="endpoint">The Urlbox API endpoint to send the request to. Must be either /render/sync or /render/async.</param>
+        /// <param name="options">The <see cref="UrlboxOptions"/> object containing the configuration options for the API request.</param>
+        /// <returns>A <see cref="IUrlboxResponse"/> object containing the result of the API call, which includes the rendered URL and additional data.</returns>
+        /// <exception cref="ArgumentException">Thrown when an invalid endpoint is provided or when the request fails with a non-successful response code.</exception>
+        /// <remarks>
+        /// The method first validates the endpoint, then constructs the request with the provided options, serializing them to JSON using the snake_case naming policy. 
+        /// The request is authenticated via a Bearer token, and the response is deserialized from camelCase to PascalCase to fit C# conventions.
+        /// </remarks>
+        private async Task<IUrlboxResponse> MakeUrlboxPostRequest(string endpoint, UrlboxOptions options)
+        {
+            if (endpoint != SYNC_ENDPOINT && endpoint != ASYNC_ENDPOINT)
+            {
+                throw new ArgumentException("Endpoint must be one of /render/sync or /render/async.");
+            }
+            string url = BASE_URL + endpoint;
+
+            JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy(),
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
+                WriteIndented = true
+            };
+
+            string optionsAsJson = JsonSerializer.Serialize(options, serializeOptions);
+
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            {
+                request.Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json");
+
+                request.Headers.Add("Authorization", $"Bearer {this.secret}");
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+
+                    var deserializerOptions = new JsonSerializerOptions
+                    {
+                        // Convert camelCase JSON response to PascalCase class convention
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    return endpoint switch
+                    {
+                        SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions),
+                        ASYNC_ENDPOINT => JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions),
+                        _ => throw new ArgumentException("Invalid endpoint."),
+                    };
+                }
+                else
+                {
+                    throw new ArgumentException($"Could not make post request to {url}: {response}");
+                }
+            }
+        }
+
     }
+
+    /// <summary>
+    /// Interface for Urlbox response types.
+    /// Allows one response type for makeUrlboxPostRequest which can then
+    /// be cast to the specific /sync or /async response
+    /// Implementations represent either synchronous or asynchronous responses.
+    /// </summary>
+    public interface IUrlboxResponse
+    {
+    }
+
+    /// <summary>
+    /// Represents a synchronous Urlbox response.
+    /// </summary>
+    public class SyncUrlboxResponse : IUrlboxResponse
+    {
+        public string RenderUrl { get; set; }
+        public int Size { get; set; }
+    }
+
+    /// <summary>
+    /// Represents an asynchronous Urlbox response.
+    /// </summary>
+    public class AsyncUrlboxResponse : IUrlboxResponse
+    {
+        public string Status { get; set; }
+        public string RenderId { get; set; }
+        public string StatusUrl { get; set; }
+    }
+
 
     /// <summary>
     /// Initializes a new instance of the UrlboxOptions. These are used as part of any Urlbox method which requires render options.
@@ -303,5 +433,26 @@ namespace Screenshots
         public string S3Region { get; set; }
         public string CdnHost { get; set; }
         public string S3StorageClass { get; set; }
+    }
+
+
+    /// <summary>
+    /// A custom naming policy for converting property names from PascalCase to snake_case
+    /// when serializing JSON.
+    /// 
+    /// <remarks>
+    /// This JsonNamingPolicy is included by default in .NET 8.0 (JsonNamingPolicy.SnakeCaseLower).
+    /// However, a custom implementation has been made here to maintain compatibility with .NET 6.0,
+    /// which is still under Long-Term Support (LTS). Keeping the SDK at 6.0 ensures broader accessibility 
+    /// for audiences still using this version.
+    /// </remarks>
+    /// </summary>
+    public class SnakeCaseNamingPolicy : JsonNamingPolicy
+    {
+        public override string ConvertName(string name)
+        {
+            // Convert PascalCase to snake_case
+            return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+        }
     }
 }
