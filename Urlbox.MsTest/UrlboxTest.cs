@@ -255,6 +255,53 @@ public class UrlTests
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/bba10010e9ece486d34a82344170ae5b4dd5f347/png?url=https%3A%2F%2Furlbox.com&full_page=true", output);
     }
+
+    [TestMethod]
+    public async Task Render_Succeeds()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        // options.BlockUrls = true;
+        // options.FullPage = true;
+        options.ClickAccept = true;
+        var result = await urlbox.Render(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task Render_ThrowsException()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
+        var exception = Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.Render(options));
+        Assert.IsTrue(exception.Result.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
+    }
+
+
+    [TestMethod]
+    public async Task RenderAsync_Succeeds()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        // options.BlockUrls = true;
+        // options.FullPage = true;
+        options.ClickAccept = true;
+        var result = await urlbox.RenderAsync(options);
+
+        Assert.IsInstanceOfType(result, typeof(AsyncUrlboxResponse));
+        Assert.IsNotNull(result.Status);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.StatusUrl);
+    }
+
+    [TestMethod]
+    public async Task RenderAsync_ThrowsException()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
+        var exception = Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.RenderAsync(options));
+        Assert.IsTrue(exception.Result.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
+    }
+
+
+
 }
 
 [TestClass]
