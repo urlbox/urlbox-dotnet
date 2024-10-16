@@ -12,27 +12,50 @@ namespace Screenshots
         private String key;
         private String secret;
 
-        public UrlGenerator(string key, string secret){
+        public UrlGenerator(string key, string secret)
+        {
             this.key = key;
             this.secret = secret;
         }
 
+        // private string ToQueryString(IDictionary<string, object> options)
+        // {
+        //     var result = options
+        //         .ToList()
+        //         .Where(pair => !pair.Key.ToLower().Equals("format")) // skip format option if present
+        //         .Select(pair => new KeyValuePair<string, string>(pair.Key, ConvertToString(pair.Value))) // convert values to string
+        //         .Where(pair => !String.IsNullOrEmpty(pair.Value)) // skip empty/null values
+        //         .Select(pair => string.Format("{0}={1}", FormatKeyName(pair.Key), Uri.EscapeDataString(pair.Value)))
+        //         .ToArray();
+        //     return String.Join("&", result);
+        // }
 
-        private string ToQueryString(IDictionary<string, object> options)
+        private string ToQueryString(UrlboxOptions options)
         {
-            var result = options
-                .ToList()
-                .Where(pair => !pair.Key.ToLower().Equals("format")) // skip format option if present
-                .Select(pair => new KeyValuePair<string, string>(pair.Key, ConvertToString(pair.Value))) // convert values to string
-                .Where(pair => !String.IsNullOrEmpty(pair.Value)) // skip empty/null values
+            // Filter by reflection class' props
+            var properties = options.GetType().GetProperties();
+            var result = properties
+                .Where(prop =>
+                    {
+                        var value = prop.GetValue(options, null);
+                        return value != null &&
+                               !(value is bool && (bool)value == false) && // skip false if bool
+                               !(value is int && (int)value == 0) && // skip 0's if int
+                               !(value is double && (double)value == 0.0) && // skip 0's if double
+                               !(value is string && string.IsNullOrEmpty((string)value)); // skip empty strings if string
+                    })
+                .Select(prop => new KeyValuePair<string, string>(prop.Name, ConvertToString(prop.GetValue(options))))
+                // .Where(pair => !string.IsNullOrEmpty(pair.Value)) // Skip empty values
+                .Where(pair => !pair.Key.ToLower().Equals("format")) // Skip 'format' if present
                 .Select(pair => string.Format("{0}={1}", FormatKeyName(pair.Key), Uri.EscapeDataString(pair.Value)))
                 .ToArray();
-            return String.Join("&", result);
+
+            return string.Join("&", result);
         }
 
         private static string FormatKeyName(string input)
         {
-            return string.Concat(input.Select((x, i) => i > 0 && char.IsUpper(x) && !input[i-1].Equals('_') ? "_" + x.ToString() : x.ToString())).ToLower();
+            return string.Concat(input.Select((x, i) => i > 0 && char.IsUpper(x) && !input[i - 1].Equals('_') ? "_" + x.ToString() : x.ToString())).ToLower();
 
         }
 
@@ -46,9 +69,20 @@ namespace Screenshots
             }
             return result;
         }
-                      
 
-        public string GenerateUrlboxUrl(IDictionary<string, object> options, string format = "png")
+
+        // public string GenerateUrlboxUrl(IDictionary<string, object> options, string format = "png")
+        // {
+        //     var qs = ToQueryString(options);
+        //     return string.Format("https://api.urlbox.com/v1/{0}/{1}/{2}?{3}",
+        //                          this.key,
+        //                          generateToken(qs),
+        //                          format,
+        //                          qs
+        //                          );
+        // }
+
+        public string GenerateUrlboxUrl(UrlboxOptions options, string format = "png")
         {
             var qs = ToQueryString(options);
             return string.Format("https://api.urlbox.com/v1/{0}/{1}/{2}?{3}",
@@ -58,6 +92,7 @@ namespace Screenshots
                                  qs
                                  );
         }
+
 
         private string generateToken(string queryString)
         {
