@@ -3,6 +3,9 @@ using System.Dynamic;
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Screenshots;
 
 
@@ -120,20 +123,41 @@ public class UrlTests
     };
 
     private Urlbox urlbox;
+    private Urlbox dummyUrlbox;
     private UrlGenerator urlGenerator;
-
 
     [TestInitialize]
     public void TestInitialize()
     {
+        // Build configuration to load user secrets
+        var builder = new ConfigurationBuilder()
+            .AddUserSecrets<UrlTests>();
+
+        IConfiguration configuration = builder.Build();
+
+        // Attempt to load from environment variables first (for GH Actions)
+        var urlboxKey = Environment.GetEnvironmentVariable("URLBOX_KEY")
+                        ?? configuration["URLBOX_KEY"];  // Fallback to User Secrets for local dev
+
+        var urlboxSecret = Environment.GetEnvironmentVariable("URLBOX_SECRET")
+                           ?? configuration["URLBOX_SECRET"];  // Fallback to User Secrets for local dev
+
+        if (string.IsNullOrEmpty(urlboxKey) || string.IsNullOrEmpty(urlboxSecret))
+        {
+            throw new ArgumentException("Please configure a URLBox key and secret.");
+        }
+        // With genuine API key and Secret
+        urlbox = new Urlbox(urlboxKey, urlboxSecret, "webhook_secret");
         urlGenerator = new UrlGenerator("MY_API_KEY", "secret");
-        urlbox = new Urlbox("MY_API_KEY", "secret");
+
+        // With dummy API key and Secret
+        dummyUrlbox = new Urlbox("MY_API_KEY", "secret", "webhook_secret");
     }
 
     [TestMethod]
     public void GenerateUrlboxUrl_WithAllOptions()
     {
-        var output = urlbox.GenerateUrlboxUrl(urlboxAllOptions);
+        var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
         Console.WriteLine(output);
 
         Assert.AreEqual(
@@ -151,7 +175,7 @@ public class UrlTests
         options.FullPage = true;
         options.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/5727321d7976d07d9f24649e6db556b2a6a71d9d/png?url=urlbox.com&width=1280&full_page=true&thumb_width=500&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36",
                         output);
     }
@@ -160,7 +184,7 @@ public class UrlTests
     public void GenerateUrlboxUrl_UrlNeedsEncoding()
     {
         var options = new UrlboxOptions(url: "https://www.hatchtank.io/markup/index.html?url2png=true&board=demo_1645_1430");
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/4b8ac501f3aaccbea2081a7105302593174ebc23/png?url=https%3A%2F%2Fwww.hatchtank.io%2Fmarkup%2Findex.html%3Furl2png%3Dtrue%26board%3Ddemo_1645_1430",
         output, "Not OK");
     }
@@ -171,7 +195,7 @@ public class UrlTests
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
         options.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36";
 
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/c2708392a4d881b4816e61b3ed4d89ae4f2c4a57/png?url=https%3A%2F%2Fbbc.co.uk&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_12_6%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F62.0.3202.94%20Safari%2F537.36", output);
     }
 
@@ -186,7 +210,7 @@ public class UrlTests
         options.Selector = "";
         options.WaitFor = "";
 
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
                         output);
     }
@@ -195,7 +219,7 @@ public class UrlTests
     public void GenerateUrlboxUrl_FormatWorks()
     {
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
-        var output = urlbox.GenerateUrlboxUrl(options, "jpeg");
+        var output = dummyUrlbox.GenerateUrlboxUrl(options, "jpeg");
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
@@ -204,7 +228,7 @@ public class UrlTests
     {
         var options = new UrlboxOptions(html: "<h1>test</h1>");
         options.FullPage = true;
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/6e911f299782a8de56b56f47d8670bd0f085f41b/png?html=%3Ch1%3Etest%3C%2Fh1%3E&full_page=true", output);
     }
@@ -213,14 +237,14 @@ public class UrlTests
     public void GenerateUrlboxUrl_WithSimpleURL()
     {
         var options = new UrlboxOptions(url: "bbc.co.uk");
-        var output = urlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/75c9016e7f98f90f5eabfd348f3091f7bf625153/png?url=bbc.co.uk",
                         output, "Not OK");
     }
 
     [TestMethod]
-    public void ToQueryString_ShouldRemoveFormatFromQueryString()
+    public void GenerateUrlboxUrl_ShouldRemoveFormatFromQueryString()
     {
         var options = new UrlboxOptions(url: "https://urlbox.com")
         {
@@ -242,7 +266,7 @@ public class DownloadTests
     [TestInitialize]
     public void TestInitialize()
     {
-        urlbox = new Urlbox("MY_API_KEY", "secret");
+        urlbox = new Urlbox("MY_API_KEY", "secret", "webhook_secret");
     }
 
     [TestMethod]
