@@ -42,7 +42,7 @@ namespace Screenshots
         /// <param name="options">The options for the screenshot</param>
         /// <param name="format">The image format (e.g., "png", "jpg").</param>
         /// <returns>A Base64-encoded string of the screenshot.</returns>
-        public async Task<string> DownloadAsBase64(IDictionary<string, object> options, string format = "png")
+        public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png")
         {
             var urlboxUrl = this.GenerateUrlboxUrl(options, format);
             return await DownloadAsBase64(urlboxUrl);
@@ -72,7 +72,7 @@ namespace Screenshots
         /// <param name="filename">The file path where the screenshot will be saved.</param>
         /// <param name="format">The image format (e.g., "png", "jpg"). Default is "png".</param>
         /// <returns>The contents of the downloaded file as a string.</returns>
-        public async Task<string> DownloadToFile(IDictionary<string, object> options, string filename, string format = "png")
+        public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png")
         {
             var urlboxUrl = GenerateUrlboxUrl(options, format);
             return await DownloadToFile(urlboxUrl, filename);
@@ -130,7 +130,7 @@ namespace Screenshots
         /// </summary>
         /// <param name="options">The options for the screenshot.</param>
         /// <returns>A render link Url to render a PNG screenshot.</returns>
-        public string GeneratePNGUrl(IDictionary<string, object> options)
+        public string GeneratePNGUrl(UrlboxOptions options)
         {
             return GenerateUrlboxUrl(options, "png");
         }
@@ -140,7 +140,7 @@ namespace Screenshots
         /// </summary>
         /// <param name="options">The options for the screenshot.</param>
         /// <returns>A render link Url to render a JPEG screenshot.</returns>
-        public string GenerateJPEGUrl(IDictionary<string, object> options)
+        public string GenerateJPEGUrl(UrlboxOptions options)
         {
             return GenerateUrlboxUrl(options, "jpg");
         }
@@ -150,7 +150,7 @@ namespace Screenshots
         /// </summary>
         /// <param name="options">The options for generating the PDF.</param>
         /// <returns>A render link Url to render a PDF file.</returns>
-        public string GeneratePDFUrl(IDictionary<string, object> options)
+        public string GeneratePDFUrl(UrlboxOptions options)
         {
             return GenerateUrlboxUrl(options, "pdf");
         }
@@ -161,9 +161,136 @@ namespace Screenshots
         /// <param name="options">The options for generating the screenshot or PDF.</param>
         /// <param name="format">The format of the output, e.g., "png", "jpg", "pdf".</param>
         /// <returns>A render link URL to render the content.</returns>
-        public string GenerateUrlboxUrl(IDictionary<string, object> options, string format = "png")
+        public string GenerateUrlboxUrl(UrlboxOptions options, string format = "png")
         {
             return urlGenerator.GenerateUrlboxUrl(options, format);
         }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the UrlboxOptions. These are used as part of any Urlbox method which requires render options.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the Url OR Html option isn't passed in on init.</exception>
+    public class UrlboxOptions
+    {
+
+        public UrlboxOptions(string url = null, string html = null)
+        {
+            if (string.IsNullOrEmpty(url) && string.IsNullOrEmpty(html))
+            {
+                throw new ArgumentException("Either of options 'url' or 'html' must be provided.");
+            }
+            Url = url;
+            Html = html;
+        }
+
+        public string Url { get; set; }
+        public string Html { get; set; }
+        public string Format { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public bool FullPage { get; set; }
+        public string Selector { get; set; }
+        public string Clip { get; set; }
+        public bool Gpu { get; set; }
+        public string ResponseType { get; set; }
+        public bool BlockAds { get; set; }
+        public bool HideCookieBanners { get; set; }
+        public bool ClickAccept { get; set; }
+        public bool BlockUrls { get; set; }
+        public bool BlockImages { get; set; }
+        public bool BlockFonts { get; set; }
+        public bool BlockMedias { get; set; }
+        public bool BlockStyles { get; set; }
+        public bool BlockScripts { get; set; }
+        public bool BlockFrames { get; set; }
+        public bool BlockFetch { get; set; }
+        public bool BlockXhr { get; set; }
+        public bool BlockSockets { get; set; }
+        public string HideSelector { get; set; }
+        public string Js { get; set; }
+        public string Css { get; set; }
+        public bool DarkMode { get; set; }
+        public bool ReducedMotion { get; set; }
+        public bool Retina { get; set; }
+        public int ThumbWidth { get; set; }
+        public int ThumbHeight { get; set; }
+        public string ImgFit { get; set; }
+        public string ImgPosition { get; set; }
+        public string ImgBg { get; set; }
+        public int ImgPad { get; set; }
+        public int Quality { get; set; }
+        public bool Transparent { get; set; }
+        public int MaxHeight { get; set; }
+        public string Download { get; set; }
+        public string PdfPageSize { get; set; }
+        public string PdfPageRange { get; set; }
+        public int PdfPageWidth { get; set; }
+        public int PdfPageHeight { get; set; }
+        public string PdfMargin { get; set; }
+        public int PdfMarginTop { get; set; }
+        public int PdfMarginRight { get; set; }
+        public int PdfMarginBottom { get; set; }
+        public int PdfMarginLeft { get; set; }
+        public bool PdfAutoCrop { get; set; }
+        public double PdfScale { get; set; }
+        public string PdfOrientation { get; set; }
+        public bool PdfBackground { get; set; }
+        public bool DisableLigatures { get; set; }
+        public string Media { get; set; }
+        public bool PdfShowHeader { get; set; }
+        public string PdfHeader { get; set; }
+        public bool PdfShowFooter { get; set; }
+        public string PdfFooter { get; set; }
+        public bool Readable { get; set; }
+        public bool Force { get; set; }
+        public string Unique { get; set; }
+        public int Ttl { get; set; }
+        public string Proxy { get; set; }
+        public string Header { get; set; }
+        public string Cookie { get; set; }
+        public string UserAgent { get; set; }
+        public string Platform { get; set; }
+        public string AcceptLang { get; set; }
+        public string Authorization { get; set; }
+        public string Tz { get; set; }
+        public string EngineVersion { get; set; }
+        public int Delay { get; set; }
+        public int Timeout { get; set; }
+        public string WaitUntil { get; set; }
+        public string WaitFor { get; set; }
+        public string WaitToLeave { get; set; }
+        public int WaitTimeout { get; set; }
+        public bool FailIfSelectorMissing { get; set; }
+        public bool FailIfSelectorPresent { get; set; }
+        public bool FailOn4xx { get; set; }
+        public bool FailOn5xx { get; set; }
+        public string ScrollTo { get; set; }
+        public string Click { get; set; }
+        public string ClickAll { get; set; }
+        public string Hover { get; set; }
+        public string BgColor { get; set; }
+        public bool DisableJs { get; set; }
+        public string FullPageMode { get; set; }
+        public bool FullWidth { get; set; }
+        public bool AllowInfinite { get; set; }
+        public bool SkipScroll { get; set; }
+        public bool DetectFullHeight { get; set; }
+        public int MaxSectionHeight { get; set; }
+        public string ScrollIncrement { get; set; }
+        public int ScrollDelay { get; set; }
+        public string Highlight { get; set; }
+        public string HighlightFg { get; set; }
+        public string HighlightBg { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public int Accuracy { get; set; }
+        public bool UseS3 { get; set; }
+        public string S3Path { get; set; }
+        public string S3Bucket { get; set; }
+        public string S3Endpoint { get; set; }
+        public string S3Region { get; set; }
+        public string CdnHost { get; set; }
+        public string S3StorageClass { get; set; }
     }
 }
