@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Screenshots
 {
@@ -14,14 +15,22 @@ namespace Screenshots
     /// </summary>
     /// <param name="key">Your Urlbox.com API Key.</param>
     /// <param name="secret">Your Urlbox.com API Secret.</param>
+    /// <param name="webhookSecret">Your Urlbox.com webhook Secret.</param>
     /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
     public class Urlbox
     {
         private String key;
         private String secret;
+        private String webhookSecret;
         private UrlGenerator urlGenerator;
 
-        public Urlbox(string key, string secret)
+        private HttpClient httpClient;
+
+        private const string BASE_URL = "https://api.urlbox.com";
+        private const string SYNC_ENDPOINT = "/v1/render/sync";
+        private const string ASYNC_ENDPOINT = "/v1/render/async";
+
+        public Urlbox(string key, string secret, string webhookSecret)
         {
             if (String.IsNullOrEmpty(key))
             {
@@ -33,7 +42,9 @@ namespace Screenshots
             }
             this.key = key;
             this.secret = secret;
+            this.webhookSecret = webhookSecret;
             this.urlGenerator = new UrlGenerator(key, secret);
+            this.httpClient = new HttpClient();
         }
 
         /// <summary>
