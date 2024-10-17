@@ -36,6 +36,7 @@ namespace Screenshots
             var properties = options.GetType().GetProperties();
             var result = properties
                 .Where(prop =>
+                // Filter out falsy values
                     {
                         var value = prop.GetValue(options, null);
                         return value != null &&
@@ -45,8 +46,8 @@ namespace Screenshots
                             !(value is string && string.IsNullOrEmpty((string)value)) && // skip empty strings if string
                             !(value is string[] arr && arr.Length == 0); // skip empty arrays
                     })
+                // Convert values to string representations
                 .Select(prop => new KeyValuePair<string, string>(prop.Name, ConvertToString(prop.GetValue(options))))
-                // .Where(pair => !string.IsNullOrEmpty(pair.Value)) // Skip empty values
                 .Where(pair => !pair.Key.ToLower().Equals("format")) // Skip 'format' if present
                 .Select(pair => string.Format("{0}={1}", FormatKeyName(pair.Key), Uri.EscapeDataString(pair.Value)))
                 .ToArray();
@@ -60,11 +61,20 @@ namespace Screenshots
 
         }
 
+        /// <summary>
+        /// Converts the object to a string. If the object is a string array,
+        /// it formats the array as a comma-separated string.
+        /// </summary>
+        /// <param name="value">The object to convert to a string. Can be a string array or a boolean value.</param>
+        /// <returns>
+        /// A string representation of the provided object.
+        /// </returns>
         private static string ConvertToString(object value)
         {
             if (value is string[] stringArray)
             {
-                return $"[{string.Join(",", stringArray)}]";
+                // String wrapped keys in a string representation of an array
+                return $"[\"{string.Join("\",\"", stringArray)}\"]";
             }
 
             var result = Convert.ToString(value);
