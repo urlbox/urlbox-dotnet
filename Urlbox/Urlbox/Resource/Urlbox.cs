@@ -1,12 +1,7 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 
 namespace Screenshots
 {
@@ -23,6 +18,7 @@ namespace Screenshots
         private String secret;
         private String webhookSecret;
         private UrlGenerator urlGenerator;
+        private UrlboxWebhookValidator urlboxWebhookValidator;
 
         private HttpClient httpClient;
 
@@ -30,7 +26,7 @@ namespace Screenshots
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
 
-        public Urlbox(string key, string secret, string webhookSecret)
+        public Urlbox(string key, string secret, string webhookSecret = null)
         {
             if (String.IsNullOrEmpty(key))
             {
@@ -42,9 +38,13 @@ namespace Screenshots
             }
             this.key = key;
             this.secret = secret;
-            this.webhookSecret = webhookSecret;
             this.urlGenerator = new UrlGenerator(key, secret);
             this.httpClient = new HttpClient();
+            if (!String.IsNullOrEmpty(webhookSecret))
+            {
+                this.webhookSecret = webhookSecret;
+                this.urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);
+            }
         }
 
         /// <summary>
@@ -276,7 +276,33 @@ namespace Screenshots
             }
         }
 
+        /// <summary>
+        /// A static method to create a new instance of the Urlbox class
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <param name="apiSecret"></param>
+        /// <param name="webhookSecret"></param>
+        /// <param name="client"></param>
+        /// <returns>A new instance of the Urlbox class.</returns>
+        /// <exception cref="ArgumentException">Thrown when there is no api key or secret</exception>
+        public static Urlbox FromCredentials(string apiKey, string apiSecret, string webhookSecret)
+        {
+            return new Urlbox(apiKey, apiSecret, webhookSecret);
+        }
+
+        /// <summary>
+        /// Verifies a webhook responses' x-urlbox-signature header to ensure it came from Urlbox
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool verifyWebhookSignature(string header, string content)
+        {
+            if (!(this.urlboxWebhookValidator is UrlboxWebhookValidator))
+            {
+                throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
+            }
+            return this.urlboxWebhookValidator.verifyWebhookSignature(header, content);
+        }
     }
-
-
 }

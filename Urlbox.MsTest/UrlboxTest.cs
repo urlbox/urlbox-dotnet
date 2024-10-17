@@ -155,6 +155,24 @@ public class UrlTests
     }
 
     [TestMethod]
+    public void Urlbox_createsWithWebhookValidator()
+    {
+        Urlbox urlbox = new Urlbox("key", "secret", "webhook");
+        // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
+        var result = urlbox.verifyWebhookSignature("t=123,sha256=321", "content");
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void Urlbox_createsWithoutWebhookValidator()
+    {
+        Urlbox urlbox = new Urlbox("key", "secret");
+        // Should throw bc no webhook set so no validator instance
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature("t=123,sha256=321", "content"));
+        Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
+    }
+
+    [TestMethod]
     public void GenerateUrlboxUrl_WithAllOptions()
     {
         var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
@@ -452,6 +470,46 @@ public class UrlboxOptionsTest
         var exception = Assert.ThrowsException<ArgumentException>(() => urlboxOptions.Header = 1);
         Assert.IsTrue(exception.Message.Contains("Header must be either a string or a string array."));
     }
+}
 
+[TestClass]
+class UrlboxTests
+{
+
+    [TestMethod]
+    public void FromCredentials_Success()
+    {
+        var urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook");
+        Assert.IsInstanceOfType(urlbox, typeof(Urlbox));
+    }
+
+    [TestMethod]
+    public void FromCredentials_Exception()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
+    }
+}
+
+
+[TestClass]
+public class UrlboxWebhookValidatorTests
+{
+    private Urlbox urlbox;
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        urlbox = new Urlbox("key", "secret", "webhook_secret");
+    }
+
+
+    [TestMethod]
+    public void verifyWebhookSignature_Succeeds()
+    {
+        string urlboxSignature = "t=123456,sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
+        var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
+        var result = urlbox.verifyWebhookSignature(urlboxSignature, content);
+        Assert.IsTrue(result);
+    }
 
 }

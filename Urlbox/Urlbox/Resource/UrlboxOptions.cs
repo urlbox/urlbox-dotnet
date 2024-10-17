@@ -1,17 +1,12 @@
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 
 namespace Screenshots
 {
     /// <summary>
-    /// Initializes a new instance of the UrlboxOptions. These are used as part of any Urlbox method which requires render options.
+    /// Initializes a new instance of the UrlboxOptions. These are used as part of a Urlbox method which requires render options.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the Url OR Html option isn't passed in on init.</exception>
     public class UrlboxOptions
@@ -170,5 +165,4 @@ namespace Screenshots
         public string CdnHost { get; set; }
         public string S3StorageClass { get; set; }
     }
-
 }
