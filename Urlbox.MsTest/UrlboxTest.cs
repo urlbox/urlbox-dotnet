@@ -158,10 +158,69 @@ public class UrlTests
     public void GenerateUrlboxUrl_WithAllOptions()
     {
         var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
-        Console.WriteLine(output);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/755a40f67ca365e979086eddd0d2cab7e7612174/png?url=https%3A%2F%2Furlbox.com&html=test&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=%5Btest%2Ctest2%5D&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=123&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=test&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=test",
+            "https://api.urlbox.com/v1/MY_API_KEY/ab13d1b51816149ebfbe66374358cf2c4285f578/png?url=https%3A%2F%2Furlbox.com&html=test&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=123&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=test&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=test",
+            output
+        );
+    }
+
+    [TestMethod]
+    public void GenerateUrlboxUrl_withMultipleCookies()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        options.Cookie = new string[] {
+            "some=cookie",
+            "some=otherCookie",
+            "some=thirdCookie"
+        };
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+
+        Assert.AreEqual(
+            "https://api.urlbox.com/v1/MY_API_KEY/875571589b83579c5bd98b2724fee1e942e6191b/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie",
+            output
+        );
+    }
+
+    [TestMethod]
+    public void GenerateUrlboxUrl_withOneCookie()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        options.Cookie = "some=cookie";
+
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+
+        Assert.AreEqual(
+            "https://api.urlbox.com/v1/MY_API_KEY/98443bad9c26ff2ec632a88a5ca81042a8f01f6e/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie",
+            output
+        );
+    }
+
+    [TestMethod]
+    public void GenerateUrlboxUrl_withMultipleBlockUrls()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://shopify.com");
+        options.BlockUrls = new string[] { "cdn.shopify.com", "otherDomain" };
+
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+
+        Assert.AreEqual(
+            "https://api.urlbox.com/v1/MY_API_KEY/d8b2541a21203c7277ce450623e4d5821b09b7ce/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com%2CotherDomain",
+            output
+        );
+    }
+
+    [TestMethod]
+    public void GenerateUrlboxUrl_withOneBlockUrl()
+    {
+
+        UrlboxOptions options = new UrlboxOptions(url: "https://shopify.com");
+        options.BlockUrls = new string[] { "cdn.shopify.com" };
+
+        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+
+        Assert.AreEqual(
+            "https://api.urlbox.com/v1/MY_API_KEY/1d35723ba9b60ec38ccdb01d066665c788002f17/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com",
             output
         );
     }
@@ -209,6 +268,8 @@ public class UrlTests
         options.Format = "pdf";
         options.Selector = "";
         options.WaitFor = "";
+        options.BlockUrls = new string[] { };
+        options.Cookie = "";
 
         var output = dummyUrlbox.GenerateUrlboxUrl(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
@@ -257,15 +318,28 @@ public class UrlTests
     }
 
     [TestMethod]
-    public async Task Render_Succeeds()
+    public async Task RenderSync_Succeeds()
     {
         UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
-        // options.BlockUrls = true;
-        // options.FullPage = true;
         options.ClickAccept = true;
         var result = await urlbox.Render(options);
+
+        Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(result.RenderUrl);
         Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task RenderAsync_Succeeds()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        options.ClickAccept = true;
+        var result = await urlbox.RenderAsync(options);
+
+        Assert.IsInstanceOfType(result, typeof(AsyncUrlboxResponse));
+        Assert.IsNotNull(result.Status);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.StatusUrl);
     }
 
     [TestMethod]
@@ -278,30 +352,12 @@ public class UrlTests
 
 
     [TestMethod]
-    public async Task RenderAsync_Succeeds()
-    {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
-        options.BlockUrls = new string[] { "test" };
-        // options.FullPage = true;
-        options.ClickAccept = true;
-        var result = await urlbox.RenderAsync(options);
-
-        Assert.IsInstanceOfType(result, typeof(AsyncUrlboxResponse));
-        Assert.IsNotNull(result.Status);
-        Assert.IsNotNull(result.RenderId);
-        Assert.IsNotNull(result.StatusUrl);
-    }
-
-    [TestMethod]
     public async Task RenderAsync_ThrowsException()
     {
         UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
         var exception = Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.RenderAsync(options));
         Assert.IsTrue(exception.Result.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
     }
-
-
-
 }
 
 [TestClass]
