@@ -389,7 +389,7 @@ namespace Screenshots
         public int Ttl { get; set; }
         public string Proxy { get; set; }
         public string Header { get; set; }
-        public string Cookie { get; set; }
+        public object Cookie { get; set; }
         public string UserAgent { get; set; }
         public string Platform { get; set; }
         public string AcceptLang { get; set; }

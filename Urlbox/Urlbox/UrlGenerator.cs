@@ -73,8 +73,7 @@ namespace Screenshots
         {
             if (value is string[] stringArray)
             {
-                // String wrapped keys in a string representation of an array
-                return $"[\"{string.Join("\",\"", stringArray)}\"]";
+                return $"{string.Join(",", stringArray)}";
             }
 
             var result = Convert.ToString(value);
