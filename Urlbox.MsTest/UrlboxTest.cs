@@ -400,7 +400,6 @@ public class DownloadTests
     }
 }
 
-
 [TestClass]
 public class UrlboxOptionsTest
 {
@@ -433,4 +432,15 @@ public class UrlboxOptionsTest
         Assert.AreEqual(html, urlboxOptions.Html);
         Assert.IsNull(urlboxOptions.Url);
     }
+
+    [TestMethod]
+    public void UrlboxOptions_PassingWrongTypes()
+    {
+        string html = "<h1>test</h1>";
+        var urlboxOptions = new UrlboxOptions(html: html);
+
+        var exception = Assert.ThrowsException<ArgumentException>(() => urlboxOptions.Cookie = 1);
+        Assert.IsTrue(exception.Message.Contains("Cookie must be either a string or a string[]."));
+    }
+
 }

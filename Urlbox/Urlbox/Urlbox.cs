@@ -389,7 +389,24 @@ namespace Screenshots
         public int Ttl { get; set; }
         public string Proxy { get; set; }
         public string Header { get; set; }
-        public object Cookie { get; set; }
+
+        // Limit the object type to just string or string[]
+        private object _cookie;
+        public object Cookie
+        {
+            get { return _cookie; }
+            set
+            {
+                if (value is string || value is string[])
+                {
+                    _cookie = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Cookie must be either a string or a string[].");
+                }
+            }
+        }
         public string UserAgent { get; set; }
         public string Platform { get; set; }
         public string AcceptLang { get; set; }
