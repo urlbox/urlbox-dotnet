@@ -327,14 +327,14 @@ namespace Screenshots
 
         public string Url { get; set; }
         public string Html { get; set; }
-        public string Format { get; set; }
+        public string Format { get; set; } // png jpeg webp avif svg pdf html mp4 webm md
         public int Width { get; set; }
         public int Height { get; set; }
         public bool FullPage { get; set; }
         public string Selector { get; set; }
-        public string Clip { get; set; }
+        public string Clip { get; set; } // x,y,width,height EG "0,0,400,400"
         public bool Gpu { get; set; }
-        public string ResponseType { get; set; }
+        public string ResponseType { get; set; } // one of json or binary
         public bool BlockAds { get; set; }
         public bool HideCookieBanners { get; set; }
         public bool ClickAccept { get; set; }
@@ -356,29 +356,30 @@ namespace Screenshots
         public bool Retina { get; set; }
         public int ThumbWidth { get; set; }
         public int ThumbHeight { get; set; }
-        public string ImgFit { get; set; }
-        public string ImgPosition { get; set; }
-        public string ImgBg { get; set; }
-        public int ImgPad { get; set; }
-        public int Quality { get; set; }
+        public string ImgFit { get; set; } // cover contain fill inside outside
+        public string ImgPosition { get; set; } // if img_fit is cover or contain then possible values for this are: north northeast east southeast south southwest west northwest center centre
+
+        public string ImgBg { get; set; } // red #ccc rgb() rgba() or hsl()
+        public string ImgPad { get; set; } // either 10 or 10,10,10,10
+        public int Quality { get; set; } // between 0 to 100
         public bool Transparent { get; set; }
         public int MaxHeight { get; set; }
         public string Download { get; set; }
-        public string PdfPageSize { get; set; }
+        public string PdfPageSize { get; set; } // A0 A1 A2 A3 A4 A5 A6 Legal Letter Ledger Tabloid
         public string PdfPageRange { get; set; }
         public int PdfPageWidth { get; set; }
         public int PdfPageHeight { get; set; }
-        public string PdfMargin { get; set; }
+        public string PdfMargin { get; set; } //none default minimum
         public int PdfMarginTop { get; set; }
         public int PdfMarginRight { get; set; }
         public int PdfMarginBottom { get; set; }
         public int PdfMarginLeft { get; set; }
         public bool PdfAutoCrop { get; set; }
-        public double PdfScale { get; set; }
-        public string PdfOrientation { get; set; }
+        public double PdfScale { get; set; } // 0.1 up to 2
+        public string PdfOrientation { get; set; } // portrait landscape
         public bool PdfBackground { get; set; }
         public bool DisableLigatures { get; set; }
-        public string Media { get; set; }
+        public string Media { get; set; } // print or screen
         public bool PdfShowHeader { get; set; }
         public string PdfHeader { get; set; }
         public bool PdfShowFooter { get; set; }
@@ -388,34 +389,50 @@ namespace Screenshots
         public string Unique { get; set; }
         public int Ttl { get; set; }
         public string Proxy { get; set; }
-        public string Header { get; set; }
 
-        // Limit the object type to just string or string[]
+        private object _header;
         private object _cookie;
+
+        public object Header
+        {
+            get { return _header; }
+            set { _header = ValidateStringOrArray(value, nameof(Header)); }
+        }
+
         public object Cookie
         {
             get { return _cookie; }
-            set
+            set { _cookie = ValidateStringOrArray(value, nameof(Cookie)); }
+        }
+
+        /// <summary>
+        /// Tightens a type to string or string[] for Urlbox options which allow singles+multiples
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private object ValidateStringOrArray(object value, string propertyName)
+        {
+            if (value is string || value is string[])
             {
-                if (value is string || value is string[])
-                {
-                    _cookie = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Cookie must be either a string or a string[].");
-                }
+                return value;
+            }
+            else
+            {
+                throw new ArgumentException($"{propertyName} must be either a string or a string array.");
             }
         }
+
         public string UserAgent { get; set; }
-        public string Platform { get; set; }
+        public string Platform { get; set; } // MacIntel | Linux x86_64 | Linux armv81 | Win32
         public string AcceptLang { get; set; }
         public string Authorization { get; set; }
         public string Tz { get; set; }
         public string EngineVersion { get; set; }
         public int Delay { get; set; }
         public int Timeout { get; set; }
-        public string WaitUntil { get; set; }
+        public string WaitUntil { get; set; } // domloaded mostrequestsfinished requestsfinished loaded
         public string WaitFor { get; set; }
         public string WaitToLeave { get; set; }
         public int WaitTimeout { get; set; }
@@ -429,13 +446,13 @@ namespace Screenshots
         public string Hover { get; set; }
         public string BgColor { get; set; }
         public bool DisableJs { get; set; }
-        public string FullPageMode { get; set; }
+        public string FullPageMode { get; set; } // stitch native
         public bool FullWidth { get; set; }
         public bool AllowInfinite { get; set; }
         public bool SkipScroll { get; set; }
         public bool DetectFullHeight { get; set; }
         public int MaxSectionHeight { get; set; }
-        public string ScrollIncrement { get; set; }
+        public int ScrollIncrement { get; set; }
         public int ScrollDelay { get; set; }
         public string Highlight { get; set; }
         public string HighlightFg { get; set; }
