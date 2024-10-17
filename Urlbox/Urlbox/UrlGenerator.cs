@@ -39,10 +39,11 @@ namespace Screenshots
                     {
                         var value = prop.GetValue(options, null);
                         return value != null &&
-                               !(value is bool && (bool)value == false) && // skip false if bool
-                               !(value is int && (int)value == 0) && // skip 0's if int
-                               !(value is double && (double)value == 0.0) && // skip 0's if double
-                               !(value is string && string.IsNullOrEmpty((string)value)); // skip empty strings if string
+                            !(value is bool && (bool)value == false) && // skip false if bool
+                            !(value is int && (int)value == 0) && // skip 0's if int
+                            !(value is double && (double)value == 0.0) && // skip 0's if double
+                            !(value is string && string.IsNullOrEmpty((string)value)) && // skip empty strings if string
+                            !(value is string[] arr && arr.Length == 0); // skip empty arrays
                     })
                 .Select(prop => new KeyValuePair<string, string>(prop.Name, ConvertToString(prop.GetValue(options))))
                 // .Where(pair => !string.IsNullOrEmpty(pair.Value)) // Skip empty values
@@ -61,6 +62,10 @@ namespace Screenshots
 
         private static string ConvertToString(object value)
         {
+            if (value is string[] stringArray)
+            {
+                return $"[{string.Join(",", stringArray)}]";
+            }
 
             var result = Convert.ToString(value);
             if (result.Equals("False") || result.Equals("True"))

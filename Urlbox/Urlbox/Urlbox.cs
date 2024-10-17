@@ -338,7 +338,7 @@ namespace Screenshots
         public bool BlockAds { get; set; }
         public bool HideCookieBanners { get; set; }
         public bool ClickAccept { get; set; }
-        public bool BlockUrls { get; set; }
+        public string[] BlockUrls { get; set; }
         public bool BlockImages { get; set; }
         public bool BlockFonts { get; set; }
         public bool BlockMedias { get; set; }
