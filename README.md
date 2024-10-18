@@ -111,3 +111,20 @@ We also offer other methods of generating screenshots apart from render links, i
 ## Feedback
 
 Feel free to contact us if you spot a bug or have any suggestions at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
+
+## Contributing
+
+Want to help? Please follow this process to help us maintain a quality SDK:
+
+1. Ensure that an ISS ticket has been generated for the improvement/feature in question with a descriptive explanation as to the issue/feature.
+2. Create a branch from that ticket, and ensure the ISS has that branch assigned to it, and you're assigned to that ISS.
+3. Create your solution to the ISS ticket. If you become blocked, you're more than welcome to ask for help at `support@urlbox.com`.
+4. Write tests for your solution, and ensure all of the pre-written tests pass.
+5. Create a PR with a meaningful description of what you have implemented and how it fixes the ISS.
+
+In order to run the tests, you'll need to set some environment variables in the Urlbox.MsTest project using `dotnet user-secrets init`:
+
+`dotnet user-secrets set "URLBOX_KEY" "<PLACE_YOUR_KEY_HERE>"`
+`dotnet user-secrets set "URLBOX_SECRET" "<PLACE_YOUR_SECRET_HERE>"`
+
+These should be your genuine API key and Secret, and will save you accidentally committing them to the branch you're working on.
