@@ -34,7 +34,7 @@ namespace Screenshots
         {
             if (String.IsNullOrEmpty(header) || !header.Contains("t=") || !header.Contains("sha256=") || !header.Contains(","))
             {
-                throw new ArgumentException("Unable to verify signature as header is empty. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.");
+                throw new ArgumentException("Unable to verify signature as header is empty or malformed. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.");
             }
 
             string timestamp = GetTimestampFromHeader(header);
@@ -72,13 +72,15 @@ namespace Screenshots
         public string GetSignature(string header)
         {
             string[] commaSplit = header.Split(',');
-            string lastPart = commaSplit[1];
+            string signatureWithPrefix = commaSplit[1];
+            string signature = signatureWithPrefix.Split('=').Last();
 
-            if (!lastPart.Contains("sha256="))
+            if (!signatureWithPrefix.Contains("sha256=") || String.IsNullOrEmpty(signature))
             {
                 throw new ArgumentException("The signature could not be found, please ensure you are passing the x-urlbox-signature header.");
             }
-            return lastPart.Split('=').Last();
+
+            return signature;
         }
 
         /// <summary>
@@ -89,13 +91,15 @@ namespace Screenshots
         private string GetTimestampFromHeader(string header)
         {
             string[] commaSplit = header.Split(',');
-            string firstPart = commaSplit[0];
+            string timestampWithPrefix = commaSplit[0];
+            string timestamp = timestampWithPrefix.Split('=').Last();
 
-            if (!firstPart.Contains("t="))
+            if (!timestampWithPrefix.Contains("t=") || String.IsNullOrEmpty(timestamp))
             {
                 throw new ArgumentException("The timestamp could not be found, please ensure you are passing the x-urlbox-signature header.");
             }
-            return firstPart.Split('=').Last();
+
+            return timestamp;
         }
     }
 }
