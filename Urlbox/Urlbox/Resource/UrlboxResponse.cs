@@ -25,7 +25,7 @@ namespace Screenshots
     /// </summary>
     public class SyncUrlboxResponse : IUrlboxResponse
     {
-        public string RenderUrl { get; set; }
+        public string RenderUrl { get; set; } // The location of the screenshot
         public int Size { get; set; }
     }
 
@@ -34,8 +34,8 @@ namespace Screenshots
     /// </summary>
     public class AsyncUrlboxResponse : IUrlboxResponse
     {
-        public string Status { get; set; }
-        public string RenderId { get; set; }
-        public string StatusUrl { get; set; }
+        public string Status { get; set; } // EG 'success'
+        public string RenderId { get; set; } // A UUID for the request
+        public string StatusUrl { get; set; } // A url which you can poll to check the render's status
     }
 }

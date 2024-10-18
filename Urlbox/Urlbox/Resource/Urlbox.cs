@@ -1,12 +1,7 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 
 namespace Screenshots
 {
@@ -31,7 +26,7 @@ namespace Screenshots
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
 
-        public Urlbox(string key, string secret, string webhookSecret)
+        public Urlbox(string key, string secret, string webhookSecret = null)
         {
             if (String.IsNullOrEmpty(key))
             {
@@ -305,7 +300,7 @@ namespace Screenshots
         {
             if (!(this.urlboxWebhookValidator is UrlboxWebhookValidator))
             {
-                throw new ArgumentException("You cannot call this method without having set your webhook secret on the Urlbox class.");
+                throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
             }
             return this.urlboxWebhookValidator.verifyWebhookSignature(header, content);
         }

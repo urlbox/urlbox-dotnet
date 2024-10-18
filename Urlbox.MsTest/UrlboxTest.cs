@@ -155,6 +155,24 @@ public class UrlTests
     }
 
     [TestMethod]
+    public void Urlbox_createsWithWebhookValidator()
+    {
+        Urlbox urlbox = new Urlbox("key", "secret", "webhook");
+        // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
+        var result = urlbox.verifyWebhookSignature("t=123,sha256=321", "content");
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void Urlbox_createsWithoutWebhookValidator()
+    {
+        Urlbox urlbox = new Urlbox("key", "secret");
+        // Should throw bc no webhook set so no validator instance
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature("t=123,sha256=321", "content"));
+        Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
+    }
+
+    [TestMethod]
     public void GenerateUrlboxUrl_WithAllOptions()
     {
         var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <PackageId>Urlbox.sdk.dotnet</PackageId>
     <Version>1.0.3</Version>
 
