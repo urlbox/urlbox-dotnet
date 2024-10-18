@@ -14,16 +14,19 @@ namespace Screenshots
 
         public UrlboxOptions(string url = null, string html = null)
         {
-            if (string.IsNullOrEmpty(url) && string.IsNullOrEmpty(html))
+            if (
+                (String.IsNullOrEmpty(url) && String.IsNullOrEmpty(html)) ||
+                (!String.IsNullOrEmpty(url) && !String.IsNullOrEmpty(html))
+             )
             {
-                throw new ArgumentException("Either of options 'url' or 'html' must be provided.");
+                throw new ArgumentException("Either but not both options 'url' or 'html' must be provided.");
             }
             Url = url;
             Html = html;
         }
 
-        public string Url { get; set; }
-        public string Html { get; set; }
+        public string Url { get; }
+        public string Html { get; }
         public string Format { get; set; } // png jpeg webp avif svg pdf html mp4 webm md
         public int Width { get; set; }
         public int Height { get; set; }

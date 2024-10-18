@@ -13,7 +13,6 @@ public class UrlTests
 {
     UrlboxOptions urlboxAllOptions = new UrlboxOptions(url: "https://urlbox.com")
     {
-        Html = "test",
         Width = 123,
         Height = 123,
         FullPage = true,
@@ -177,7 +176,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/c40d001f724ed2d798ef8ce9e43d02ead2f05c25/png?url=https%3A%2F%2Furlbox.com&html=test&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=400&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=test",
+            "https://api.urlbox.com/v1/MY_API_KEY/6d4c63313408cb3127cb12811b4d7b1ab99579d3/png?url=https%3A%2F%2Furlbox.com&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=400&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=test",
             output
         );
     }
@@ -367,7 +366,6 @@ public class UrlTests
         Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
     }
 
-
     [TestMethod]
     public async Task RenderAsync_ThrowsException()
     {
@@ -380,7 +378,6 @@ public class UrlTests
 [TestClass]
 public class DownloadTests
 {
-
     private Urlbox urlbox;
 
     [TestInitialize]
@@ -427,6 +424,13 @@ public class UrlboxOptionsTest
     }
 
     [TestMethod]
+    public void UrlboxOptions_BothHTMLandURL()
+    {
+        var exception = Assert.ThrowsException<ArgumentException>(() => new UrlboxOptions(url: "urlbox.com", html: "<h1>test</h1>"));
+        Assert.AreEqual(exception.Message, "Either but not both options 'url' or 'html' must be provided.");
+    }
+
+    [TestMethod]
     public void UrlboxOptions_CreatesSuccess_URL()
     {
         string url = "https://urlbox.com";
@@ -469,6 +473,7 @@ public class UrlboxOptionsTest
         var exception = Assert.ThrowsException<ArgumentException>(() => urlboxOptions.Header = 1);
         Assert.IsTrue(exception.Message.Contains("Header must be either a string or a string array."));
     }
+
 }
 
 [TestClass]
