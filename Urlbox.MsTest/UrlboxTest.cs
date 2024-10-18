@@ -363,8 +363,8 @@ public class UrlTests
     public async Task Render_ThrowsException()
     {
         UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
-        var exception = Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.Render(options));
-        Assert.IsTrue(exception.Result.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
+        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.Render(options));
+        Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
     }
 
 
@@ -372,8 +372,8 @@ public class UrlTests
     public async Task RenderAsync_ThrowsException()
     {
         UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
-        var exception = Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.RenderAsync(options));
-        Assert.IsTrue(exception.Result.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
+        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.RenderAsync(options));
+        Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
     }
 }
 
@@ -472,7 +472,7 @@ public class UrlboxOptionsTest
 }
 
 [TestClass]
-class UrlboxTests
+public class UrlboxTests
 {
 
     [TestMethod]
@@ -488,7 +488,6 @@ class UrlboxTests
         Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
     }
 }
-
 
 [TestClass]
 public class UrlboxWebhookValidatorTests

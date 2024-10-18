@@ -15,7 +15,9 @@ You can also upload to [S3](https://urlbox.com/docs/guides/s3) for more control 
 
 ## Requirements
 
-To use this SDK, you need .NET Core 2.0 or later.
+To use this SDK, you need .NET Core 6.0 or later.
+
+We have chosen to maintain compatibility with 6.0 at this time, given its Long-Term Support (LTS) status.
  
 ## Installation
 
@@ -27,7 +29,69 @@ dotnet add package urlbox.sdk.dotnet
 
 ## Usage
 
-Pull in the Urlbox SDK with `using Screenshots;`, then create a new Urlbox instance and call any of the following methods:
+1. Pull in the Urlbox SDK into the file you're intending to call Urlbox from:
+
+```CS
+using Screenshots;
+```
+
+2. Create an instance of Urlbox. Your webhook secret is optional, and can be found by visiting Urlbox, then finding your settings->projects->your-project-name:
+
+```CS
+Urlbox urlbox = new Urlbox("MY_URLBOX_KEY", "MY_URLBOX_SECRET", "MY_URLBOX_WEBHOOK_SECRET");
+// OR if a static method is more to your liking
+Urlbox urlbox = Urlbox.FromCredentials("MY_URLBOX_KEY", "MY_URLBOX_SECRET", "MY_URLBOX_WEBHOOK_SECRET");
+```
+
+3. Create an instance of the UrlboxOptions you wish you pass into your render link or sync/async request. Passing a Url or Html is required, but all other options are optional:
+
+```CS
+UrlboxOptions optionsUrl = new UrlboxOptions(url: "https://urlbox.com/automated-screenshots/how-performance-cheats-broke-our-website-screenshots");
+// OR
+UrlboxOptions optionsHtml = new UrlboxOptions(html: "<h1>Hello World!</h1>");
+
+// For a full list of our options, checkout the UrlboxOptions type or our docs.
+optionsHtml.ClickAccept = true; // Clicks accept on any cookie banners
+optionsHtml.EngineVersion = "latest"; // You could use our latest or stable engine
+optionsHtml.UseS3 = true; // Uses your S3 configuration to store your screenshots in your own cloud bucket.
+```
+
+4. Pass those options into any one of our render requests. These are:
+
+### `Render()`
+
+Example:
+
+`SyncUrlboxResponse response = await urlbox.Render(options);`
+
+This will take the screenshot and wait for the screenshot to finish before returning you a `SyncUrlboxResponse` with your:
+
+- RenderUrl - This is the Url which has your screenshot stored. It will either be the default Urlbox storage location, or your own S3 bucket if you have it configured.
+- Size - This is the size of the screenshot, in bytes.
+
+### `RenderAsync()`
+
+Example:
+
+`AsyncUrlboxResponse response = await urlbox.RenderAsync(options);`
+
+This will send a request to Urlbox to render a screenshot, not waiting for the screenshot to finish. It will return you an `AsyncUrlboxResponse` with:
+
+- Status 
+- RenderId - This is the UUID for your screenshot request
+- StatusUrl - This is a URL you can poll (run GET requests to) to check if your render has finished and succeeded. Alternatively you can use our webhook feature for a more streamlined approach to /async.
+
+### `GenerateUrlboxUrl()`
+
+Example:
+
+`string url = await urlbox.GenerateUrlboxUrl(options);`
+
+This will generate you a [render link](https://urlbox.com/docs/render-links). This is a link which can be used to make a request to our API and return you the screenshot directly. One useful case for this is as a convenient way for you to embed a Urlbox screenshot in an HTML tag.
+
+---
+
+We also have a number of helper functions:
 
 Note - The 3 format related methods are not an exhaustive list of available formats. Please see the below example and documentation for a full list of available formats to pass into the main GenerateUrlboxUrl() method as an option. All of the below generate [render links](https://urlbox.com/docs/render-links).
 
@@ -41,9 +105,7 @@ Note - The 3 format related methods are not an exhaustive list of available form
 
 `GeneratePDFUrl(options)` - Gets a render link for a screenshot in PDF format.
 
-`GenerateUrlboxUrl(options)` - Gets a render link for a screenshot.
-
-Example Usage:
+Helpers Example Usage:
 
 ```CS
 using System;
@@ -51,7 +113,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Screenshots;
 
-namespace UrlboxTest
+namespace MyClass
 {
     class Program
     {
@@ -64,11 +126,11 @@ namespace UrlboxTest
             // Create an instance of Urlbox
             Urlbox urlbox = new Urlbox(apiKey, apiSecret);
 
-            // Define the options for the screenshot
-            var options = new Dictionary<string, object>
-            {
-                { "url", "https://urlbox.com/screenshot-behind-login" },
-            };
+            // Create the options for the request
+            var options = new UrlboxOptions(url: "https://urlbox.com/screenshot-behind-login");
+
+            options.ClickAccept = true;
+            options.FullPage = true;
 
             // Download as base64
             string base64Screenshot = await urlbox.DownloadAsBase64(options);
@@ -90,24 +152,28 @@ namespace UrlboxTest
             // Generate JPEG render link Url
             string jpegUrl = urlbox.GenerateJPEGUrl(options);
             Console.WriteLine("Generated JPEG URL: " + jpegUrl);
-
-            // Define more options for the screenshot, to render different formats
-            var optionsWithFormat = new Dictionary<string, object>
-            {
-                {"url", "https://urlbox.com/screenshot-behind-login"},
-                { "format", "png" }, // One of png, jpeg, webp, avif, svg, pdf, html, mp4, webm or md
-                { "full_page", true }, // Takes a full page screenshot
-            };
-
-            string url = urlbox.GenerateUrlboxUrl(optionsWithFormat);
-            Console.WriteLine("Generated URL: " + url);
         }
     }
 }
 ```
 
-We also offer other methods of generating screenshots apart from render links, including POST requests via [async](https://urlbox.com/docs/api#create-a-render-asynchronously) calls, using [webhooks](https://urlbox.com/docs/webhooks#using-webhooks) or [synchronously](https://urlbox.com/docs/api#create-a-render-synchronously).
-
 ## Feedback
 
 Feel free to contact us if you spot a bug or have any suggestions at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
+
+## Contributing
+
+Want to help? Please follow this process to help us maintain a quality SDK:
+
+1. Ensure that an ISS ticket has been generated for the improvement/feature in question with a descriptive explanation as to the issue/feature.
+2. Create a branch from that ticket, and ensure the ISS has that branch assigned to it, and you're assigned to that ISS.
+3. Create your solution to the ISS ticket. If you become blocked, you're more than welcome to ask for help at `support@urlbox.com`.
+4. Write tests for your solution, and ensure all of the pre-written tests pass.
+5. Create a PR with a meaningful description of what you have implemented and how it fixes the ISS.
+
+In order to run the tests, you'll need to set some environment variables in the Urlbox.MsTest project using `dotnet user-secrets init`:
+
+`dotnet user-secrets set "URLBOX_KEY" "<PLACE_YOUR_KEY_HERE>"`
+`dotnet user-secrets set "URLBOX_SECRET" "<PLACE_YOUR_SECRET_HERE>"`
+
+These should be your genuine API key and Secret, and will save you accidentally committing them to the branch you're working on.
