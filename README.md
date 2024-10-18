@@ -39,6 +39,8 @@ using Screenshots;
 
 ```CS
 Urlbox urlbox = new Urlbox("MY_URLBOX_KEY", "MY_URLBOX_SECRET", "MY_URLBOX_WEBHOOK_SECRET");
+// OR if a static method is more to your liking
+Urlbox urlbox = Urlbox.FromCredentials("MY_URLBOX_KEY", "MY_URLBOX_SECRET", "MY_URLBOX_WEBHOOK_SECRET");
 ```
 
 3. Create an instance of the UrlboxOptions you wish you pass into your render link or sync/async request. Passing a Url or Html is required, but all other options are optional:
