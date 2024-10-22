@@ -120,17 +120,17 @@ namespace Screenshots
         {
             using (var client = new HttpClient())
             {
-                using (var result = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
+                using (HttpResponseMessage result = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
                 {
                     if (result.IsSuccessStatusCode)
                     {
-                        Debug.WriteLine(result, "SUCCESS!");
                         return await onSuccess(result);
                     }
                     else
                     {
-                        Debug.WriteLine(result, "FAIL");
-                        return "FAIL";
+                        IEnumerable<string> values;
+                        var errorMessage = result.Headers.TryGetValues("x-urlbox-error-message", out values);
+                        throw new Exception($"Request failed: {values.FirstOrDefault()}");
                     }
                 }
             }

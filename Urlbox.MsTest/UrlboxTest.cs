@@ -437,9 +437,11 @@ public class DownloadTests
     public async Task TestDownloadFail()
     {
         var urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/59148a4e454a2c7051488defdb8b246bdea61ac/jpeg?url=bbc.co.uk";
-        var base64result = await urlbox.DownloadAsBase64(urlboxUrl);
-        Debug.WriteLine(base64result, "RESULT - BASE64");
-        Assert.IsTrue(true);
+        var base64result = await Assert.ThrowsExceptionAsync<Exception>(() => urlbox.DownloadAsBase64(urlboxUrl));
+        Assert.AreEqual(
+            "Request failed: The generated token was incorrect. Please look in the docs (https://urlbox.io/docs) for how to generate your token correctly in the language you are using. TLDR: It should be the HMAC SHA256 of your query string, *signed* by your user secret, which you can find by logging into the urlbox dashboard",
+            base64result.Message
+        );
     }
 }
 
