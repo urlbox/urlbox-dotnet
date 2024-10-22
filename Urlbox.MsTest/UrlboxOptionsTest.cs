@@ -1,11 +1,5 @@
-using System.Diagnostics;
-using System.Dynamic;
 using System;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Screenshots;
 
 [TestClass]
@@ -66,5 +60,20 @@ public class UrlboxOptionsTest
 
         var exception = Assert.ThrowsException<ArgumentException>(() => urlboxOptions.Header = 1);
         Assert.IsTrue(exception.Message.Contains("Header must be either a string or a string array."));
+    }
+
+    /// <summary>
+    /// Tests that you can dynamically assign options on construct
+    /// </summary>
+    [TestMethod]
+    public void UrlboxOptions_CreatedOnInit()
+    {
+        string html = "<h1>test</h1>";
+        UrlboxOptions urlboxOptions = new UrlboxOptions(html: html)
+        {
+            FullPage = true
+        };
+
+        Assert.IsTrue(urlboxOptions.FullPage);
     }
 }
