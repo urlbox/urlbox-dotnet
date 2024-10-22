@@ -21,8 +21,8 @@ namespace Screenshots
             {
                 throw new ArgumentException("Either but not both options 'url' or 'html' must be provided.");
             }
-            Url = url;
-            Html = html;
+            this.Url = url;
+            this.Html = html;
         }
 
         public string Url { get; }
@@ -167,5 +167,12 @@ namespace Screenshots
         public string S3Region { get; set; }
         public string CdnHost { get; set; }
         public string S3StorageClass { get; set; }
+
+        // Side line renders
+        public bool SaveHtml { get; set; }
+        public bool SaveMhtml { get; set; }
+        public bool SaveMarkdown { get; set; }
+        public bool SaveMetadata { get; set; }
+        public bool Metadata { get; set; }
     }
 }

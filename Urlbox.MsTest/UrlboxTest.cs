@@ -346,6 +346,35 @@ public class UrlTests
     }
 
     [TestMethod]
+    public async Task RenderSync_SucceedsWithAllSideRenders()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        options.ClickAccept = true;
+        options.SaveHtml = true;
+        options.Metadata = true;
+        options.SaveMetadata = true;
+        options.SaveMhtml = true;
+        options.SaveMarkdown = true;
+        var result = await urlbox.Render(options);
+
+        Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.Size);
+        Assert.IsNotNull(result.HtmlUrl);
+        Assert.IsNotNull(result.MhtmlUrl);
+        Assert.IsNotNull(result.MarkdownUrl);
+        Assert.IsNotNull(result.MetadataUrl);
+        Assert.IsNotNull(result.Metadata);
+        Assert.IsNotNull(result.Metadata.Url);
+        Assert.IsNotNull(result.Metadata.UrlRequested);
+        Assert.IsNotNull(result.Metadata.UrlResolved);
+        Assert.IsNotNull(result.Metadata.OgImage);
+        Assert.IsNotNull(result.Metadata.OgImage[0].Height);
+        Assert.IsNotNull(result.Metadata.OgImage[0].Url);
+        Assert.IsNotNull(result.Metadata.OgImage[0].Width);
+    }
+
+    [TestMethod]
     public async Task RenderAsync_Succeeds()
     {
         UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
