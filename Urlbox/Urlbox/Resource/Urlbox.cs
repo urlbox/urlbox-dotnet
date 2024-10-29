@@ -11,7 +11,7 @@ namespace Screenshots
     /// <param name="secret">Your Urlbox.com API Secret.</param>
     /// <param name="webhookSecret">Your Urlbox.com webhook Secret.</param>
     /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
-    public class Urlbox
+    public sealed class Urlbox
     {
         private String key;
         private String secret;
