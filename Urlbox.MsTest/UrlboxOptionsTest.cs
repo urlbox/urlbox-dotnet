@@ -61,4 +61,19 @@ public class UrlboxOptionsTest
         var exception = Assert.ThrowsException<ArgumentException>(() => urlboxOptions.Header = 1);
         Assert.IsTrue(exception.Message.Contains("Header must be either a string or a string array."));
     }
+
+    /// <summary>
+    /// Tests that you can dynamically assign options on construct
+    /// </summary>
+    [TestMethod]
+    public void UrlboxOptions_CreatedOnInit()
+    {
+        string html = "<h1>test</h1>";
+        UrlboxOptions urlboxOptions = new UrlboxOptions(html: html)
+        {
+            FullPage = true
+        };
+
+        Assert.IsTrue(urlboxOptions.FullPage);
+    }
 }
