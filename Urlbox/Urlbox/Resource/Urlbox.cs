@@ -13,14 +13,12 @@ namespace Screenshots
     /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
     public sealed class Urlbox
     {
-        private String key;
-        private String secret;
-        private String webhookSecret;
-        private UrlGenerator urlGenerator;
-        private UrlboxWebhookValidator urlboxWebhookValidator;
 
-        private HttpClient httpClient;
-
+        private readonly string key;
+        private readonly string secret;
+        private readonly UrlGenerator urlGenerator;
+        private readonly UrlboxWebhookValidator urlboxWebhookValidator;
+        private readonly HttpClient httpClient;
         private const string BASE_URL = "https://api.urlbox.com";
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
@@ -41,8 +39,7 @@ namespace Screenshots
             this.httpClient = new HttpClient();
             if (!String.IsNullOrEmpty(webhookSecret))
             {
-                this.webhookSecret = webhookSecret;
-                this.urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);
+                urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);
             }
         }
 
