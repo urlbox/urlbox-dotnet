@@ -358,20 +358,20 @@ public class UrlTests
         var result = await urlbox.Render(options);
 
         Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
-        Assert.IsNotNull(result.RenderUrl);
-        Assert.IsNotNull(result.Size);
-        Assert.IsNotNull(result.HtmlUrl);
-        Assert.IsNotNull(result.MhtmlUrl);
-        Assert.IsNotNull(result.MarkdownUrl);
-        Assert.IsNotNull(result.MetadataUrl);
-        Assert.IsNotNull(result.Metadata);
-        Assert.IsNotNull(result.Metadata.Url);
-        Assert.IsNotNull(result.Metadata.UrlRequested);
-        Assert.IsNotNull(result.Metadata.UrlResolved);
-        Assert.IsNotNull(result.Metadata.OgImage);
-        Assert.IsNotNull(result.Metadata.OgImage[0].Height);
-        Assert.IsNotNull(result.Metadata.OgImage[0].Url);
-        Assert.IsNotNull(result.Metadata.OgImage[0].Width);
+        Assert.IsNotNull(result.RenderUrl, "result.RenderUrl");
+        Assert.IsNotNull(result.Size, "result.Size");
+        Assert.IsNotNull(result.HtmlUrl, "result.HtmlUrl");
+        Assert.IsNotNull(result.MhtmlUrl, "result.MhtmlUrl");
+        Assert.IsNotNull(result.MarkdownUrl, "result.MarkdownUrl");
+        Assert.IsNotNull(result.MetadataUrl, "result.MetadataUrl");
+        Assert.IsNotNull(result.Metadata, "result.Metadata");
+        Assert.IsNotNull(result.Metadata.Url, "result.Metadata.Url");
+        Assert.IsNotNull(result.Metadata.UrlRequested, "result.Metadata.UrlRequested");
+        Assert.IsNotNull(result.Metadata.UrlResolved, "result.Metadata.UrlResolved");
+        Assert.IsNotNull(result.Metadata.OgImage, "result.Metadata.OgImage");
+        Assert.IsNotNull(result.Metadata.OgImage[0].Height, "result.Metadata.OgImage[0].Height");
+        Assert.IsNotNull(result.Metadata.OgImage[0].Url, "result.Metadata.OgImage[0].Url");
+        Assert.IsNotNull(result.Metadata.OgImage[0].Width, "result.Metadata.OgImage[0].Width");
     }
 
     [TestMethod]
@@ -385,22 +385,46 @@ public class UrlTests
         Assert.IsNotNull(result.Status);
         Assert.IsNotNull(result.RenderId);
         Assert.IsNotNull(result.StatusUrl);
+
+        Assert.AreEqual("created", result.Status, "Render Async Failed");
+
+        // Assert that optional fields should still be null
+        Assert.IsNull(result.RenderUrl);
+        Assert.IsNull(result.HtmlUrl);
+        Assert.IsNull(result.MhtmlUrl);
+        Assert.IsNull(result.MarkdownUrl);
+        Assert.IsNull(result.MetadataUrl);
+        Assert.IsNull(result.Metadata);
+        Assert.IsNull(result.Size);
     }
 
     [TestMethod]
     public async Task Render_ThrowsException()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
-        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.Render(options));
+        UrlboxOptions options = new UrlboxOptions(url: "https://FAKE_WEBSITE.com");
+        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.Render(options));
         Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
     }
 
     [TestMethod]
     public async Task RenderAsync_ThrowsException()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://doesnotexistZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.com");
-        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await urlbox.RenderAsync(options));
+        UrlboxOptions options = new UrlboxOptions(url: "https://FAKE_WEBSITE.com");
+        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.RenderAsync(options));
         Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
+    }
+
+    [TestMethod]
+    public void FromCredentials_Success()
+    {
+        var urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook");
+        Assert.IsInstanceOfType(urlbox, typeof(Urlbox));
+    }
+
+    [TestMethod]
+    public void FromCredentials_Exception()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
     }
 }
 
@@ -442,24 +466,6 @@ public class DownloadTests
             "Request failed: The generated token was incorrect. Please look in the docs (https://urlbox.io/docs) for how to generate your token correctly in the language you are using. TLDR: It should be the HMAC SHA256 of your query string, *signed* by your user secret, which you can find by logging into the urlbox dashboard",
             base64result.Message
         );
-    }
-}
-
-[TestClass]
-public class UrlboxTests
-{
-
-    [TestMethod]
-    public void FromCredentials_Success()
-    {
-        var urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook");
-        Assert.IsInstanceOfType(urlbox, typeof(Urlbox));
-    }
-
-    [TestMethod]
-    public void FromCredentials_Exception()
-    {
-        Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
     }
 }
 
