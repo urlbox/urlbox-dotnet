@@ -124,9 +124,7 @@ namespace Screenshots
                     }
                     else
                     {
-                        IEnumerable<string> values;
-                        var errorMessage = result.Headers.TryGetValues("x-urlbox-error-message", out values);
-                        throw new Exception($"Request failed: {values.FirstOrDefault()}");
+                        throw new Exception(GetUrlboxErrorMessage(response));
                     }
                 }
             }
@@ -267,7 +265,7 @@ namespace Screenshots
                 }
                 else
                 {
-                    throw new ArgumentException($"Could not make post request to {url}: {response}");
+                    throw new Exception($"Could not make post request to {url}: {GetUrlboxErrorMessage(response)}");
                 }
             }
         }
@@ -299,6 +297,16 @@ namespace Screenshots
                 throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
             }
             return this.urlboxWebhookValidator.verifyWebhookSignature(header, content);
+        }
+
+        /// <summary>
+        /// Gets the x-urlbox-error-message from a request
+        /// </summary>
+        /// <returns></returns>
+        private static string GetUrlboxErrorMessage(HttpResponseMessage response)
+        {
+            var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string> values);
+            return $"Request failed: {values.FirstOrDefault()}";
         }
     }
 }
