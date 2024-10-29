@@ -11,7 +11,7 @@ namespace Screenshots
     /// <param name="secret">Your Urlbox.com API Secret.</param>
     /// <param name="webhookSecret">Your Urlbox.com webhook Secret.</param>
     /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
-    public sealed class Urlbox
+    public sealed class Urlbox : IUrlbox
     {
 
         private readonly string key;
@@ -35,13 +35,44 @@ namespace Screenshots
             }
             this.key = key;
             this.secret = secret;
-            this.urlGenerator = new UrlGenerator(key, secret);
-            this.httpClient = new HttpClient();
+            urlGenerator = new UrlGenerator(key, secret);
+            httpClient = new HttpClient();
             if (!String.IsNullOrEmpty(webhookSecret))
             {
                 urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);
             }
         }
+
+        // STATIC
+
+        /// <summary>
+        /// A static method to create a new instance of the Urlbox class
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <param name="apiSecret"></param>
+        /// <param name="webhookSecret"></param>
+        /// <param name="client"></param>
+        /// <returns>A new instance of the Urlbox class.</returns>
+        /// <exception cref="ArgumentException">Thrown when there is no api key or secret</exception>
+        public static Urlbox FromCredentials(string apiKey, string apiSecret, string webhookSecret)
+        {
+            return new Urlbox(apiKey, apiSecret, webhookSecret);
+        }
+
+        /// <summary>
+        /// Gets the x-urlbox-error-message from a request
+        /// </summary>
+        /// <returns>The Error message as a string</returns>
+        private static string GetUrlboxErrorMessage(HttpResponseMessage response)
+        {
+            var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string> values);
+            return $"Request failed: {values.FirstOrDefault()}";
+        }
+
+
+        // PUBLIC
+
+        // ** Screenshot and File Generation Methods **
 
         /// <summary>
         /// Simplified method to take a screenshot using Urlbox
@@ -53,7 +84,7 @@ namespace Screenshots
         /// <exception cref="ArgumentException"></exception>
         public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options)
         {
-            AsyncUrlboxResponse asyncResponse = await this.RenderAsync(options);
+            AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
 
             // TODO ask what appropriate timeouts would be
             int pollingInterval = 2000; // 2 seconds
@@ -62,7 +93,7 @@ namespace Screenshots
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
             {
-                AsyncUrlboxResponse asyncUrlboxResponse = await this.GetStatus(asyncResponse.StatusUrl);
+                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.StatusUrl);
 
                 if (asyncUrlboxResponse.Status == "succeeded")
                 {
@@ -96,13 +127,13 @@ namespace Screenshots
                 throw new TimeoutException("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).");
             }
 
-            AsyncUrlboxResponse asyncResponse = await this.RenderAsync(options);
+            AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
             int pollingInterval = 2000; // 2 seconds
             var startTime = DateTime.Now;
 
             while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
             {
-                AsyncUrlboxResponse asyncUrlboxResponse = await this.GetStatus(asyncResponse.StatusUrl);
+                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.StatusUrl);
 
                 if (asyncUrlboxResponse.Status == "succeeded")
                 {
@@ -116,30 +147,45 @@ namespace Screenshots
         }
 
         /// <summary>
-        /// A method to get the status of a render from an async request
+        /// Sends a synchronous render request to the Urlbox API and returns the rendered screenshot url and size.
         /// </summary>
-        /// <returns></returns>
-        public async Task<AsyncUrlboxResponse> GetStatus(string statusUrl)
+        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
+        /// <returns>A <see cref="SyncUrlboxResponse"/> containing the result of the render request.</returns>
+        /// <exception cref="Exception">Thrown when the response is of an asynchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the v1/render/sync endpoint, expecting a synchronous response. 
+        /// </remarks>
+        public async Task<SyncUrlboxResponse> Render(UrlboxOptions options)
         {
-            HttpResponseMessage response = await this.httpClient.GetAsync(statusUrl);
-            if (response.IsSuccessStatusCode)
+            AbstractUrlboxResponse result = await MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
+            if (result is SyncUrlboxResponse syncResponse)
             {
-                string responseData = await response.Content.ReadAsStringAsync();
-
-                var deserializerOptions = new JsonSerializerOptions
-                {
-                    // Convert camelCase JSON response to PascalCase class convention
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true,
-                };
-
-                return JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions);
+                return syncResponse;
             }
-            else
-            {
-                throw new ArgumentException($"Failed to check status of async request: {GetUrlboxErrorMessage(response)}");
-            }
+            throw new Exception("Rendered /async when should've rendered /sync.");
         }
+
+        /// <summary>
+        /// Sends an asynchronous render request to the Urlbox API and returns the status of the render request, as 
+        /// well as a renderId and a statusUrl which can be polled to find out when the render succeeds.
+        /// </summary>
+        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
+        /// <returns>A <see cref="AsyncUrlboxResponse"/> containing the result of the asynchronous render request, including the statusUrl, status and renderId.</returns>
+        /// <exception cref="Exception">Thrown when the response is of a synchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the /render/async endpoint, expecting an asynchronous response. 
+        /// </remarks>
+        public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
+        {
+            AbstractUrlboxResponse result = await MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
+            if (result is AsyncUrlboxResponse asyncResponse)
+            {
+                return asyncResponse;
+            }
+            throw new Exception("Rendered /sync when should've rendered /async.");
+        }
+
+        // ** Download and File Handling Methods **
 
         /// <summary>
         /// Downloads a screenshot as a Base64-encoded string from a Urlbox render link.
@@ -149,7 +195,7 @@ namespace Screenshots
         /// <returns>A Base64-encoded string of the screenshot.</returns>
         public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png")
         {
-            var urlboxUrl = this.GenerateUrlboxUrl(options, format);
+            var urlboxUrl = GenerateUrlboxUrl(options, format);
             return await DownloadAsBase64(urlboxUrl);
         }
 
@@ -167,7 +213,7 @@ namespace Screenshots
                 var base64 = contentType.First() + ";base64," + Convert.ToBase64String(bytes);
                 return base64;
             };
-            return await this.Download(urlboxUrl, onSuccess);
+            return await Download(urlboxUrl, onSuccess);
         }
 
         /// <summary>
@@ -204,29 +250,7 @@ namespace Screenshots
             return await DownloadToFile(urlboxUrl, filename);
         }
 
-        /// <summary>
-        /// Downloads content from the given Urlbox render link and processes it using the provided onSuccess function.
-        /// </summary>
-        /// <param name="urlboxUrl">The render link Urlbox URL.</param>
-        /// <param name="onSuccess">The function to execute when the download is successful.</param>
-        /// <returns>The result of the success function.</returns>
-        private async Task<string> Download(string urlboxUrl, Func<HttpResponseMessage, Task<string>> onSuccess)
-        {
-            using (var client = new HttpClient())
-            {
-                using (HttpResponseMessage response = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return await onSuccess(response);
-                    }
-                    else
-                    {
-                        throw new Exception(GetUrlboxErrorMessage(response));
-                    }
-                }
-            }
-        }
+        // ** URL Generation Methods **
 
         /// <summary>
         /// Generates a URL for a PNG screenshot using the provided options.
@@ -269,44 +293,50 @@ namespace Screenshots
             return urlGenerator.GenerateUrlboxUrl(options, format);
         }
 
+        // ** Status and Validation Methods **
+
         /// <summary>
-        /// Sends a synchronous render request to the Urlbox API and returns the rendered screenshot url and size.
+        /// A method to get the status of a render from an async request
         /// </summary>
-        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
-        /// <returns>A <see cref="SyncUrlboxResponse"/> containing the result of the render request.</returns>
-        /// <exception cref="Exception">Thrown when the response is of an asynchronous type, indicating an incorrect endpoint was called.</exception>
-        /// <remarks>
-        /// This method makes an HTTP POST request to the v1/render/sync endpoint, expecting a synchronous response. 
-        /// </remarks>
-        public async Task<SyncUrlboxResponse> Render(UrlboxOptions options)
+        /// <returns></returns>
+        public async Task<AsyncUrlboxResponse> GetStatus(string statusUrl)
         {
-            AbstractUrlboxResponse result = await this.MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
-            if (result is SyncUrlboxResponse syncResponse)
+            HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
+            if (response.IsSuccessStatusCode)
             {
-                return syncResponse;
+                string responseData = await response.Content.ReadAsStringAsync();
+
+                var deserializerOptions = new JsonSerializerOptions
+                {
+                    // Convert camelCase JSON response to PascalCase class convention
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true,
+                };
+
+                return JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions);
             }
-            throw new Exception("Rendered /async when should've rendered /sync.");
+            else
+            {
+                throw new ArgumentException($"Failed to check status of async request: {GetUrlboxErrorMessage(response)}");
+            }
         }
 
         /// <summary>
-        /// Sends an asynchronous render request to the Urlbox API and returns the status of the render request, as 
-        /// well as a renderId and a statusUrl which can be polled to find out when the render succeeds.
+        /// Verifies a webhook responses' x-urlbox-signature header to ensure it came from Urlbox
         /// </summary>
-        /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
-        /// <returns>A <see cref="AsyncUrlboxResponse"/> containing the result of the asynchronous render request, including the statusUrl, status and renderId.</returns>
-        /// <exception cref="Exception">Thrown when the response is of a synchronous type, indicating an incorrect endpoint was called.</exception>
-        /// <remarks>
-        /// This method makes an HTTP POST request to the /render/async endpoint, expecting an asynchronous response. 
-        /// </remarks>
-        public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
+        /// <param name="header"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool VerifyWebhookSignature(string header, string content)
         {
-            AbstractUrlboxResponse result = await this.MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
-            if (result is AsyncUrlboxResponse asyncResponse)
+            if (!(urlboxWebhookValidator is UrlboxWebhookValidator))
             {
-                return asyncResponse;
+                throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
             }
-            throw new Exception("Rendered /sync when should've rendered /async.");
+            return urlboxWebhookValidator.verifyWebhookSignature(header, content);
         }
+
+        // PRIVATE
 
         /// <summary>
         /// Makes an HTTP POST request to the Urlbox API endpoint and returns the response as a <see cref="UrlboxResponse"/> object.
@@ -340,7 +370,7 @@ namespace Screenshots
             {
                 request.Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json");
 
-                request.Headers.Add("Authorization", $"Bearer {this.secret}");
+                request.Headers.Add("Authorization", $"Bearer {secret}");
 
                 HttpResponseMessage response = await httpClient.SendAsync(request);
 
@@ -371,42 +401,27 @@ namespace Screenshots
         }
 
         /// <summary>
-        /// A static method to create a new instance of the Urlbox class
+        /// Downloads content from the given Urlbox render link and processes it using the provided onSuccess function.
         /// </summary>
-        /// <param name="apiKey"></param>
-        /// <param name="apiSecret"></param>
-        /// <param name="webhookSecret"></param>
-        /// <param name="client"></param>
-        /// <returns>A new instance of the Urlbox class.</returns>
-        /// <exception cref="ArgumentException">Thrown when there is no api key or secret</exception>
-        public static Urlbox FromCredentials(string apiKey, string apiSecret, string webhookSecret)
+        /// <param name="urlboxUrl">The render link Urlbox URL.</param>
+        /// <param name="onSuccess">The function to execute when the download is successful.</param>
+        /// <returns>The result of the success function.</returns>
+        private async Task<string> Download(string urlboxUrl, Func<HttpResponseMessage, Task<string>> onSuccess)
         {
-            return new Urlbox(apiKey, apiSecret, webhookSecret);
-        }
-
-        /// <summary>
-        /// Verifies a webhook responses' x-urlbox-signature header to ensure it came from Urlbox
-        /// </summary>
-        /// <param name="header"></param>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public bool verifyWebhookSignature(string header, string content)
-        {
-            if (!(this.urlboxWebhookValidator is UrlboxWebhookValidator))
+            using (var client = new HttpClient())
             {
-                throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
+                using (HttpResponseMessage response = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await onSuccess(response);
+                    }
+                    else
+                    {
+                        throw new Exception(GetUrlboxErrorMessage(response));
+                    }
+                }
             }
-            return this.urlboxWebhookValidator.verifyWebhookSignature(header, content);
-        }
-
-        /// <summary>
-        /// Gets the x-urlbox-error-message from a request
-        /// </summary>
-        /// <returns></returns>
-        private static string GetUrlboxErrorMessage(HttpResponseMessage response)
-        {
-            var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string> values);
-            return $"Request failed: {values.FirstOrDefault()}";
         }
     }
 }
