@@ -44,6 +44,104 @@ namespace Screenshots
         }
 
         /// <summary>
+        /// Simplified method to take a screenshot using Urlbox
+        /// Uses the /async endpoint and polls to reduce network request time
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns>AsyncUrlboxResponse with the renderUrl's</returns>
+        /// <exception cref="TimeoutException">If doesn't succeed in timeout length</exception>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options)
+        {
+            AsyncUrlboxResponse asyncResponse = await this.RenderAsync(options);
+
+            // TODO ask what appropriate timeouts would be
+            int pollingInterval = 2000; // 2 seconds
+            int timeout = 60000; // 60 seconds
+
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
+            {
+                AsyncUrlboxResponse asyncUrlboxResponse = await this.GetStatus(asyncResponse.StatusUrl);
+
+                if (asyncUrlboxResponse.Status == "succeeded")
+                {
+                    return asyncUrlboxResponse;
+                }
+
+                // Wait for the polling interval before the next check
+                await Task.Delay(pollingInterval);
+            }
+            throw new TimeoutException("The screenshot request timed out.");
+        }
+
+        /// <summary>
+        /// Simplified method to take a screenshot using Urlbox
+        /// Uses the /async endpoint and polls to reduce network request time
+        /// Allows timeout to be set up to 120000 (2 minutes) for anticipated larger requests
+        /// </summary>
+        /// <param name="options">The UrlboxOptions</param>
+        /// <param name="timeout">How long to poll the statusUrl for until failure</param>
+        /// <returns>AsyncUrlboxResponse with the renderUrl's</returns>
+        /// <exception cref="TimeoutException">If doesn't succeed in timeout length</exception>
+        /// <exception cref="TimeoutException">If the given timeout is over 2 minutes</exception>
+        /// <exception cref="ArgumentException">If bad request</exception>
+        /// <exception cref="Exception">If request fails.</exception>
+        public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout)
+        {
+            // TODO ask what appropriate timeouts would be
+            // 2 minutes
+            if (timeout > 120000 || timeout < 5000)
+            {
+                throw new TimeoutException("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).");
+            }
+
+            AsyncUrlboxResponse asyncResponse = await this.RenderAsync(options);
+            int pollingInterval = 2000; // 2 seconds
+            var startTime = DateTime.Now;
+
+            while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
+            {
+                AsyncUrlboxResponse asyncUrlboxResponse = await this.GetStatus(asyncResponse.StatusUrl);
+
+                if (asyncUrlboxResponse.Status == "succeeded")
+                {
+                    return asyncUrlboxResponse;
+                }
+
+                // Wait for the polling interval before the next check
+                await Task.Delay(pollingInterval);
+            }
+            throw new TimeoutException("The screenshot request timed out.");
+        }
+
+        /// <summary>
+        /// A method to get the status of a render from an async request
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AsyncUrlboxResponse> GetStatus(string statusUrl)
+        {
+            HttpResponseMessage response = await this.httpClient.GetAsync(statusUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                string responseData = await response.Content.ReadAsStringAsync();
+
+                var deserializerOptions = new JsonSerializerOptions
+                {
+                    // Convert camelCase JSON response to PascalCase class convention
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true,
+                };
+
+                return JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions);
+            }
+            else
+            {
+                throw new ArgumentException($"Failed to check status of async request: {GetUrlboxErrorMessage(response)}");
+            }
+        }
+
+        /// <summary>
         /// Downloads a screenshot as a Base64-encoded string from a Urlbox render link.
         /// </summary>
         /// <param name="options">The options for the screenshot</param>
@@ -73,19 +171,6 @@ namespace Screenshots
         }
 
         /// <summary>
-        /// Downloads a screenshot and saves it as a file.
-        /// </summary>
-        /// <param name="options">The options for the screenshot.</param>
-        /// <param name="filename">The file path where the screenshot will be saved.</param>
-        /// <param name="format">The image format (e.g., "png", "jpg"). Default is "png".</param>
-        /// <returns>The contents of the downloaded file as a string.</returns>
-        public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png")
-        {
-            var urlboxUrl = GenerateUrlboxUrl(options, format);
-            return await DownloadToFile(urlboxUrl, filename);
-        }
-
-        /// <summary>
         /// Downloads a screenshot from the given Urlbox URL and saves it as a file.
         /// </summary>
         /// <param name="urlboxUrl">The render link Urlbox URL.</param>
@@ -107,6 +192,19 @@ namespace Screenshots
         }
 
         /// <summary>
+        /// Downloads a screenshot and saves it as a file.
+        /// </summary>
+        /// <param name="options">The options for the screenshot.</param>
+        /// <param name="filename">The file path where the screenshot will be saved.</param>
+        /// <param name="format">The image format (e.g., "png", "jpg"). Default is "png".</param>
+        /// <returns>The contents of the downloaded file as a string.</returns>
+        public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png")
+        {
+            var urlboxUrl = GenerateUrlboxUrl(options, format);
+            return await DownloadToFile(urlboxUrl, filename);
+        }
+
+        /// <summary>
         /// Downloads content from the given Urlbox render link and processes it using the provided onSuccess function.
         /// </summary>
         /// <param name="urlboxUrl">The render link Urlbox URL.</param>
@@ -116,11 +214,11 @@ namespace Screenshots
         {
             using (var client = new HttpClient())
             {
-                using (HttpResponseMessage result = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
+                using (HttpResponseMessage response = await client.GetAsync(urlboxUrl).ConfigureAwait(false))
                 {
-                    if (result.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
-                        return await onSuccess(result);
+                        return await onSuccess(response);
                     }
                     else
                     {
@@ -182,7 +280,7 @@ namespace Screenshots
         /// </remarks>
         public async Task<SyncUrlboxResponse> Render(UrlboxOptions options)
         {
-            IUrlboxResponse result = await this.MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
+            AbstractUrlboxResponse result = await this.MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
             if (result is SyncUrlboxResponse syncResponse)
             {
                 return syncResponse;
@@ -202,7 +300,7 @@ namespace Screenshots
         /// </remarks>
         public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
         {
-            IUrlboxResponse result = await this.MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
+            AbstractUrlboxResponse result = await this.MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
             if (result is AsyncUrlboxResponse asyncResponse)
             {
                 return asyncResponse;
@@ -215,13 +313,13 @@ namespace Screenshots
         /// </summary>
         /// <param name="endpoint">The Urlbox API endpoint to send the request to. Must be either /render/sync or /render/async.</param>
         /// <param name="options">The <see cref="UrlboxOptions"/> object containing the configuration options for the API request.</param>
-        /// <returns>A <see cref="IUrlboxResponse"/> object containing the result of the API call, which includes the rendered URL and additional data.</returns>
+        /// <returns>A <see cref="AbstractUrlboxResponse"/> object containing the result of the API call, which includes the rendered URL and additional data.</returns>
         /// <exception cref="ArgumentException">Thrown when an invalid endpoint is provided or when the request fails with a non-successful response code.</exception>
         /// <remarks>
         /// The method first validates the endpoint, then constructs the request with the provided options, serializing them to JSON using the snake_case naming policy. 
         /// The request is authenticated via a Bearer token, and the response is deserialized from camelCase to PascalCase to fit C# conventions.
         /// </remarks>
-        private async Task<IUrlboxResponse> MakeUrlboxPostRequest(string endpoint, UrlboxOptions options)
+        private async Task<AbstractUrlboxResponse> MakeUrlboxPostRequest(string endpoint, UrlboxOptions options)
         {
             if (endpoint != SYNC_ENDPOINT && endpoint != ASYNC_ENDPOINT)
             {
@@ -254,8 +352,10 @@ namespace Screenshots
                     {
                         // Convert camelCase JSON response to PascalCase class convention
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
+                        PropertyNameCaseInsensitive = true,
+
                     };
+
                     return endpoint switch
                     {
                         SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions),

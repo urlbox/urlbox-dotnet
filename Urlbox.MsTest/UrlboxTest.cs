@@ -426,6 +426,64 @@ public class UrlTests
     {
         Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
     }
+
+    [TestMethod]
+    public async Task TakeScreenshot_Succeeds()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakeScreenshot(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+
+    [TestMethod]
+    public async Task TakeScreenshot_SucceedsWithLargerTimeout()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakeScreenshot(options, 120000);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeScreenshot_TimeoutTooLarge()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 1200001));
+        Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
+    }
+
+
+    [TestMethod]
+    public async Task TakeScreenshot_TimeoutTooSmall()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 4999));
+        Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
+    }
 }
 
 [TestClass]
