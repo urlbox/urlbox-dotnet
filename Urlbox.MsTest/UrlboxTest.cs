@@ -1,11 +1,7 @@
-using System.Diagnostics;
-using System.Dynamic;
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Screenshots;
 
 [TestClass]
@@ -157,7 +153,7 @@ public class UrlTests
     {
         Urlbox urlbox = new Urlbox("key", "secret", "webhook");
         // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
-        var result = urlbox.verifyWebhookSignature("t=123,sha256=321", "content");
+        var result = urlbox.VerifyWebhookSignature("t=123,sha256=321", "content");
         Assert.IsFalse(result);
     }
 
@@ -166,7 +162,7 @@ public class UrlTests
     {
         Urlbox urlbox = new Urlbox("key", "secret");
         // Should throw bc no webhook set so no validator instance
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature("t=123,sha256=321", "content"));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
         Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
     }
 
@@ -426,6 +422,64 @@ public class UrlTests
     {
         Assert.ThrowsException<ArgumentException>(() => Urlbox.FromCredentials("", "", ""));
     }
+
+    [TestMethod]
+    public async Task TakeScreenshot_Succeeds()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakeScreenshot(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+
+    [TestMethod]
+    public async Task TakeScreenshot_SucceedsWithLargerTimeout()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakeScreenshot(options, 120000);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeScreenshot_TimeoutTooLarge()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 1200001));
+        Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
+    }
+
+
+    [TestMethod]
+    public async Task TakeScreenshot_TimeoutTooSmall()
+    {
+        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 4999));
+        Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
+    }
 }
 
 [TestClass]
@@ -485,7 +539,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=123456,sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = urlbox.verifyWebhookSignature(urlboxSignature, content);
+        var result = urlbox.VerifyWebhookSignature(urlboxSignature, content);
         Assert.IsTrue(result);
     }
 
@@ -494,7 +548,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = ",sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature(urlboxSignature, content));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual(result.Message, "Unable to verify signature as header is empty or malformed. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.");
     }
 
@@ -503,7 +557,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=123456,";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature(urlboxSignature, content));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual(result.Message, "Unable to verify signature as header is empty or malformed. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.");
     }
 
@@ -512,7 +566,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=123456,sha256=";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature(urlboxSignature, content));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual("The signature could not be found, please ensure you are passing the x-urlbox-signature header.", result.Message);
     }
 
@@ -521,7 +575,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=,sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature(urlboxSignature, content));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual("The timestamp could not be found, please ensure you are passing the x-urlbox-signature header.", result.Message);
     }
 
@@ -530,7 +584,7 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=12345sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.verifyWebhookSignature(urlboxSignature, content));
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual("Unable to verify signature as header is empty or malformed. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.", result.Message);
     }
 }
