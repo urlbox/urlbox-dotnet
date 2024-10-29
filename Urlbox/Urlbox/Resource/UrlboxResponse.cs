@@ -1,85 +1,115 @@
 using System.Text.Json.Serialization;
 
-namespace Screenshots
+namespace Screenshots;
+/// <summary>
+/// abstract class for Urlbox response types.
+/// </summary>
+public abstract class AbstractUrlboxResponse
+{
+    protected const string EXTENSION_HTML = ".html";
+    protected const string EXTENSION_MHTML = ".mhtml";
+    protected const string EXTENSION_MARKDOWN = ".md";
+    protected const string EXTENSION_METADATA = ".json";
+
+    /// <summary>
+    /// Checks that a given URL has its relevant file extension
+    /// </summary>
+    /// <param name="url">URL to check</param>
+    /// <param name="extension">Expected file extension</param>
+    /// <returns>Validated URL</returns>
+    /// <exception cref="ArgumentException">Thrown if URL does not contain expected extension</exception>
+    protected string CheckExtension(string url, string extension)
+    {
+        if (!url.Contains(extension))
+        {
+            throw new ArgumentException($"The URL {url} does not contain the extension {extension}");
+        }
+        return url;
+    }
+
+    public string HtmlUrl { get; }
+    public string MhtmlUrl { get; }
+    public string MetadataUrl { get; }
+    public string MarkdownUrl { get; }
+    public UrlboxMetadata Metadata { get; }
+
+    [JsonConstructor]
+    protected AbstractUrlboxResponse(
+        string htmlUrl = null,
+        string mhtmlUrl = null,
+        string metadataUrl = null,
+        string markdownUrl = null,
+        UrlboxMetadata metadata = null
+    )
+    {
+        HtmlUrl = string.IsNullOrEmpty(htmlUrl) ? null : CheckExtension(htmlUrl, EXTENSION_HTML);
+        MhtmlUrl = string.IsNullOrEmpty(mhtmlUrl) ? null : CheckExtension(mhtmlUrl, EXTENSION_MHTML);
+        MetadataUrl = string.IsNullOrEmpty(metadataUrl) ? null : CheckExtension(metadataUrl, EXTENSION_METADATA);
+        MarkdownUrl = string.IsNullOrEmpty(markdownUrl) ? null : CheckExtension(markdownUrl, EXTENSION_MARKDOWN);
+        Metadata = metadata;
+    }
+}
+
+/// <summary>
+/// Represents a synchronous Urlbox response.
+/// </summary>
+public class SyncUrlboxResponse : AbstractUrlboxResponse
 {
     /// <summary>
-    /// Interface for Urlbox response types.
-    /// Allows one response type for makeUrlboxPostRequest which can then
-    /// be cast to the specific /sync or /async response
-    /// Implementations represent either synchronous or asynchronous responses.
+    /// The location of the screenshot
     /// </summary>
-    public interface IUrlboxResponse
-    {
-    }
-
+    public string RenderUrl { get; }
     /// <summary>
-    /// Represents a synchronous Urlbox response.
+    /// The size of the screenshot in bytes
     /// </summary>
-    public class SyncUrlboxResponse : IUrlboxResponse
+    public int Size { get; }
+
+    [JsonConstructor]
+    public SyncUrlboxResponse(
+        string renderUrl,
+        int size,
+        string htmlUrl = null,
+        string mhtmlUrl = null,
+        string metadataUrl = null,
+        string markdownUrl = null,
+        UrlboxMetadata metadata = null
+    ) : base(htmlUrl, mhtmlUrl, metadataUrl, markdownUrl, metadata)
     {
-        const string EXTENSION_HTML = ".html";
-        const string EXTENSION_MHTML = ".mhtml";
-        const string EXTENSION_MARKDOWN = ".md";
-        const string EXTENSION_METADATA = ".json";
-        public string RenderUrl { get; } // The location of the screenshot
-        public int Size { get; }
-
-        public string HtmlUrl { get; } // The location of the html screenshot if save_html
-        public string MhtmlUrl { get; } // The location of the mhtml screenshot if save_mhtml
-        public string MetadataUrl { get; } // The location of the metadata screenshot if save_metadata
-        public string MarkdownUrl { get; } // The location of the markdown screenshot if save_markdown
-        public UrlboxMetadata Metadata { get; } // The markdown of the render if save_metadata or metadata=true
-
-        public SyncUrlboxResponse(
-            string renderUrl,
-            int size,
-            string htmlUrl = null,
-            string mhtmlUrl = null,
-            string metadataUrl = null,
-            string markdownUrl = null,
-            UrlboxMetadata metadata = null
-        )
-        {
-            this.RenderUrl = renderUrl;
-            this.Size = size;
-            if (!String.IsNullOrEmpty(htmlUrl)) this.HtmlUrl = checkExtension(htmlUrl, EXTENSION_HTML);
-            if (!String.IsNullOrEmpty(mhtmlUrl)) this.MhtmlUrl = checkExtension(mhtmlUrl, EXTENSION_MHTML);
-            if (!String.IsNullOrEmpty(metadataUrl)) this.MetadataUrl = checkExtension(metadataUrl, EXTENSION_METADATA);
-            if (!String.IsNullOrEmpty(markdownUrl)) this.MarkdownUrl = checkExtension(markdownUrl, EXTENSION_MARKDOWN);
-            if (metadata != null) this.Metadata = metadata;
-        }
-
-        /// <summary>
-        /// Checks that a given url has its relevant file extension
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="extension"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        private string checkExtension(string url, string extension)
-        {
-            if (!url.Contains(extension))
-            {
-                throw new ArgumentException($"The URL {url} does not contain extension {extension}");
-            }
-            return url;
-        }
+        RenderUrl = renderUrl;
+        Size = size;
     }
+}
 
-    /// <summary>
-    /// Represents an asynchronous Urlbox response.
-    /// </summary>
-    public class AsyncUrlboxResponse : IUrlboxResponse
+/// <summary>
+/// Represents an asynchronous Urlbox response.
+/// </summary>
+public class AsyncUrlboxResponse : AbstractUrlboxResponse
+{
+    public string Status { get; } // EG 'succeeded'
+    public string RenderId { get; } // A UUID for the request
+    public string StatusUrl { get; } // A url which you can poll to check the render's status
+
+    public string RenderUrl { get; } // only on status succeeded
+    public int? Size { get; } // only on status succeeded
+
+    [JsonConstructor]
+    public AsyncUrlboxResponse(
+        string status,
+        string renderId,
+        string statusUrl,
+        int? size = null,
+        string renderUrl = null,
+        string htmlUrl = null,
+        string mhtmlUrl = null,
+        string metadataUrl = null,
+        string markdownUrl = null,
+        UrlboxMetadata metadata = null
+        ) : base(htmlUrl, mhtmlUrl, metadataUrl, markdownUrl, metadata)
     {
-        public string Status { get; } // EG 'succeeded'
-        public string RenderId { get; } // A UUID for the request
-        public string StatusUrl { get; } // A url which you can poll to check the render's status
-
-        public AsyncUrlboxResponse(string status, string renderId, string statusUrl)
-        {
-            this.Status = status;
-            this.RenderId = renderId;
-            this.StatusUrl = statusUrl;
-        }
+        Status = status;
+        RenderId = renderId;
+        StatusUrl = statusUrl;
+        Size = size;
+        if (!String.IsNullOrEmpty(renderUrl)) RenderUrl = renderUrl;
     }
 }
