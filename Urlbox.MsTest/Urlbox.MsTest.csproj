@@ -5,6 +5,9 @@
 
     <IsPackable>false</IsPackable>
     <UserSecretsId>af903291-8a0e-4c45-a74c-59122b38f976</UserSecretsId>
+
+    <!-- Run the parallel test settings whenever we run dotnet test -->
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)/ParallelTest.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
