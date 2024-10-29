@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace Screenshots
