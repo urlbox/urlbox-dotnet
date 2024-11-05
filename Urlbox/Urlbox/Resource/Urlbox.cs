@@ -97,8 +97,6 @@ namespace Screenshots
         /// <exception cref="TimeoutException"></exception>
         public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout)
         {
-            // TODO ask what appropriate timeouts would be
-            // 2 minutes
             if (timeout > 120000 || timeout < 5000)
             {
                 throw new TimeoutException("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).");
@@ -409,7 +407,7 @@ namespace Screenshots
 
             string optionsAsJson = JsonSerializer.Serialize(options, serializeOptions);
 
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            using (HttpRequestMessage request = new(HttpMethod.Post, url))
             {
                 request.Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json");
 
