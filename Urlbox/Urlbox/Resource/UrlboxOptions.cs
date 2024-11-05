@@ -5,7 +5,6 @@ namespace Screenshots;
 /// <exception cref="ArgumentException">Thrown when the Url OR Html option isn't passed in on init.</exception>
 public class UrlboxOptions
 {
-    // TODO should allow them to pass any of the options when creating the UrlboxOptions object...
 
     public UrlboxOptions(string url = null, string html = null)
     {

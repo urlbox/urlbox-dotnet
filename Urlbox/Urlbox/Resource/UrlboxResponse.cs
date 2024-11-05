@@ -53,7 +53,7 @@ public abstract class AbstractUrlboxResponse
 /// <summary>
 /// Represents a synchronous Urlbox response.
 /// </summary>
-public class SyncUrlboxResponse : AbstractUrlboxResponse
+public sealed class SyncUrlboxResponse : AbstractUrlboxResponse
 {
     /// <summary>
     /// The location of the screenshot
@@ -83,7 +83,7 @@ public class SyncUrlboxResponse : AbstractUrlboxResponse
 /// <summary>
 /// Represents an asynchronous Urlbox response.
 /// </summary>
-public class AsyncUrlboxResponse : AbstractUrlboxResponse
+public sealed class AsyncUrlboxResponse : AbstractUrlboxResponse
 {
     public string Status { get; } // EG 'succeeded'
     public string RenderId { get; } // A UUID for the request

@@ -7,7 +7,7 @@ using Screenshots;
 [TestClass]
 public class UrlTests
 {
-    UrlboxOptions urlboxAllOptions = new UrlboxOptions(url: "https://urlbox.com")
+    UrlboxOptions urlboxAllOptions = new(url: "https://urlbox.com")
     {
         Width = 123,
         Height = 123,
@@ -151,7 +151,7 @@ public class UrlTests
     [TestMethod]
     public void Urlbox_createsWithWebhookValidator()
     {
-        Urlbox urlbox = new Urlbox("key", "secret", "webhook");
+        Urlbox urlbox = new("key", "secret", "webhook");
         // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
         var result = urlbox.VerifyWebhookSignature("t=123,sha256=321", "content");
         Assert.IsFalse(result);
@@ -160,7 +160,7 @@ public class UrlTests
     [TestMethod]
     public void Urlbox_createsWithoutWebhookValidator()
     {
-        Urlbox urlbox = new Urlbox("key", "secret");
+        Urlbox urlbox = new("key", "secret");
         // Should throw bc no webhook set so no validator instance
         var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
         Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
@@ -180,7 +180,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateUrlboxUrl_withMultipleCookies()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        UrlboxOptions options = new(url: "https://urlbox.com");
         options.Cookie = new string[] {
             "some=cookie",
             "some=otherCookie",
@@ -197,7 +197,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateUrlboxUrl_withOneCookie()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        UrlboxOptions options = new(url: "https://urlbox.com");
         options.Cookie = "some=cookie";
 
         var output = dummyUrlbox.GenerateUrlboxUrl(options);
@@ -211,7 +211,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateUrlboxUrl_withMultipleBlockUrls()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://shopify.com");
+        UrlboxOptions options = new(url: "https://shopify.com");
         options.BlockUrls = new string[] { "cdn.shopify.com", "otherDomain" };
 
         var output = dummyUrlbox.GenerateUrlboxUrl(options);
@@ -226,7 +226,7 @@ public class UrlTests
     public void GenerateUrlboxUrl_withOneBlockUrl()
     {
 
-        UrlboxOptions options = new UrlboxOptions(url: "https://shopify.com");
+        UrlboxOptions options = new(url: "https://shopify.com");
         options.BlockUrls = new string[] { "cdn.shopify.com" };
 
         var output = dummyUrlbox.GenerateUrlboxUrl(options);
@@ -332,7 +332,7 @@ public class UrlTests
     [TestMethod]
     public async Task RenderSync_Succeeds()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        UrlboxOptions options = new(url: "https://urlbox.com");
         options.ClickAccept = true;
         var result = await urlbox.Render(options);
 
@@ -344,7 +344,7 @@ public class UrlTests
     [TestMethod]
     public async Task RenderSync_SucceedsWithAllSideRenders()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        UrlboxOptions options = new(url: "https://urlbox.com");
         options.ClickAccept = true;
         options.SaveHtml = true;
         options.Metadata = true;
@@ -373,7 +373,7 @@ public class UrlTests
     [TestMethod]
     public async Task RenderAsync_Succeeds()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com");
+        UrlboxOptions options = new(url: "https://urlbox.com");
         options.ClickAccept = true;
         var result = await urlbox.RenderAsync(options);
 
@@ -397,7 +397,7 @@ public class UrlTests
     [TestMethod]
     public async Task Render_ThrowsException()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://FAKE_WEBSITE.com");
+        UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
         var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.Render(options));
         Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
     }
@@ -405,7 +405,7 @@ public class UrlTests
     [TestMethod]
     public async Task RenderAsync_ThrowsException()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://FAKE_WEBSITE.com");
+        UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
         var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.RenderAsync(options));
         Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
     }
@@ -426,7 +426,7 @@ public class UrlTests
     [TestMethod]
     public async Task TakeScreenshot_Succeeds()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        UrlboxOptions options = new(url: "https://urlbox.com")
         {
             Height = 125,
             Width = 125,
@@ -442,7 +442,7 @@ public class UrlTests
     [TestMethod]
     public async Task TakeScreenshot_SucceedsWithLargerTimeout()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        UrlboxOptions options = new(url: "https://urlbox.com")
         {
             Height = 125,
             Width = 125,
@@ -457,7 +457,7 @@ public class UrlTests
     [TestMethod]
     public async Task TakeScreenshot_TimeoutTooLarge()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        UrlboxOptions options = new(url: "https://urlbox.com")
         {
             Height = 125,
             Width = 125,
@@ -467,11 +467,10 @@ public class UrlTests
         Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
     }
 
-
     [TestMethod]
     public async Task TakeScreenshot_TimeoutTooSmall()
     {
-        UrlboxOptions options = new UrlboxOptions(url: "https://urlbox.com")
+        UrlboxOptions options = new(url: "https://urlbox.com")
         {
             Height = 125,
             Width = 125,
@@ -479,6 +478,72 @@ public class UrlTests
 
         var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 4999));
         Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
+    }
+
+    [TestMethod]
+    public async Task TakePdf_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakePdf(options);
+        Assert.IsNotNull(result.RenderUrl);
+        StringAssert.Contains(result.RenderUrl, ".pdf", "The RenderUrl should contain '.pdf'.");
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeMp4_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com")
+        {
+            Height = 125,
+            Width = 125,
+        };
+
+        var result = await urlbox.TakeMp4(options);
+        Assert.IsNotNull(result.RenderUrl);
+        StringAssert.Contains(result.RenderUrl, ".mp4", "The RenderUrl should contain '.mp4'.");
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeFullPage_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        var result = await urlbox.TakeFullPageScreenshot(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeMobile_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        var result = await urlbox.TakeMobileScreenshot(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeMetadata_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        var result = await urlbox.TakeScreenshotWithMetadata(options);
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.Size);
+        Assert.IsNotNull(result.Metadata);
     }
 }
 
