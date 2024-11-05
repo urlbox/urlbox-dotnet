@@ -34,16 +34,14 @@ public class DependencyInjectionTests
         // Build the service provider
         var serviceProvider = services.BuildServiceProvider();
 
-        using (var scope1 = serviceProvider.CreateScope())
-        using (var scope2 = serviceProvider.CreateScope())
-        {
-            var instance1 = scope1.ServiceProvider.GetService<IUrlbox>();
-            var instance2 = scope2.ServiceProvider.GetService<IUrlbox>();
+        using var scope1 = serviceProvider.CreateScope();
+        using var scope2 = serviceProvider.CreateScope();
+        var instance1 = scope1.ServiceProvider.GetService<IUrlbox>();
+        var instance2 = scope2.ServiceProvider.GetService<IUrlbox>();
 
-            Assert.IsNotNull(instance1, "Instance in scope1 should not be null");
-            Assert.IsNotNull(instance2, "Instance in scope2 should not be null");
-            Assert.AreNotSame(instance1, instance2, "Scoped instances should be unique to each scope");
-        }
+        Assert.IsNotNull(instance1, "Instance in scope1 should not be null");
+        Assert.IsNotNull(instance2, "Instance in scope2 should not be null");
+        Assert.AreNotSame(instance1, instance2, "Scoped instances should be unique to each scope");
     }
 
     [TestMethod]

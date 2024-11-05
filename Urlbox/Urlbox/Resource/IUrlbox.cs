@@ -7,6 +7,11 @@ public interface IUrlbox
     // Screenshot and File Generation Methods
     Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options);
     Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout);
+    Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options);
+    Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options);
+    Task<AsyncUrlboxResponse> TakeFullPageScreenshot(UrlboxOptions options);
+    Task<AsyncUrlboxResponse> TakeMobileScreenshot(UrlboxOptions options);
+    Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options);
     Task<SyncUrlboxResponse> Render(UrlboxOptions options);
     Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options);
 

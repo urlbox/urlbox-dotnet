@@ -22,6 +22,7 @@ namespace Screenshots
         private const string BASE_URL = "https://api.urlbox.com";
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
+        public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
         public Urlbox(string key, string secret, string webhookSecret = null)
         {
@@ -75,49 +76,25 @@ namespace Screenshots
         // ** Screenshot and File Generation Methods **
 
         /// <summary>
-        /// Simplified method to take a screenshot using Urlbox
-        /// Uses the /async endpoint and polls to reduce network request time
+        /// A simple method which takes a screenshot of a website.
         /// </summary>
         /// <param name="options"></param>
-        /// <returns>AsyncUrlboxResponse with the renderUrl's</returns>
-        /// <exception cref="TimeoutException">If doesn't succeed in timeout length</exception>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="timeout"></param>
+        /// <returns> A <see cref="AsyncUrlboxResponse"/></returns>
+        /// <exception cref="TimeoutException"></exception>
         public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options)
         {
-            AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
-
-            // TODO ask what appropriate timeouts would be
-            int pollingInterval = 2000; // 2 seconds
-            int timeout = 60000; // 60 seconds
-
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
-            {
-                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.StatusUrl);
-
-                if (asyncUrlboxResponse.Status == "succeeded")
-                {
-                    return asyncUrlboxResponse;
-                }
-
-                // Wait for the polling interval before the next check
-                await Task.Delay(pollingInterval);
-            }
-            throw new TimeoutException("The screenshot request timed out.");
+            return await TakeScreenshotAsyncWithTimeout(options, DEFAULT_TIMEOUT);
         }
 
         /// <summary>
-        /// Simplified method to take a screenshot using Urlbox
-        /// Uses the /async endpoint and polls to reduce network request time
-        /// Allows timeout to be set up to 120000 (2 minutes) for anticipated larger requests
+        /// A simple method which takes a screenshot of a website.
+        /// Set the timeout to stop polling Urlbox at a specified time, ensuring the screenshot was successfully captured.
         /// </summary>
-        /// <param name="options">The UrlboxOptions</param>
-        /// <param name="timeout">How long to poll the statusUrl for until failure</param>
-        /// <returns>AsyncUrlboxResponse with the renderUrl's</returns>
-        /// <exception cref="TimeoutException">If doesn't succeed in timeout length</exception>
-        /// <exception cref="TimeoutException">If the given timeout is over 2 minutes</exception>
-        /// <exception cref="ArgumentException">If bad request</exception>
-        /// <exception cref="Exception">If request fails.</exception>
+        /// <param name="options"></param>
+        /// <param name="timeout"></param>
+        /// <returns> A <see cref="AsyncUrlboxResponse"/></returns>
+        /// <exception cref="TimeoutException"></exception>
         public async Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout)
         {
             // TODO ask what appropriate timeouts would be
@@ -126,7 +103,18 @@ namespace Screenshots
             {
                 throw new TimeoutException("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).");
             }
+            return await TakeScreenshotAsyncWithTimeout(options, timeout);
+        }
 
+        /// <summary>
+        /// Private method to avoid duplication when getting screenshot async
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        /// <exception cref="TimeoutException"></exception>
+        private async Task<AsyncUrlboxResponse> TakeScreenshotAsyncWithTimeout(UrlboxOptions options, int timeout)
+        {
             AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
             int pollingInterval = 2000; // 2 seconds
             var startTime = DateTime.Now;
@@ -140,10 +128,65 @@ namespace Screenshots
                     return asyncUrlboxResponse;
                 }
 
-                // Wait for the polling interval before the next check
                 await Task.Delay(pollingInterval);
             }
             throw new TimeoutException("The screenshot request timed out.");
+        }
+
+        /// <summary>
+        /// Takes a screenshot async as a PDF
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+        public async Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options)
+        {
+            options.Format = "pdf";
+            return await this.TakeScreenshot(options);
+        }
+
+        /// <summary>
+        /// Takes a screenshot async as an MP4
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+        public async Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options)
+        {
+            options.Format = "mp4";
+            return await this.TakeScreenshot(options);
+        }
+
+        /// <summary>
+        /// Takes a screenshot async with fullpage = true
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+        public async Task<AsyncUrlboxResponse> TakeFullPageScreenshot(UrlboxOptions options)
+        {
+            options.FullPage = true;
+            return await this.TakeScreenshot(options);
+        }
+
+        /// <summary>
+        /// Takes a screenshot async with width at 375 to emulate a mobile viewport
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+        public async Task<AsyncUrlboxResponse> TakeMobileScreenshot(UrlboxOptions options)
+        {
+            options.Width = 375;
+            return await this.TakeScreenshot(options);
+        }
+
+        /// <summary>
+        /// Takes a screenshot async, requesting metadata about the page
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+        public async Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options)
+        {
+            options.Metadata = true;
+            return await this.TakeScreenshot(options);
+
         }
 
         /// <summary>
