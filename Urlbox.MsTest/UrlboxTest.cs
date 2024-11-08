@@ -113,7 +113,8 @@ public class UrlTests
         S3Endpoint = "test",
         S3Region = "test",
         CdnHost = "test",
-        S3StorageClass = "test",
+        S3StorageClass = "STANDARD",
+        WebhookUrl = "https://an-ngrok-endpoint"
     };
 
     private Urlbox urlbox;
@@ -148,23 +149,6 @@ public class UrlTests
         dummyUrlbox = new Urlbox("MY_API_KEY", "secret", "webhook_secret");
     }
 
-    [TestMethod]
-    public void Urlbox_createsWithWebhookValidator()
-    {
-        Urlbox urlbox = new("key", "secret", "webhook");
-        // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
-        var result = urlbox.VerifyWebhookSignature("t=123,sha256=321", "content");
-        Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void Urlbox_createsWithoutWebhookValidator()
-    {
-        Urlbox urlbox = new("key", "secret");
-        // Should throw bc no webhook set so no validator instance
-        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
-        Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
-    }
 
     [TestMethod]
     public void GenerateUrlboxUrl_WithAllOptions()
@@ -172,7 +156,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/6d4c63313408cb3127cb12811b4d7b1ab99579d3/png?url=https%3A%2F%2Furlbox.com&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=400&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=test",
+            "https://api.urlbox.com/v1/MY_API_KEY/ced2e1061380f1cf70058a90cd6463f52c38c286/png?url=https%3A%2F%2Furlbox.com&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&readable=true&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&full_page_mode=test&full_width=true&allow_infinite=true&skip_scroll=true&detect_full_height=true&max_section_height=123&scroll_increment=400&scroll_delay=123&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true&s3_path=test&s3_bucket=test&s3_endpoint=test&s3_region=test&cdn_host=test&s3_storage_class=STANDARD",
             output
         );
     }
@@ -604,8 +588,16 @@ public class UrlboxWebhookValidatorTests
     {
         string urlboxSignature = "t=123456,sha256=41f85178517e8e031be5771ee4951bc3f6fbd871f41b4866546803576b1c3843";
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
-        var result = urlbox.VerifyWebhookSignature(urlboxSignature, content);
-        Assert.IsTrue(result);
+        WebhookUrlboxResponse result = urlbox.VerifyWebhookSignature(urlboxSignature, content);
+
+        Assert.AreEqual(result.Event, "render.succeeded");
+        Assert.AreEqual(result.RenderId, "e9617143-2a95-4962-9cc9-d72f3c413b9c");
+
+        Assert.AreEqual("https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png", result.Result.RenderUrl);
+        Assert.AreEqual(359081, result.Result.Size);
+
+        Assert.AreEqual(result.Meta.StartTime, "2024-01-11T23:32:11.908Z");
+        Assert.AreEqual(result.Meta.EndTime, "2024-01-11T23:33:32.500Z");
     }
 
     [TestMethod]
@@ -624,6 +616,28 @@ public class UrlboxWebhookValidatorTests
         var content = "{\"event\":\"render.succeeded\",\"renderId\":\"e9617143-2a95-4962-9cc9-d72f3c413b9c\",\"result\":{\"renderUrl\":\"https://renders.urlbox.com/ub-temp-renders/renders/571f54138cd8b877077d3788/2024/1/11/e9617143-2a95-4962-9cc9-d72f3c413b9c.png\",\"size\":359081},\"meta\":{\"startTime\": \"2024-01-11T23:32:11.908Z\",\"endTime\":\"2024-01-11T23:33:32.500Z\"}}";
         var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature(urlboxSignature, content));
         Assert.AreEqual(result.Message, "Unable to verify signature as header is empty or malformed. Please ensure you pass the `x-urlbox-signature` from the header of the webhook response.");
+    }
+
+    [TestMethod]
+    public void Urlbox_createsWithWebhookValidator()
+    {
+        Urlbox urlbox = new("key", "secret", "webhook");
+        // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
+        var result = Assert.ThrowsException<Exception>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
+
+        Assert.AreEqual(
+            "Cannot verify that this response came from Urlbox. Double check that you're webhook secret is correct.",
+            result.Message
+        );
+    }
+
+    [TestMethod]
+    public void Urlbox_throwsWhenWithoutWebhookValidator()
+    {
+        Urlbox urlbox = new("key", "secret");
+        // Should throw bc no webhook set so no validator instance
+        var result = Assert.ThrowsException<ArgumentException>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
+        Assert.AreEqual(result.Message, "Please set your webhook secret in the Urlbox instance before calling this method.");
     }
 
     [TestMethod]

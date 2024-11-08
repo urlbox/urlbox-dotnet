@@ -20,6 +20,7 @@ public class UrlboxOptions
     }
 
     public string Url { get; }
+    public string WebhookUrl { get; set; }
     public string Html { get; }
     public string Format { get; set; } // png jpeg webp avif svg pdf html mp4 webm md
     public int Width { get; set; }

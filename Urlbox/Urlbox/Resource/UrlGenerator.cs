@@ -5,10 +5,10 @@ namespace Screenshots;
 /// <summary>
 /// A class encompassing Url Generation logic.
 /// </summary>
-public class UrlGenerator
+public sealed class UrlGenerator
 {
-    private String key;
-    private String secret;
+    private readonly String key;
+    private readonly String secret;
 
     public UrlGenerator(string key, string secret)
     {
