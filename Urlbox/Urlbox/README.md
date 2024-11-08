@@ -240,11 +240,17 @@ You could set up your own polling mechanism to check for this and the renderUrl,
 
 ### Webhooks
 
-The other way to find out when your render has succeeded is to use [webhooks](https://urlbox.com/docs/webhooks#using-webhooks).
+The other way to find out when your render has succeeded is to use [webhooks](https://urlbox.com/docs/webhooks#using-webhooks). You make a request to Urlbox, and the response gets sent as a POST request to an endpoint of your choosing.
 
-Urlbox has a neat option. You can pass a webhook URL which you expose in your app, and Urlbox will send the finalised response to it. And when you do receive it, you can use this SDK to verify that the request did indeed come from Urlbox.
+See the [Using Webhooks](#using-webhooks) section in our popular use cases for how to use webhooks with Urlbox in your application.
 
-Make sure you've set up your Urlbox instance with your webhook secret, provided in your project page accessible with the Urlbox [Dashboard](https://urlbox.com/dashboard/projects).
+## Dependency Injection
+
+All the examples in these docs use the `new` keyword. This is often considered a big ❌, because it makes unit testing more difficult, and means defining _how_ an instance of something should be made in many places and not one, violating the Dependency Inversion principle in SOLID.
+
+To avoid this, we recommend that you make your Urlbox instance a singleton, defining how the Urlbox instance should be made once, and injecting it into the classes that are needed.
+
+If you're new to DI, take a look at this intro from [Microsoft](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection-basics).
 
 ***
 
