@@ -4,7 +4,7 @@ namespace Screenshots;
 /// <summary>
 /// A class encompassing webhook validation logic.
 /// </summary>
-public class UrlboxWebhookValidator
+public sealed class UrlboxWebhookValidator
 {
     private string webhookSecret;
 
