@@ -1,9 +1,10 @@
 [![image](/Urlbox/Urlbox/urlbox-io-graphic.jpg)](https://www.urlbox.com)
 
+### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
+
 ***
 
 # The Urlbox .NET SDK
-
 
 The Urlbox .NET SDK provides easy access to the [Urlbox website screenshot API](https://urlbox.com/) from your application.
 
@@ -24,6 +25,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 * [Usage](#usage)
   * [Getting Started - `TakeScreenshot()`](#getting-started---takescreenshot)
   * [Configuring Options](#configuring-options-)
+  * [Render Links - `GenerateUrlboxUrl()`](#render-links---generateurlboxurl)
   * [Sync Requests - `Render()`](#sync-requests---render)
   * [Async Requests - `RenderAsync()`](#async-requests---renderasync)
     * [Polling](#polling)
@@ -33,6 +35,11 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [`TakeMp4(options)`](#takemp4options)
     * [`TakeFullPage(options)`](#takefullpageoptions)
     * [`TakeMobileScreenshot(options)`](#takemobilescreenshotoptions)
+    * [`DownloadAsBase64(options)`](#downloadasbase64options-)
+    * [`DownloadToFile(options, filePath)`](#downloadtofileoptions-filepath-)
+    * [`GeneratePNGUrl(options)`](#generatepngurloptions-)
+    * [`GenerateJPEGUrl(options)`](#generatejpegurloptions-)
+    * [`GeneratePDFUrl(options)`](#generatepdfurloptions-)
 * [Popular Use Cases](#popular-use-cases)
   * [Extracting Markdown/Metadata/HTML](#extracting-markdownmetadatahtml)
     * [`SaveMarkdown = true` - This saves the same URL/HTML's content as a markdown file](#savemarkdown--true---this-saves-the-same-urlhtmls-content-as-a-markdown-file)
@@ -154,6 +161,33 @@ AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 
 ***
 
+## Render Links - `GenerateUrlboxUrl()`
+
+With Urlbox you can get a screenshot in a number of ways. It may seem complicated at first, but each method has its purpose.
+
+Take a look at the [section in our docs](https://urlbox.com/docs/api/rest-api-vs-render-links#render-links) which explains the main benefits of using a render link over our `/sync` and `/async` methods.
+
+To get a render link, run the `GenerateUrlboxUrl(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
+
+Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an <img> tag for example.
+
+Here's an example:
+
+```CS
+Urlbox urlbox = new("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+
+UrlboxOptions options = new(url: "https://urlbox.com/docs")
+{
+  Format = "pdf",
+  FullPage = true,
+  Gpu = true,
+  Retina = true,
+  DarkMode = true
+};
+
+string renderLink = urlbox.GenerateUrlboxUrl(options);
+```
+
 ## Sync Requests - `Render()`
 
 We have 2 endpoints for getting a screenshot from Urlbox, `render/sync` and `render/async`. These may be ever so slightly different to the definitions of sync and async that you've heard of in common programming languages, but each serve an important purpose, saving you time and headaches.
@@ -229,6 +263,26 @@ Capture a full-page screenshot of a website, scrolling through the entire page.
 
 ### `TakeMobileScreenshot(options)`
 Render a screenshot that simulates a mobile device view.
+
+### `DownloadAsBase64(options)` 
+
+Gets a render link, opens it, then downloads the screenshot file as a Base64 string.
+
+### `DownloadToFile(options, filePath)` 
+
+Gets a render link, opens it, then downloads and stores the screenshot to the given filePath.
+
+### `GeneratePNGUrl(options)` 
+
+Gets a render link for a screenshot in PNG format.
+
+### `GenerateJPEGUrl(options)` 
+
+Gets a render link for a screenshot in JPEG format.
+
+### `GeneratePDFUrl(options)` 
+
+Gets a render link for a screenshot in PDF format.
 
 # Popular Use Cases
 
@@ -517,86 +571,98 @@ app.MapPost("/webhook/urlbox", async (HttpContext context) =>
 app.Run();
 
 ```
-Pull in the Urlbox SDK with `using Screenshots;`, then create a new Urlbox instance and call any of the following methods:
 
-Note - The 3 format related methods are not an exhaustive list of available formats. Please see the below example and documentation for a full list of available formats to pass into the main GenerateUrlboxUrl() method as an option. All of the below generate [render links](https://urlbox.com/docs/render-links).
+# API Reference
 
-`DownloadAsBase64(options)` - Gets a render link, opens it, then downloads the screenshot file as a Base64 string.
+Below is a brief description of every publicly available method our SDK provides:
 
-`DownloadToFile(options, filePath)` - Gets a render link, opens it, then downloads and stores the screenshot to the given filePath.
+## Urlbox API Reference
 
-`GeneratePNGUrl(options)` - Gets a render link for a screenshot in PNG format.
+### Constructor
+- **`Urlbox(string key, string secret, string webhookSecret = null)`**  
+  Initializes a new instance of the Urlbox class with the provided API credentials and optional webhook secret.
 
-`GenerateJPEGUrl(options)` - Gets a render link for a screenshot in JPEG format.
+---
 
-`GeneratePDFUrl(options)` - Gets a render link for a screenshot in PDF format.
+### Static Methods
+- **`static Urlbox FromCredentials(string apiKey, string apiSecret, string webhookSecret)`**  
+  Creates a new instance of the Urlbox class using the specified API key, secret, and optional webhook secret.
 
-`GenerateUrlboxUrl(options)` - Gets a render link for a screenshot.
+---
 
-Example Usage:
+### Screenshot and File Generation Methods
 
-```CS
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Screenshots;
+- **`Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options);`**
+- **`Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout);`**  
+  Takes a screenshot asynchronously, with an optional timeout for large requests.
 
-namespace UrlboxTest
-{
-    class Program
-    {
-        static async Task Main(string[] args)
-        {
-            // We highly recommend storing your Urlbox API key and secret somewhere secure.
-            string apiKey = Environment.GetEnvironmentVariable("URLBOX_API_KEY");
-            string apiSecret = Environment.GetEnvironmentVariable("URLBOX_API_SECRET");
+- **`Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options);`**  
+  Asynchronously generates a PDF based on the specified options.
 
-            // Create an instance of Urlbox
-            Urlbox urlbox = new Urlbox(apiKey, apiSecret);
+- **`Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options);`**  
+  Generates an MP4 video asynchronously using the specified options.
 
-            // Define the options for the screenshot
-            var options = new Dictionary<string, object>
-            {
-                { "url", "https://urlbox.com/screenshot-behind-login" },
-            };
+- **`Task<AsyncUrlboxResponse> TakeFullPageScreenshot(UrlboxOptions options);`**  
+  Captures a full-page screenshot asynchronously with the given options.
 
-            // Download as base64
-            string base64Screenshot = await urlbox.DownloadAsBase64(options);
-            Console.WriteLine("Screenshot as Base64: " + base64Screenshot);
+- **`Task<AsyncUrlboxResponse> TakeMobileScreenshot(UrlboxOptions options);`**  
+  Takes a mobile-optimized screenshot asynchronously based on the specified options.
 
-            // Download to a filepath
-            string filePath = "screenshot.png";
-            string result = await urlbox.DownloadToFile(options, filePath);
-            Console.WriteLine($"Screenshot saved to {filePath}");
+- **`Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options);`**  
+  Asynchronously takes a screenshot and includes metadata in the response.
 
-            // Generate a PNG render link Url
-            string pngUrl = urlbox.GeneratePNGUrl(options);
-            Console.WriteLine("Generated PNG URL: " + pngUrl);
+- **`Task<SyncUrlboxResponse> Render(UrlboxOptions options);`**  
+  Sends a synchronous request to generate a render with the provided options, returning a direct response.
 
-            // Generate a PDF render link Url
-            string pdfUrl = urlbox.GeneratePDFUrl(options);
-            Console.WriteLine("Generated PDF URL: " + pdfUrl);
+- **`Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options);`**  
+  Sends an asynchronous render request, providing a status URL for polling until completion.
 
-            // Generate JPEG render link Url
-            string jpegUrl = urlbox.GenerateJPEGUrl(options);
-            Console.WriteLine("Generated JPEG URL: " + jpegUrl);
+---
 
-            // Define more options for the screenshot, to render different formats
-            var optionsWithFormat = new Dictionary<string, object>
-            {
-                {"url", "https://urlbox.com/screenshot-behind-login"},
-                { "format", "png" }, // One of png, jpeg, webp, avif, svg, pdf, html, mp4, webm or md
-                { "full_page", true }, // Takes a full page screenshot
-            };
+### Download and File Handling Methods
 
-            string url = urlbox.GenerateUrlboxUrl(optionsWithFormat);
-            Console.WriteLine("Generated URL: " + url);
-        }
-    }
-}
-```
+- **`Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png");`**  
+  Downloads a screenshot as a Base64-encoded string in the specified format.
 
+- **`Task<string> DownloadAsBase64(string urlboxUrl);`**  
+  Downloads the screenshot from the provided URL as a Base64-encoded string.
 
+- **`Task<string> DownloadToFile(string urlboxUrl, string filename);`**  
+  Downloads a screenshot from the URL and saves it to the specified file path.
+
+- **`Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png");`**  
+  Generates a screenshot based on options, then downloads and saves it as a file.
+
+---
+
+### URL Generation Methods
+
+- **`string GeneratePNGUrl(UrlboxOptions options);`**  
+  Generates a PNG URL based on the specified screenshot options.
+
+- **`string GenerateJPEGUrl(UrlboxOptions options);`**  
+  Creates a JPEG URL using the provided rendering options.
+
+- **`string GeneratePDFUrl(UrlboxOptions options);`**  
+  Generates a PDF URL for the specified screenshot options.
+
+- **`string GenerateUrlboxUrl(UrlboxOptions options, string format = "png");`**  
+  Constructs an Urlbox URL for the specified format and options.
+
+---
+
+### Status and Validation Methods
+
+- **`Task<AsyncUrlboxResponse> GetStatus(string statusUrl);`**  
+  Retrieves the current status of an asynchronous render request.
+
+- **`bool VerifyWebhookSignature(string header, string content);`**  
+  Verifies that a webhook signature originates from Urlbox using the configured webhook secret.
+ 
 ## Feedback
 
-Feel free to contact us if you spot a bug or have any suggestions at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
+It's not always clear what each method in an SDK does exactly. We hope that the above has given you enough of an understanding to suit your use case.
+
+If you are still struggling, spot a bug, or have any suggestions, feel free to contact us at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
+
+Get screenshotting!
