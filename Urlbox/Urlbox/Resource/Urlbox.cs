@@ -13,8 +13,6 @@ namespace Screenshots
     /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
     public sealed class Urlbox : IUrlbox
     {
-
-        private readonly string key;
         private readonly string secret;
         private readonly UrlGenerator urlGenerator;
         private readonly UrlboxWebhookValidator urlboxWebhookValidator;
@@ -34,7 +32,6 @@ namespace Screenshots
             {
                 throw new ArgumentException("Please provide your Urlbox.com API Secret");
             }
-            this.key = key;
             this.secret = secret;
             urlGenerator = new UrlGenerator(key, secret);
             httpClient = new HttpClient();
@@ -69,7 +66,6 @@ namespace Screenshots
             var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string> values);
             return $"Request failed: {values.FirstOrDefault()}";
         }
-
 
         // PUBLIC
 
@@ -363,18 +359,34 @@ namespace Screenshots
         }
 
         /// <summary>
-        /// Verifies a webhook responses' x-urlbox-signature header to ensure it came from Urlbox
+        /// Verifies a webhook response's x-urlbox-signature header to ensure it came from Urlbox.
+        /// Only supports a result from an Async Urlbox request
         /// </summary>
-        /// <param name="header"></param>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public bool VerifyWebhookSignature(string header, string content)
+        /// <param name="header">The x-urlbox-signature header.</param>
+        /// <param name="content">The content to verify.</param>
+        /// <returns>Returns a WebhookUrlboxResponse</returns>
+        /// <exception cref="ArgumentException">Thrown when the webhook secret is not set in the Urlbox instance.</exception>
+        public WebhookUrlboxResponse VerifyWebhookSignature(string header, string content)
         {
-            if (!(urlboxWebhookValidator is UrlboxWebhookValidator))
+            if (urlboxWebhookValidator is null)
             {
                 throw new ArgumentException("Please set your webhook secret in the Urlbox instance before calling this method.");
             }
-            return urlboxWebhookValidator.verifyWebhookSignature(header, content);
+
+            bool isValid = urlboxWebhookValidator.verifyWebhookSignature(header, content);
+
+            if (!isValid)
+            {
+                throw new Exception("Cannot verify that this response came from Urlbox. Double check that you're webhook secret is correct.");
+            }
+
+            JsonSerializerOptions deserializerOptions = new()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<WebhookUrlboxResponse>(content, deserializerOptions);
         }
 
         // PRIVATE
