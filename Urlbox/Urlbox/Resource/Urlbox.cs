@@ -22,6 +22,19 @@ namespace Screenshots
         private const string ASYNC_ENDPOINT = "/v1/render/async";
         public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
+        // TODO consider using dependency injection here instead of a static call with new()!
+
+        /// <summary>
+        /// Static function to build the UrlboxOptions
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public static UrlboxOptionsBuilder Options(
+            string url = null,
+            string html = null
+            ) => new(url, html);
+
         public Urlbox(string key, string secret, string webhookSecret = null)
         {
             if (String.IsNullOrEmpty(key))
