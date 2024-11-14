@@ -1,6 +1,5 @@
 
 using System;
-using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Screenshots;
 
@@ -602,11 +601,16 @@ public class UrlboxOptionsBuilderTests
     public void ValidateScreenshotOptions_throws()
     {
         // No thumb width or height but includes img fit
-        Assert.ThrowsException<ArgumentException>(() =>
+        var noThumbButImgFit = Assert.ThrowsException<ArgumentException>(() =>
         {
             Urlbox.Options(url: "https://urlbox.com").ImgFit("cover")
             .Build();
         });
+
+        Assert.AreEqual(
+            "Invalid Configuration: Image Fit is included despite ThumbWidth nor ThumbHeight being set.",
+            noThumbButImgFit.Message
+        );
 
         var thumbAndPositionButNoFit = Assert.ThrowsException<ArgumentException>(() =>
         {
@@ -635,3 +639,65 @@ public class UrlboxOptionsBuilderTests
             thumbAndPositionButFitWrong.Message
         );
     }
+
+    [TestMethod]
+    public void ValidateScreenshotOptions_succeeds()
+    {
+        var heightAndImgFit =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbHeight(5)
+            .ImgFit("cover")
+            .Build();
+
+        var widthAndImgFit =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbWidth(5)
+            .ImgFit("cover")
+            .Build();
+
+        var justThumbHeight =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbHeight(5)
+            .Build();
+
+        var justThumbWidth =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbWidth(5)
+            .Build();
+
+        var heightAndImgFitCoverAndPosition =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbHeight(5)
+            .ImgFit("cover")
+            .ImgPosition("north")
+            .Build();
+
+        var heightAndImgFitContainAndPosition =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbHeight(5)
+            .ImgFit("contain")
+            .Build();
+
+        var widthAndImgFitCoverAndPosition =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbWidth(5)
+            .ImgFit("cover")
+            .ImgPosition("north")
+            .Build();
+
+        var widthAndImgFitContainAndPosition =
+        Urlbox.Options(url: "https://urlbox.com")
+            .ThumbWidth(5)
+            .ImgFit("contain")
+            .Build();
+
+        Assert.IsInstanceOfType(justThumbHeight, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(justThumbWidth, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(heightAndImgFit, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(heightAndImgFitCoverAndPosition, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(heightAndImgFitContainAndPosition, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(widthAndImgFitCoverAndPosition, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(widthAndImgFitContainAndPosition, typeof(UrlboxOptions));
+        Assert.IsInstanceOfType(widthAndImgFit, typeof(UrlboxOptions));
+    }
+}
