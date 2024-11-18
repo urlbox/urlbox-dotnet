@@ -700,4 +700,21 @@ public class UrlboxOptionsBuilderTests
         Assert.IsInstanceOfType(widthAndImgFitContainAndPosition, typeof(UrlboxOptions));
         Assert.IsInstanceOfType(widthAndImgFit, typeof(UrlboxOptions));
     }
+
+    [TestMethod]
+    public void ValidateEngineVersionOptions_succeeds()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
+            .EngineVersion("stable")
+            .Latitude(0.01)
+            .Build()
+        );
+
+
+        Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
+            .EngineVersion("stable")
+            .Longitude(0.01)
+            .Build()
+        );
+    }
 }
