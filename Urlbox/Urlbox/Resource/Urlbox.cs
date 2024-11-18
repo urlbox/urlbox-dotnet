@@ -22,8 +22,6 @@ namespace Screenshots
         private const string ASYNC_ENDPOINT = "/v1/render/async";
         public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
-        // TODO consider using dependency injection here instead of a static call with new()!
-
         /// <summary>
         /// Static function to build the UrlboxOptions
         /// </summary>
