@@ -140,7 +140,7 @@ object with its size and location.
 
 There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/overview) for more information.
 
-To initialise your urlbox options, we advise using the options builder attached to the Urlbox instance.
+To initialise your urlbox options, we advise using the option builder. Start by calling the static method `Urlbox.Options()` with your url or HTML.
 
 The builder will pre-validate your options on `.Build()`, and allow for a more readable/fluent interface in your code.
 
@@ -162,7 +162,6 @@ UrlboxOptions options = Urlbox.Options(
 
 AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 ```
-
 
 You can alternatively set the Urlbox options with the `new` keyword.
 
@@ -658,8 +657,30 @@ Below is a brief description of every publicly available method our SDK provides
 
 ## Feedback
 
-It's not always clear what each method in an SDK does exactly. We hope that the above has given you enough of an understanding to suit your use case.
+We hope that the above has given you enough of an understanding to suit your use case.
 
 If you are still struggling, spot a bug, or have any suggestions, feel free to contact us at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
 
 Get screenshotting!
+
+## Changelog
+
+- 2.0.0 - Major overhaul - **Non-backward compatible changes included.**
+  - Introduced fluent options builder with input validation
+  - Introduced options as a typed class
+  - Introduced webhook validation logic
+  - Upgraded test suite
+  - Created interfaces for better Dependency Injection compatibility
+  - Introduced post sync and async methods
+  - Introduced helper methods for common use cases
+  - Overhauled readme including an API reference
+  - Introduced logic and classes for side renders (save_html etc)
+  - Introduced classes for different response types from urlbox api
+
+Methods in previous versions of this SDK that would accept a Dictionary now take a standardised `UrlboxOptions` type.
+
+- 1.0.2 - Further Updates to readme.
+ 
+- 1.0.1 - Update Readme to replace instances of .io with .com.
+
+- 1.0.0 - First release!
