@@ -63,6 +63,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [URL Generation Methods](#url-generation-methods)
     * [Status and Validation Methods](#status-and-validation-methods)
   * [Feedback](#feedback)
+  * [Changelog](#changelog)
 <!-- TOC -->
 
 ***
