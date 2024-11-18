@@ -25,11 +25,15 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 * [Usage](#usage)
   * [Getting Started - `TakeScreenshot()`](#getting-started---takescreenshot)
   * [Configuring Options](#configuring-options-)
+    * [Using the options builder](#using-the-options-builder)
+    * [Using the `new` keyword, setting during initialization](#using-the-new-keyword-setting-during-initialization)
+    * [Using the `new` keyword, setting after initalization](#using-the-new-keyword-setting-after-initalization)
   * [Render Links - `GenerateUrlboxUrl()`](#render-links---generateurlboxurl)
   * [Sync Requests - `Render()`](#sync-requests---render)
   * [Async Requests - `RenderAsync()`](#async-requests---renderasync)
     * [Polling](#polling)
     * [Webhooks](#webhooks)
+  * [Dependency Injection](#dependency-injection)
 * [Utility Functions](#utility-functions)
     * [`TakePdf(options)`](#takepdfoptions)
     * [`TakeMp4(options)`](#takemp4options)
@@ -42,10 +46,6 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [`GeneratePDFUrl(options)`](#generatepdfurloptions-)
 * [Popular Use Cases](#popular-use-cases)
   * [Extracting Markdown/Metadata/HTML](#extracting-markdownmetadatahtml)
-    * [`SaveMarkdown = true` - This saves the same URL/HTML's content as a markdown file](#savemarkdown--true---this-saves-the-same-urlhtmls-content-as-a-markdown-file)
-    * [`SaveHtml = true` - This saves the same URL/HTML's content as its HTML](#savehtml--true---this-saves-the-same-urlhtmls-content-as-its-html)
-    * [`SaveMetatada = true` - This extracts the metadata, saves it and sends it back in the response.](#savemetatada--true---this-extracts-the-metadata-saves-it-and-sends-it-back-in-the-response)
-    * [`Metatada = true` - This extracts the metadata from the URL/HTML, and sends it back in the response without saving.](#metatada--true---this-extracts-the-metadata-from-the-urlhtml-and-sends-it-back-in-the-response-without-saving)
   * [Generating a Screenshot Using a Selector](#generating-a-screenshot-using-a-selector)
   * [Uploading to the cloud via an S3 bucket](#uploading-to-the-cloud-via-an-s3-bucket)
   * [Using a Proxy](#using-a-proxy)
@@ -55,12 +55,13 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [3. Make a request through any of our screenshotting methods.](#3-make-a-request-through-any-of-our-screenshotting-methods-)
     * [4. Verify that the webhook comes from Urlbox](#4-verify-that-the-webhook-comes-from-urlbox)
 * [API Reference](#api-reference)
-  * [Constructor](#constructor)
-  * [Static Methods](#static-methods)
-  * [Screenshot and File Generation Methods](#screenshot-and-file-generation-methods)
-  * [Download and File Handling Methods](#download-and-file-handling-methods)
-  * [URL Generation Methods](#url-generation-methods)
-  * [Status and Validation Methods](#status-and-validation-methods)
+  * [Urlbox API Reference](#urlbox-api-reference)
+    * [Constructor](#constructor)
+    * [Static Methods](#static-methods)
+    * [Screenshot and File Generation Methods](#screenshot-and-file-generation-methods)
+    * [Download and File Handling Methods](#download-and-file-handling-methods)
+    * [URL Generation Methods](#url-generation-methods)
+    * [Status and Validation Methods](#status-and-validation-methods)
   * [Feedback](#feedback)
 <!-- TOC -->
 
@@ -109,14 +110,16 @@ namespace MyNamespace
             string apiSecret = Environment.GetEnvironmentVariable("URLBOX_API_SECRET");
             string webhookSecret = Environment.GetEnvironmentVariable("URLBOX_WEBHOOK_SECRET");
 
-            // Create an instance of Urlbox and the options you want to pass in
+            // Create an instance of Urlbox and the Urlbox options you'd like to use
             
-            Urlbox urlbox = new(apiKey, apiSecret, webhookSecret);
-            UrlboxOptions options = new(url: "https://onemillionscreenshots.com/");
-
+            Urlbox urlbox = Urlbox.FromCredentials(apiKey, apiSecret, webhookSecret);
+            UrlboxOptions options = Urlbox.Options(url: "https://google.com").Build();
+          
+            // Take a screenshot
             AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
-
-            Console.Writeline(response.RenderUrl); // This is the URL destination where you can find your final screenshot.
+            
+            // This is the URL destination where you can find your finalized screenshot.
+            Console.Writeline(response.RenderUrl); 
         }
     }
 }
@@ -130,17 +133,41 @@ Options are simply extra inputs that we use to adapt the way we take the screens
 
 >**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are screenshotting for you.
 
-You could, for example, change the way the request is made to your desired URL (like using a proxy server, passing in extra headers, an authorization token or some cookies), or change the way the page looks (EG injecting Javascript, highlighting words, or making the background a tasteful fuchsia pink). 
+You could, for example, change the way the request is made to your desired URL (like using a proxy server, passing in extra headers, an authorization token or some cookies), or change the way the page looks (like injecting Javascript, highlighting words, or making the background a tasteful fuchsia pink). 
 
-There are a few ways to retrieve a screenshot from Urlbox, depending on when and how you need it. You could retrieve it as a [raw file](https://urlbox.com/docs/options#response_type) (using `UrlboxOptions.ResponseType = "binary"` ), or by default as a JSON
+There are a few ways to retrieve a screenshot from Urlbox, depending on how and when you need it. You could retrieve it as a [raw file](https://urlbox.com/docs/options#response_type) (using `UrlboxOptions.ResponseType = "binary"` ), or by default, as a JSON
 object with its size and location. 
 
 There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/overview) for more information.
 
-Here's an example of setting some options:
+To initialise your urlbox options, we advise using the options builder attached to the Urlbox instance.
 
+The builder will pre-validate your options on `.Build()`, and allow for a more readable/fluent interface in your code.
+
+### Using the options builder
 ```CS
-Urlbox urlbox = new("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+Urlbox urlbox = new("apiKey", "apiSecret", "webhookSecret");
+
+UrlboxOptions options = Urlbox.Options(
+                    url: "https://google.com"
+                )
+                .Format("pdf")
+                .FullPage() // Sets to true with no args
+                .Gpu()
+                .ResponseType("json")
+                .BlockAds()
+                .HideCookieBanners()
+                .BlockUrls("https://ads.com", "https://trackers.com")
+                .Build();
+
+AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
+```
+
+
+You can alternatively set the Urlbox options with the `new` keyword.
+
+### Using the `new` keyword, setting during initialization
+```CS
 
 UrlboxOptions options = new(url: "https://urlbox.com/docs")
 {
@@ -151,8 +178,11 @@ UrlboxOptions options = new(url: "https://urlbox.com/docs")
   DarkMode = true
 };
 
-// OR
+AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
+```
 
+### Using the `new` keyword, setting after initalization
+```CS
 UrlboxOptions options = new(url: "https://onemillionscreenshots.com/");
 options.FullPage = true;
 
@@ -163,40 +193,51 @@ AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 
 ## Render Links - `GenerateUrlboxUrl()`
 
-With Urlbox you can get a screenshot in a number of ways. It may seem complicated at first, but each method has its purpose.
+With Urlbox you can get a screenshot in a number of ways. It may seem a little complex at first, but each method has its purpose.
 
 Take a look at the [section in our docs](https://urlbox.com/docs/api/rest-api-vs-render-links#render-links) which explains the main benefits of using a render link over our `/sync` and `/async` methods.
 
 To get a render link, run the `GenerateUrlboxUrl(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
 
-Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an <img> tag for example.
+Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an `<img>` tag.
 
 Here's an example:
 
 ```CS
-Urlbox urlbox = new("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
-UrlboxOptions options = new(url: "https://urlbox.com/docs")
-{
-  Format = "pdf",
-  FullPage = true,
-  Gpu = true,
-  Retina = true,
-  DarkMode = true
-};
+UrlboxOptions options = Urlbox.Options(
+                    url: "https://google.com"
+                )
+                .Format("pdf")
+                .Build();
 
 string renderLink = urlbox.GenerateUrlboxUrl(options);
 ```
 
 ## Sync Requests - `Render()`
 
-We have 2 endpoints for getting a screenshot from Urlbox, `render/sync` and `render/async`. These may be ever so slightly different to the definitions of sync and async that you've heard of in common programming languages, but each serve an important purpose, saving you time and headaches.
+We have 2 other ways to get a screenshot from Urlbox, `render/sync` and `render/async`. These may be ever so slightly different to the definitions of sync and async that you've heard of in common programming languages, but each serve an important purpose.
 
 Making a request to the [`/sync`](https://urlbox.com/docs/api#create-a-render-synchronously) endpoint means making a request that waits for your screenshot to be taken, and only then returns the response with your finished screenshot.
 
-Within this SDK you'll find the `render(options)` method. It takes the UrlboxOptions, and makes a POST request to this endpoint.
+You can achieve this by using the `render(options)` method within this SDK. It takes the UrlboxOptions, and makes a POST request to the `/sync` endpoint.
 
-If you haven't explicitly asked for a binary response in your options, a 200 response would look something like:
+Here is an example of its usage:
+
+```CS
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+
+UrlboxOptions options = Urlbox.Options(
+                    url: "https://google.com"
+                )
+                .Format("pdf")
+                .Build();
+
+SyncUrlboxResponse = urlbox.render(options);
+```
+
+If you haven't explicitly asked for a binary response in your options, a 200 response would look like this:
 
 ```JSON
 {
@@ -207,7 +248,7 @@ If you haven't explicitly asked for a binary response in your options, a 200 res
 }
 ```
 
-If you find that the kind of screenshot you are taking requires some time, and you don't want an network connection to be open for that long, or you'd just rather not wait for it, the `/async` method may be better suited to your needs. 
+If you find that the kind of screenshot you are taking requires some time, and you don't want your network connection to be open for that long, the `/async` method may be better suited to your needs. 
 
 ***
 
@@ -217,7 +258,23 @@ Some renders can take some time to complete (think full page screenshots of infi
 
 If you anticipate your request being larger, then we would recommend using the [`/async`](https://urlbox.com/docs/api#create-a-render-asynchronously) endpoint, to reduce your network request time.
 
-Within the SDK you'll find the `renderAsync(options)` method. This method hits the async endpoint, and returns you something like this:
+Within the SDK you'll find the `renderAsync(options)` method. This method hits the `/async` endpoint.
+
+Here is an example of its usage:
+
+```CS
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+
+UrlboxOptions options = Urlbox.Options(
+                    url: "https://google.com"
+                )
+                .Format("pdf")
+                .Build();
+
+AsyncUrlboxResponse = urlbox.renderAsync(options);
+```
+
+This returns you:
 
 ```JSON
 {
@@ -230,13 +287,13 @@ Within the SDK you'll find the `renderAsync(options)` method. This method hits t
 }
 ```
 
-You can find out _when_ your render is ready to view in two ways:
+You can find out _when_ your async render has been successfully made in two ways:
 
 ### Polling
 
 You can [poll](https://en.wikipedia.org/wiki/Polling_(computer_science)) the `statusUrl` endpoint that comes back from the `/async` response via an HTTP GET request. When the render has succeeded, the response from the polling endpoint will include `"status": "succeeded"`, as well as your final render URL. 
 
-You could set up your own polling mechanism to check for this and the renderUrl, though our `TakeScreenshot(options, timeout)` has the polling mechanism built in. The method accepts an optional timeout to tell it exactly when to stop polling. The method will by default try for 60 seconds.
+You could set up your own polling mechanism to check for this and the renderUrl, though our `TakeScreenshot(options, timeout)` has the polling mechanism built in. The method accepts an optional timeout to tell it exactly when to stop polling. The method will try for 60 seconds by default.
 
 ### Webhooks
 
@@ -246,11 +303,11 @@ See the [Using Webhooks](#using-webhooks) section in our popular use cases for h
 
 ## Dependency Injection
 
-All the examples in these docs use the `new` keyword. This is often considered a big ❌, because it makes unit testing more difficult, and means defining _how_ an instance of something should be made in many places and not one, violating the Dependency Inversion principle in SOLID.
+Using the `new` keyword is often considered a big ❌, because it makes unit testing more difficult, and means defining _how_ an instance of something should be made in many places and not one, violating the Dependency Inversion principle in SOLID.
 
 To avoid this, we recommend that you make your Urlbox instance a singleton, defining how the Urlbox instance should be made once, and injecting it into the classes that are needed.
 
-If you're new to DI, take a look at this intro from [Microsoft](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection-basics).
+If you're new to DI and want to implement it, take a look at [this intro from Microsoft](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection-basics).
 
 ***
 
@@ -272,11 +329,11 @@ Render a screenshot that simulates a mobile device view.
 
 ### `DownloadAsBase64(options)` 
 
-Gets a render link, opens it, then downloads the screenshot file as a Base64 string.
+Gets a render link, runs a GET to it to render your screenshot, then downloads the screenshot file as a Base64 string.
 
 ### `DownloadToFile(options, filePath)` 
 
-Gets a render link, opens it, then downloads and stores the screenshot to the given filePath.
+Gets a render link, runs a GET to it to render your screenshot, then downloads and stores the screenshot to the given filePath.
 
 ### `GeneratePNGUrl(options)` 
 
@@ -294,25 +351,33 @@ Gets a render link for a screenshot in PDF format.
 
 ## Extracting Markdown/Metadata/HTML
 
-In addition to your main render format for your URL/HTML, you can additionally render and save the same render as HTML, Markdown and Metadata in the same request.
+In addition to your main render format for your URL/HTML, you can additionally render and save the same screenshot as HTML, Markdown and/or Metadata in the same request.
 
-Each of the following will return a separate URL where the format is stored.
+```CS
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
-### `SaveMarkdown = true` - This saves the same URL/HTML's content as a markdown file
-### `SaveHtml = true` - This saves the same URL/HTML's content as its HTML
-### `SaveMetatada = true` - This extracts the metadata, saves it and sends it back in the response.
-### `Metatada = true` - This extracts the metadata from the URL/HTML, and sends it back in the response without saving.
+UrlboxOptions options = Urlbox.Options(
+                    url: "https://google.com"
+                )
+                .Format("mp4")
+                .SaveMarkdown() // This saves the same URL/HTML's content as a markdown file
+                .SaveHtml() // This saves the same URL/HTML's content as its HTML
+                .SaveMetadata() // This extracts the metadata, saves it and sends it back in the response.
+                .Metadata() // This extracts the metadata from the URL/HTML, and sends it back in the response without saving it to the cloud.
+                .Build();
 
-The JSON response would look something like:
+SyncUrlboxResponse = urlbox.render(options);
+```
+
+The JSON response for this request would look like this:
 
 ```JSON
 {
   "renderUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.mp4",
   "size": 1048576,
   "htmlUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.html",
-  "mhtmlUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.mhtml",
   "metadataUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.json",
-  "markdownUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.markdown",
+  "markdownUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.md",
   "metadata": {
     "title": "Example Page",
     "description": "This is an example of metadata information.",
@@ -323,9 +388,9 @@ The JSON response would look something like:
 }
 ```
 
-Using the screenshot and file generation methods from our SDK like `TakeScreenshot()`, `Render()` or `RenderAsync`, these responses will all be turned into a type for you. See the API reference below for an explanation of all the types in this SDK.
+When using the screenshot and file generation methods from our SDK like `TakeScreenshot()`, `Render()` or `RenderAsync`, these responses will all be turned into a readable class instance for you.
 
-When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata field as above, turned into metadata type.
+When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata field as above, turned into metadata class.
 
 ## Generating a Screenshot Using a Selector
 
@@ -338,31 +403,13 @@ To do this via the SDK, you can call any of our public methods for taking a scre
 Here's an example with our `Render(options)` method:
 
 ```CS
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Screenshots;
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
-namespace MyNamespace
-{
-    class Program
-    {
-        static async Task Main()
-        {
-            // Create an instance of Urlbox and the options you want to pass in
-            Urlbox urlbox = new("api_key", "api_secret");
+UrlboxOptions options = Urlbox.Options(url: "https://github.com")
+    .Selector(".octicon-mark-github")
+    .Build();
 
-            UrlboxOptions options = new(url: "https://github.com")
-            {
-              Selector = ".octicon-mark-github"
-            };
-
-            SyncUrlboxResponse response = urlbox.Render(options);
-
-            Console.Writeline(response.RenderUrl);
-        }
-    }
-}
+SyncUrlboxResponse response = urlbox.Render(options);
 ```
 
 This will take the ID selector ".octicon-mark-github", and return a screenshot that looks like this:
@@ -373,7 +420,7 @@ This will take the ID selector ".octicon-mark-github", and return a screenshot t
 
 For a typical render, we do the storing for you. When you get your final render URL, that screenshot will be stored by us.
 
-You can opt, whether for security, control, compliance or fun, to save the final screenshot to your own cloud provider.
+You can opt to save the final screenshot to your own cloud provider.
 
 We would _**highly**_ recommend you follow our S3 setup instructions. Setting up a cloud bucket can be tedious at the best of times, so [this](https://urlbox.com/docs/storage/configure-s3) part of our docs can help untangle the process.
 
@@ -385,36 +432,20 @@ The current cloud providers we support are:
 - Google Cloud Storage
 - Digital Ocean Spaces
 
-Though if there's another cloud provider you use, you're more than willing to reach out to us if you're struggling to get setup.
+Though if there's another cloud provider you would like to use, you're more than willing to reach out to us if you're struggling to get setup.
+
+We allow for public CDN hosts, private buckets and buckets with object locking enabled.
 
 Once you've set up your bucket, you can simply add `UrlboxOptions.UseS3 = true` to your options before making your request.
 
 ```CS
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Screenshots;
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
-namespace MyNamespace
-{
-    class Program
-    {
-        static async Task Main()
-        {
-            // Create an instance of Urlbox and the options you want to pass in
-            Urlbox urlbox = new("api_key", "api_secret");
+UrlboxOptions options = Urlbox.Options(url: "https://google.com")
+    .UseS3()
+    .Build();
 
-            UrlboxOptions options = new(url: "https://google.com")
-            {
-              UseS3 = true
-            };
-
-            SyncUrlboxResponse response = urlbox.Render(options);
-
-            Console.Writeline(response.RenderUrl);
-        }
-    }
-}
+SyncUrlboxResponse response = urlbox.Render(options);
 ```
 
 You'll see that the render URL will include a link to reach the object in your bucket.
@@ -428,31 +459,13 @@ We have a great piece in our [docs](https://urlbox.com/docs/guides/proxies) to g
 Simply pass in the proxy providers' details once you're set up, and we will make the request through that proxy. Here's an example:
 
 ```CS
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Screenshots;
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
-namespace MyNamespace
-{
-    class Program
-    {
-        static async Task Main()
-        {
-            // Create an instance of Urlbox and the options you want to pass in
-            Urlbox urlbox = new("api_key", "api_secret");
+UrlboxOptions options = Urlbox.Options(url: "https://google.com")
+    .Proxy("http://brd-customer-hl_1a2b3c4d-zone-social_networks:ttpg162fe6e2@brd.superproxy.io:22225")
+    .Build();
 
-            UrlboxOptions options = new(url: "https://google.com")
-            {
-              Proxy = "http://brd-customer-hl_1a2b3c4d-zone-social_networks:ttpg162fe6e2@brd.superproxy.io:22225"
-            };
-
-            SyncUrlboxResponse response = urlbox.Render(options);
-
-            Console.Writeline(response.RenderUrl);
-        }
-    }
-}
+SyncUrlboxResponse response = urlbox.Render(options);
 ```
 
 ## Using Webhooks
@@ -468,21 +481,7 @@ Go to your [projects](https://urlbox.com/dashboard/projects) page, select a proj
 ### 2. Create your Urlbox instance in your C# project:
 
 ```CS
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Screenshots;
-
-namespace MyNamespace
-{
-    class Program
-    {
-        static async Task Main()
-        {
-            Urlbox urlbox = new("api_key", "api_secret", "PLACE_WEBHOOK_SECRET_HERE");
-        }
-    }
-}
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 ```
 
 ### 3. Make a request through any of our screenshotting methods. 
@@ -498,13 +497,11 @@ Remember to assign the `UrlboxOptions.WebhookUrl`:
 ```CS
 static async Task Main()
 {
-    Urlbox urlbox = new("api_key", "api_secret", "PLACE_WEBHOOK_SECRET_HERE");
+    Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
     
-    UrlboxOptions options = new(url: "https://github.com")
-    {
-      // You can use any path your app accepts, this is just an example.
-      WebhookUrl = "https://myapp.com/webhooks/urlbox
-    };
+    UrlboxOptions options = Urlbox.Options(url: "https://google.com")
+      .WebhookUrl("https://myapp.com/webhooks/urlbox)
+      .Build();
 
     SyncUrlboxResponse response = urlbox.Render(options);
 }
@@ -512,7 +509,7 @@ static async Task Main()
 
 ### 4. Verify that the webhook comes from Urlbox
 
-Once you have made your request, poof! it's gone. You should see it come in as a POST request. The body should look something like:
+Once you have made your request, you should see it come in as a POST request to the endpoint you've made in your app for the webhook. The body should look like this:
 
 ```JSON
 {
@@ -529,9 +526,9 @@ Once you have made your request, poof! it's gone. You should see it come in as a
 }
 ```
 
-There will also be our handy header `X-Urlbox-Signature` which will look something like `t={timestamp},sha256={token}`.
+There will also be our handy header `X-Urlbox-Signature` that looks like this: `t={timestamp},sha256={token}`.
 
-Extract both the header and the content, and simply pass it into `Urlbox.VerifyWebhookSignature(header, content)`.
+Extract both the header and the content, and pass it into `Urlbox.VerifyWebhookSignature(header, content)`.
 
 Here's an example with something (very) basic:
 
@@ -550,28 +547,22 @@ app.MapPost("/webhook/urlbox", async (HttpContext context) =>
     using StreamReader stream = new StreamReader(context.Request.Body);
 
     string header = context.Request.Headers["x-urlbox-signature"];
-
-    // Your Urlbox credentials
-    string apiKey = "MY_URLBOX_KEY";
-    string apiSecret = "MY_URLBOX_SECRET";
-    string webookSecret = "MY_URLBOX_WEBHOOK_SECRET";
-
+   
     // Create an instance of Urlbox
-    Urlbox urlbox = new Urlbox(apiKey, apiSecret, webookSecret);
-
+    Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
+    
     bool isVerified = urlbox.VerifyWebhookSignature(header, await stream.ReadToEndAsync());
 
     Console.WriteLine(isVerified);
 
     if (isVerified)
     {
-        return "{\"message\" : \"Woohoo ! This is verified.\"}";
+        return "{\"message\" : \"Woohoo ! This is from Urlbox.\"}";
     }
     else
     {
-        return "{\"message\" : \"NOT VERIFIED \"}";
+        return "{\"message\" : \"Uh oh, not verified! \"}";
     }
-
 });
 
 app.Run();
@@ -664,7 +655,7 @@ Below is a brief description of every publicly available method our SDK provides
 
 - **`bool VerifyWebhookSignature(string header, string content);`**  
   Verifies that a webhook signature originates from Urlbox using the configured webhook secret.
- 
+
 ## Feedback
 
 It's not always clear what each method in an SDK does exactly. We hope that the above has given you enough of an understanding to suit your use case.
