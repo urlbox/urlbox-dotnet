@@ -147,7 +147,7 @@ The builder will pre-validate your options on `.Build()`, and allow for a more r
 
 ### Using the options builder
 ```CS
-Urlbox urlbox = new("apiKey", "apiSecret", "webhookSecret");
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
 UrlboxOptions options = Urlbox.Options(
                     url: "https://google.com"
@@ -390,7 +390,7 @@ The JSON response for this request would look like this:
 
 When using the screenshot and file generation methods from our SDK like `TakeScreenshot()`, `Render()` or `RenderAsync`, these responses will all be turned into a readable class instance for you.
 
-When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata field as above, turned into metadata class.
+When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata as above.
 
 ## Generating a Screenshot Using a Selector
 
@@ -414,7 +414,7 @@ SyncUrlboxResponse response = urlbox.Render(options);
 
 This will take the ID selector ".octicon-mark-github", and return a screenshot that looks like this:
 
-![](32x32 Image.png)
+![](./gh.png)
 
 ## Uploading to the cloud via an S3 bucket
 
@@ -432,7 +432,7 @@ The current cloud providers we support are:
 - Google Cloud Storage
 - Digital Ocean Spaces
 
-Though if there's another cloud provider you would like to use, you're more than willing to reach out to us if you're struggling to get setup.
+Though if there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
 
 We allow for public CDN hosts, private buckets and buckets with object locking enabled.
 
@@ -452,7 +452,7 @@ You'll see that the render URL will include a link to reach the object in your b
 
 ## Using a Proxy
 
-Sometimes there are sites only available if your IP address is from a particular country. Other times you simply get blocked from a website. Proxies can really help get past these issues, and are quite a similar setup process to uploading to S3.
+Sometimes there are sites only available if your making the request from a particular country. Other times you simply get blocked from a website. Proxies can really help get past these issues, and are quite a similar setup process to uploading to S3.
 
 We have a great piece in our [docs](https://urlbox.com/docs/guides/proxies) to get you started.
 
@@ -488,11 +488,9 @@ Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_
 
 The most common use case for a webhook is when you need to use the `/async` endpoint to handle a larger render.
 
+If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and making your webhook URL hit that ngrok endpoint. Ngrok simply exposes a port on your machine to a UUID style domain. You can locally serve your application from that port.
+
 After you've added the endpoint to your application, for example at the endpoint `webhooks/urlbox`, make a request to that endpoint like this:
-
-If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and making your webhook URL hit that ngrok endpoint. Ngrok simply exposes a port on your machine to a UUID style domain, which is handy because it means you don't have to push your webhook changes to one of your live/staging environments just to test them out.
-
-Remember to assign the `UrlboxOptions.WebhookUrl`: 
 
 ```CS
 static async Task Main()
@@ -530,7 +528,7 @@ There will also be our handy header `X-Urlbox-Signature` that looks like this: `
 
 Extract both the header and the content, and pass it into `Urlbox.VerifyWebhookSignature(header, content)`.
 
-Here's an example with something (very) basic:
+Here's an example of verifying the webhook with something (very) basic:
 
 ```CS
 
