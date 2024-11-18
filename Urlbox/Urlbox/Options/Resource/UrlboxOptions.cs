@@ -3,7 +3,7 @@ namespace Screenshots;
 /// Initializes a new instance of the UrlboxOptions. These are used as part of a Urlbox method which requires render options.
 /// </summary>
 /// <exception cref="ArgumentException">Thrown when the Url OR Html option isn't passed in on init.</exception>
-public class UrlboxOptions
+public sealed class UrlboxOptions
 {
 
     public UrlboxOptions(string url = null, string html = null)

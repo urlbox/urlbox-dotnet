@@ -3,7 +3,7 @@ namespace Screenshots;
 /// <summary>
 /// Represents Metadata for a Urlbox Response when save_metadata or metadata options are set to true
 /// </summary>
-public class UrlboxMetadata
+public sealed class UrlboxMetadata
 {
     public string UrlRequested { get; }
     public string UrlResolved { get; }
@@ -79,7 +79,7 @@ public class UrlboxMetadata
 /// <summary>
 /// Represents an Open Graph Image
 /// </summary>
-public class OgImage
+public sealed class OgImage
 {
     public string Url { get; }
     public string Type { get; }

@@ -1,12 +1,11 @@
 [![image](/Urlbox/Urlbox/urlbox-io-graphic.jpg)](https://www.urlbox.com)
 
-### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 
 ***
 
 # The Urlbox .NET SDK
 
-The Urlbox .NET SDK provides easy access to the [Urlbox website screenshot API](https://urlbox.com/) from your application.
+The Urlbox .NET SDK provides easy access to the [Urlbox API](https://urlbox.com/) from your application.
 
 Just initialise Urlbox and generate a screenshot of a URL or HTML in no time.
 
@@ -14,6 +13,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 
 > **Note:** At Urlbox we make `Renders`. Typically, when we refer to a render here or anywhere else, we are referring to the entire process as a whole of taking your options, performing our magic, and sending back a screenshot your way.
 
+#### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 ***
 
 # Table Of Contents
@@ -23,6 +23,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 * [Requirements](#requirements)
 * [Installation](#installation)
 * [Usage](#usage)
+  * [Start here](#start-here)
   * [Getting Started - `TakeScreenshot()`](#getting-started---takescreenshot)
   * [Configuring Options](#configuring-options-)
     * [Using the options builder](#using-the-options-builder)
@@ -52,7 +53,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
   * [Using Webhooks](#using-webhooks)
     * [1. Visit your Urlbox dashboard, and get your Webhook Secret.](#1-visit-your-urlbox-dashboard-and-get-your-webhook-secret)
     * [2. Create your Urlbox instance in your C# project:](#2-create-your-urlbox-instance-in-your-c-project)
-    * [3. Make a request through any of our screenshotting methods.](#3-make-a-request-through-any-of-our-screenshotting-methods-)
+    * [3. Make a request through any of our rendering methods.](#3-make-a-request-through-any-of-our-rendering-methods-)
     * [4. Verify that the webhook comes from Urlbox](#4-verify-that-the-webhook-comes-from-urlbox)
 * [API Reference](#api-reference)
   * [Urlbox API Reference](#urlbox-api-reference)
@@ -63,6 +64,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [URL Generation Methods](#url-generation-methods)
     * [Status and Validation Methods](#status-and-validation-methods)
   * [Feedback](#feedback)
+  * [Changelog](#changelog)
 <!-- TOC -->
 
 ***
@@ -87,6 +89,16 @@ dotnet add package urlbox.sdk.dotnet
 ```
 
 # Usage
+
+## Start here
+
+If you've not yet signed up for a trial, please do so by visiting [Urlbox](https://urlbox.com). Once you're in, you'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
+
+With a new account you'll only have one project, so click on it, and you should see something like this:
+
+![The project settings page](projectKeys.png)
+
+Copy over your three keys and place them somewhere safe. They'll be passed into our Urlbox instance in just a moment.
 
 ## Getting Started - `TakeScreenshot()`
 
@@ -131,7 +143,7 @@ namespace MyNamespace
 
 Options are simply extra inputs that we use to adapt the way we take the screenshot, or adapt any of the other steps involved in the rendering process.
 
->**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are screenshotting for you.
+>**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are rendering for you.
 
 You could, for example, change the way the request is made to your desired URL (like using a proxy server, passing in extra headers, an authorization token or some cookies), or change the way the page looks (like injecting Javascript, highlighting words, or making the background a tasteful fuchsia pink). 
 
@@ -140,13 +152,13 @@ object with its size and location.
 
 There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/overview) for more information.
 
-To initialise your urlbox options, we advise using the options builder attached to the Urlbox instance.
+To initialise your urlbox options, we advise using the option builder. Start by calling the static method `Urlbox.Options()` with your url or HTML.
 
 The builder will pre-validate your options on `.Build()`, and allow for a more readable/fluent interface in your code.
 
 ### Using the options builder
 ```CS
-Urlbox urlbox = new("apiKey", "apiSecret", "webhookSecret");
+Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
 UrlboxOptions options = Urlbox.Options(
                     url: "https://google.com"
@@ -162,7 +174,6 @@ UrlboxOptions options = Urlbox.Options(
 
 AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 ```
-
 
 You can alternatively set the Urlbox options with the `new` keyword.
 
@@ -390,7 +401,7 @@ The JSON response for this request would look like this:
 
 When using the screenshot and file generation methods from our SDK like `TakeScreenshot()`, `Render()` or `RenderAsync`, these responses will all be turned into a readable class instance for you.
 
-When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata field as above, turned into metadata class.
+When downloading metadata, you can opt to either save the metadata, or just return it in the JSON response as above. Our helper method `TakeScreenshotWithMetadata()` will not store the metadata so not produce a URL. It will instead only return the metadata as above.
 
 ## Generating a Screenshot Using a Selector
 
@@ -414,7 +425,7 @@ SyncUrlboxResponse response = urlbox.Render(options);
 
 This will take the ID selector ".octicon-mark-github", and return a screenshot that looks like this:
 
-![](32x32 Image.png)
+![](./gh.png)
 
 ## Uploading to the cloud via an S3 bucket
 
@@ -432,7 +443,7 @@ The current cloud providers we support are:
 - Google Cloud Storage
 - Digital Ocean Spaces
 
-Though if there's another cloud provider you would like to use, you're more than willing to reach out to us if you're struggling to get setup.
+Though if there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
 
 We allow for public CDN hosts, private buckets and buckets with object locking enabled.
 
@@ -452,7 +463,7 @@ You'll see that the render URL will include a link to reach the object in your b
 
 ## Using a Proxy
 
-Sometimes there are sites only available if your IP address is from a particular country. Other times you simply get blocked from a website. Proxies can really help get past these issues, and are quite a similar setup process to uploading to S3.
+Sometimes there are sites only available if your making the request from a particular country. Other times you simply get blocked from a website. Proxies can really help get past these issues, and are quite a similar setup process to uploading to S3.
 
 We have a great piece in our [docs](https://urlbox.com/docs/guides/proxies) to get you started.
 
@@ -484,15 +495,13 @@ Go to your [projects](https://urlbox.com/dashboard/projects) page, select a proj
 Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 ```
 
-### 3. Make a request through any of our screenshotting methods. 
+### 3. Make a request through any of our rendering methods. 
 
 The most common use case for a webhook is when you need to use the `/async` endpoint to handle a larger render.
 
+If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and making your webhook URL hit that ngrok endpoint. Ngrok simply exposes a port on your machine to a UUID style domain. You can locally serve your application from that port.
+
 After you've added the endpoint to your application, for example at the endpoint `webhooks/urlbox`, make a request to that endpoint like this:
-
-If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and making your webhook URL hit that ngrok endpoint. Ngrok simply exposes a port on your machine to a UUID style domain, which is handy because it means you don't have to push your webhook changes to one of your live/staging environments just to test them out.
-
-Remember to assign the `UrlboxOptions.WebhookUrl`: 
 
 ```CS
 static async Task Main()
@@ -530,7 +539,7 @@ There will also be our handy header `X-Urlbox-Signature` that looks like this: `
 
 Extract both the header and the content, and pass it into `Urlbox.VerifyWebhookSignature(header, content)`.
 
-Here's an example with something (very) basic:
+Here's an example of verifying the webhook with something (very) basic:
 
 ```CS
 
@@ -658,8 +667,30 @@ Below is a brief description of every publicly available method our SDK provides
 
 ## Feedback
 
-It's not always clear what each method in an SDK does exactly. We hope that the above has given you enough of an understanding to suit your use case.
+We hope that the above has given you enough of an understanding to suit your use case.
 
 If you are still struggling, spot a bug, or have any suggestions, feel free to contact us at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
 
-Get screenshotting!
+Get rendering!
+
+## Changelog
+
+- 2.0.0 - Major overhaul - **Non-backward compatible changes included.**
+  - Introduced fluent options builder with input validation
+  - Introduced options as a typed class
+  - Introduced webhook validation logic
+  - Upgraded test suite
+  - Created interfaces for better Dependency Injection compatibility
+  - Introduced post sync and async methods
+  - Introduced helper methods for common use cases
+  - Overhauled readme including an API reference
+  - Introduced logic and classes for side renders (save_html etc)
+  - Introduced classes for different response types from urlbox api
+
+Methods in previous versions of this SDK that would accept a Dictionary now take a standardised `UrlboxOptions` type.
+
+- 1.0.2 - Further Updates to readme.
+ 
+- 1.0.1 - Update Readme to replace instances of .io with .com.
+
+- 1.0.0 - First release!

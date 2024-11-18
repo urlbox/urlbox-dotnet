@@ -702,7 +702,7 @@ public class UrlboxOptionsBuilderTests
     }
 
     [TestMethod]
-    public void ValidateEngineVersionOptions_succeeds()
+    public void ValidateEngineVersionOptions_throws()
     {
         Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
             .EngineVersion("stable")
@@ -716,5 +716,19 @@ public class UrlboxOptionsBuilderTests
             .Longitude(0.01)
             .Build()
         );
+    }
+
+    [TestMethod]
+    public void UrlboxOptionsBuilder_Resets()
+    {
+        var options = Urlbox.Options(url: "https://urlbox.com")
+            .FullPage()
+            .Build();
+
+
+        var otherOptions = Urlbox.Options(url: "https://someotherurl.com").Build();
+
+        Assert.IsFalse(otherOptions.FullPage);
+        Assert.AreNotSame(options, otherOptions);
     }
 }
