@@ -21,7 +21,7 @@ namespace Screenshots
     /// for audiences still using this version.
     /// </remarks>
     /// </summary>
-    public class SnakeCaseNamingPolicy : JsonNamingPolicy
+    public sealed class SnakeCaseNamingPolicy : JsonNamingPolicy
     {
         public override string ConvertName(string name)
         {
