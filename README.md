@@ -252,9 +252,9 @@ If you haven't explicitly asked for a binary response in your options, a 200 res
 
 ```JSON
 {
-    // Where the final screenshot is stored -- If you setup S3, it will be your bucket in the URL.
+    # Where the final screenshot is stored -- If you setup S3, it will be your bucket in the URL.
     "renderUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.mp4",
-    // The size of the file in bytes
+    # The size of the file in bytes
     "size": 272154
 }
 ```
@@ -289,11 +289,11 @@ This returns you:
 
 ```JSON
 {
-    // When this is "succeeded", your render will be ready
+    # When this is "succeeded", your render will be ready
     "status": "created",
-    // This is your unique render id
+    # This is your unique render id
     "renderId": "fe7af5df-80e7-4b38-973a-005ebf06dabb", 
-    // Make a GET to this to find out if your render is ready
+    # Make a GET to this to find out if your render is ready
     "statusUrl": "https://api.urlbox.com/v1/render/fe7af5df-80e7-4b38-973a-005ebf06dabb"
 }
 ```
