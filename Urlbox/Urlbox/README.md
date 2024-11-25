@@ -77,12 +77,12 @@ We also have guides for how to set up uploading your final render to your own [S
 
 # Requirements
 
-To use this SDK, you need .NET Core 2.0 or later.
+To use this SDK, you need .NET Core 6.0 or later.
  
 
 # Installation
 
-You can install the SDK via NuGet:
+Nuget:
 
 ```bash
 dotnet add package urlbox.sdk.dotnet
@@ -92,17 +92,15 @@ dotnet add package urlbox.sdk.dotnet
 
 ## Start here
 
-If you've not yet signed up for a trial, please do so by visiting [Urlbox](https://urlbox.com). Once you're in, you'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
+Visiting [Urlbox](https://urlbox.com) to sign up for a trial. You'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
 
 With a new account you'll only have one project, so click on it, and you should see something like this:
 
-![The project settings page](projectKeys.png)
-
-Copy over your three keys and place them somewhere safe. They'll be passed into our Urlbox instance in just a moment.
+![The project settings page](./projectKeys.png)
 
 ## Getting Started - `TakeScreenshot()`
 
-If you want something super simple, just call our `TakeScreenshot(options)` method with an instance of the UrlboxOptions:
+If you want something super simple, initialize an instance of Urlbox with the above credentials, then call our `TakeScreenshot(options)` method with an instance of the UrlboxOptions:
 
 ```CS
 using System;
@@ -117,13 +115,11 @@ namespace MyNamespace
         static async Task Main()
         {
             // We highly recommend storing your Urlbox API key and secret somewhere secure.
-            
             string apiKey = Environment.GetEnvironmentVariable("URLBOX_API_KEY");
             string apiSecret = Environment.GetEnvironmentVariable("URLBOX_API_SECRET");
             string webhookSecret = Environment.GetEnvironmentVariable("URLBOX_WEBHOOK_SECRET");
 
             // Create an instance of Urlbox and the Urlbox options you'd like to use
-            
             Urlbox urlbox = Urlbox.FromCredentials(apiKey, apiSecret, webhookSecret);
             UrlboxOptions options = Urlbox.Options(url: "https://google.com").Build();
           
@@ -659,7 +655,7 @@ Below is a brief description of every publicly available method our SDK provides
 
 ### Status and Validation Methods
 
-- **`Task<AsyncUrlboxResponse> GetStatus(string statusUrl);`**  
+- **`Task<AsyncUrlboxResponse> GetStatus(string renderId);`**  
   Retrieves the current status of an asynchronous render request.
 
 - **`bool VerifyWebhookSignature(string header, string content);`**  

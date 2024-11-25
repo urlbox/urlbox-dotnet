@@ -20,6 +20,7 @@ namespace UrlboxSDK
         public const string BASE_URL = "https://api.urlbox.com";
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
+        private const string STATUS_ENDPOINT = BASE_URL + "/v1/render";
         public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace UrlboxSDK
 
             while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
             {
-                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.StatusUrl);
+                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.RenderId);
 
                 if (asyncUrlboxResponse.Status == "succeeded")
                 {
@@ -358,8 +359,9 @@ namespace UrlboxSDK
         /// A method to get the status of a render from an async request
         /// </summary>
         /// <returns></returns>
-        public async Task<AsyncUrlboxResponse> GetStatus(string statusUrl)
+        public async Task<AsyncUrlboxResponse> GetStatus(string renderId)
         {
+            string statusUrl = $"{STATUS_ENDPOINT}/{renderId}";
             HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
             if (response.IsSuccessStatusCode)
             {
