@@ -29,7 +29,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [Using the options builder](#using-the-options-builder)
     * [Using the `new` keyword, setting during initialization](#using-the-new-keyword-setting-during-initialization)
     * [Using the `new` keyword, setting after initalization](#using-the-new-keyword-setting-after-initalization)
-  * [Render Links - `GenerateUrlboxUrl()`](#render-links---generateurlboxurl)
+  * [Render Links - `GenerateRenderLink()`](#render-links---generaterenderlink)
   * [Sync Requests - `Render()`](#sync-requests---render)
   * [Async Requests - `RenderAsync()`](#async-requests---renderasync)
     * [Polling](#polling)
@@ -202,13 +202,13 @@ AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 
 ***
 
-## Render Links - `GenerateUrlboxUrl()`
+## Render Links - `GenerateRenderLink()`
 
 With Urlbox you can get a screenshot in a number of ways. It may seem a little complex at first, but each method has its purpose.
 
 Take a look at the [section in our docs](https://urlbox.com/docs/api/rest-api-vs-render-links#render-links) which explains the main benefits of using a render link over our `/sync` and `/async` methods.
 
-To get a render link, run the `GenerateUrlboxUrl(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
+To get a render link, run the `GenerateRenderLink(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
 
 Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an `<img>` tag.
 
@@ -223,7 +223,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-string renderLink = urlbox.GenerateUrlboxUrl(options);
+string renderLink = urlbox.GenerateRenderLink(options);
 ```
 
 ## Sync Requests - `Render()`
@@ -652,7 +652,7 @@ Below is a brief description of every publicly available method our SDK provides
 - **`string GeneratePDFUrl(UrlboxOptions options);`**  
   Generates a PDF URL for the specified screenshot options.
 
-- **`string GenerateUrlboxUrl(UrlboxOptions options, string format = "png");`**  
+- **`string GenerateRenderLink(UrlboxOptions options, string format = "png");`**  
   Constructs an Urlbox URL for the specified format and options.
 
 ---
