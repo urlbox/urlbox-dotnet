@@ -245,7 +245,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-SyncUrlboxResponse = urlbox.render(options);
+SyncUrlboxResponse = urlbox.Render(options);
 ```
 
 If you haven't explicitly asked for a binary response in your options, a 200 response would look like this:
@@ -282,7 +282,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-AsyncUrlboxResponse = urlbox.renderAsync(options);
+AsyncUrlboxResponse = urlbox.RenderAsync(options);
 ```
 
 This returns you:
@@ -377,7 +377,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Metadata() // This extracts the metadata from the URL/HTML, and sends it back in the response without saving it to the cloud.
                 .Build();
 
-SyncUrlboxResponse = urlbox.render(options);
+SyncUrlboxResponse = urlbox.Render(options);
 ```
 
 The JSON response for this request would look like this:
@@ -435,7 +435,7 @@ You can opt to save the final screenshot to your own cloud provider.
 
 We would _**highly**_ recommend you follow our S3 setup instructions. Setting up a cloud bucket can be tedious at the best of times, so [this](https://urlbox.com/docs/storage/configure-s3) part of our docs can help untangle the process.
 
-The current cloud providers we support are:
+In theory, we support any S3 compatible provider, though we have tested the following providers:
 
 - BackBlaze B2
 - AWS S3
@@ -443,7 +443,7 @@ The current cloud providers we support are:
 - Google Cloud Storage
 - Digital Ocean Spaces
 
-Though if there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
+If there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
 
 We allow for public CDN hosts, private buckets and buckets with object locking enabled.
 
