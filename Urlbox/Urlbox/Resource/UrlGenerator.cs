@@ -86,15 +86,26 @@ public sealed class UrlGenerator
     /// <param name="options"></param>
     /// <param name="format"></param>
     /// <returns>The Urlbox Render Link</returns>
-    public string GenerateRenderLink(UrlboxOptions options, string format = "png")
+    public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = false)
     {
-        var qs = ToQueryString(options);
-        return string.Format("https://api.urlbox.com/v1/{0}/{1}/{2}?{3}",
-                             this.key,
-                             generateToken(qs),
-                             format,
-                             qs
-                             );
+        var queryString = ToQueryString(options);
+        if (sign)
+        {
+            return string.Format(Urlbox.BASE_URL + "/v1/{0}/{1}/{2}?{3}",
+                                 this.key,
+                                 generateToken(queryString),
+                                 format,
+                                 queryString
+                                 );
+        }
+        else
+        {
+            return string.Format(Urlbox.BASE_URL + "/v1/{0}/{1}?{2}",
+                                             this.key,
+                                             format,
+                                             queryString
+                                             );
+        }
     }
 
     /// <summary>

@@ -17,9 +17,10 @@ namespace UrlboxSDK
         private readonly UrlGenerator urlGenerator;
         private readonly UrlboxWebhookValidator urlboxWebhookValidator;
         private readonly HttpClient httpClient;
-        private const string BASE_URL = "https://api.urlbox.com";
+        public const string BASE_URL = "https://api.urlbox.com";
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
+        private const string STATUS_ENDPOINT = BASE_URL + "/v1/render";
         public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace UrlboxSDK
 
             while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
             {
-                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.StatusUrl);
+                AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.RenderId);
 
                 if (asyncUrlboxResponse.Status == "succeeded")
                 {
@@ -241,9 +242,9 @@ namespace UrlboxSDK
         /// <param name="options">The options for the screenshot</param>
         /// <param name="format">The image format (e.g., "png", "jpg").</param>
         /// <returns>A Base64-encoded string of the screenshot.</returns>
-        public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png")
+        public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = false)
         {
-            var urlboxUrl = GenerateRenderLink(options, format);
+            var urlboxUrl = GenerateRenderLink(options, format, sign);
             return await DownloadAsBase64(urlboxUrl);
         }
 
@@ -292,9 +293,9 @@ namespace UrlboxSDK
         /// <param name="filename">The file path where the screenshot will be saved.</param>
         /// <param name="format">The image format (e.g., "png", "jpg"). Default is "png".</param>
         /// <returns>The contents of the downloaded file as a string.</returns>
-        public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png")
+        public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png", bool sign = false)
         {
-            var urlboxUrl = GenerateRenderLink(options, format);
+            var urlboxUrl = GenerateRenderLink(options, format, sign);
             return await DownloadToFile(urlboxUrl, filename);
         }
 
@@ -305,9 +306,9 @@ namespace UrlboxSDK
         /// </summary>
         /// <param name="options">The options for the screenshot.</param>
         /// <returns>A render link Url to render a PNG screenshot.</returns>
-        public string GeneratePNGUrl(UrlboxOptions options)
+        public string GeneratePNGUrl(UrlboxOptions options, bool sign = false)
         {
-            return GenerateRenderLink(options, "png");
+            return GenerateRenderLink(options, "png", sign);
         }
 
         /// <summary>
@@ -315,9 +316,9 @@ namespace UrlboxSDK
         /// </summary>
         /// <param name="options">The options for the screenshot.</param>
         /// <returns>A render link Url to render a JPEG screenshot.</returns>
-        public string GenerateJPEGUrl(UrlboxOptions options)
+        public string GenerateJPEGUrl(UrlboxOptions options, bool sign = false)
         {
-            return GenerateRenderLink(options, "jpg");
+            return GenerateRenderLink(options, "jpg", sign);
         }
 
         /// <summary>
@@ -325,9 +326,9 @@ namespace UrlboxSDK
         /// </summary>
         /// <param name="options">The options for generating the PDF.</param>
         /// <returns>A render link Url to render a PDF file.</returns>
-        public string GeneratePDFUrl(UrlboxOptions options)
+        public string GeneratePDFUrl(UrlboxOptions options, bool sign = false)
         {
-            return GenerateRenderLink(options, "pdf");
+            return GenerateRenderLink(options, "pdf", sign);
         }
 
         /// <summary>
@@ -336,9 +337,20 @@ namespace UrlboxSDK
         /// <param name="options">The options for generating the screenshot or PDF.</param>
         /// <param name="format">The format of the output, e.g., "png", "jpg", "pdf".</param>
         /// <returns>A render link URL to render the content.</returns>
-        public string GenerateRenderLink(UrlboxOptions options, string format = "png")
+        public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = false)
         {
-            return urlGenerator.GenerateRenderLink(options, format);
+            return urlGenerator.GenerateRenderLink(options, format, sign);
+        }
+
+        /// <summary>
+        /// Generates a Urlbox URL with the specified format.
+        /// </summary>
+        /// <param name="options">The options for generating the screenshot or PDF.</param>
+        /// <param name="format">The format of the output, e.g., "png", "jpg", "pdf".</param>
+        /// <returns>A render link URL to render the content.</returns>
+        public string GenerateSignedRenderLink(UrlboxOptions options, string format = "png")
+        {
+            return urlGenerator.GenerateRenderLink(options, format, true);
         }
 
         // ** Status and Validation Methods **
@@ -347,8 +359,9 @@ namespace UrlboxSDK
         /// A method to get the status of a render from an async request
         /// </summary>
         /// <returns></returns>
-        public async Task<AsyncUrlboxResponse> GetStatus(string statusUrl)
+        public async Task<AsyncUrlboxResponse> GetStatus(string renderId)
         {
+            string statusUrl = $"{STATUS_ENDPOINT}/{renderId}";
             HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
             if (response.IsSuccessStatusCode)
             {
