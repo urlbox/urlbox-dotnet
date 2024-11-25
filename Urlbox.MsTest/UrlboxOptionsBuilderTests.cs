@@ -1,7 +1,7 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Screenshots;
+using UrlboxSDK;
 
 [TestClass]
 public class UrlboxOptionsBuilderTests

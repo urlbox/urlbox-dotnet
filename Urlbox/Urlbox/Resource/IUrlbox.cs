@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 
 public interface IUrlbox
 {

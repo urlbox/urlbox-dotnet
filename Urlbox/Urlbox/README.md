@@ -108,7 +108,7 @@ If you want something super simple, just call our `TakeScreenshot(options)` meth
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Screenshots; // This is our package
+using UrlboxSDK; // This is our package
 
 namespace MyNamespace
 {
@@ -544,7 +544,7 @@ Here's an example of verifying the webhook with something (very) basic:
 ```CS
 
 using System.Text;
-using Screenshots;
+using UrlboxSDK;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);

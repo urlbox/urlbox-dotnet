@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 /// <summary>
 /// A class encompassing Url Generation logic.
 /// </summary>

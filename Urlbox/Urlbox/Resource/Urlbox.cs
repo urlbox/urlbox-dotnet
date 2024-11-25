@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Screenshots
+namespace UrlboxSDK
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Urlbox"/> class with the provided API key and secret.

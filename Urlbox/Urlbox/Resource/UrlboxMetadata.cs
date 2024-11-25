@@ -1,4 +1,4 @@
-namespace Screenshots;
+namespace UrlboxSDK;
 
 /// <summary>
 /// Represents Metadata for a Urlbox Response when save_metadata or metadata options are set to true

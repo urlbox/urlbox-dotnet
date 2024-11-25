@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 
 public sealed class WebhookUrlboxResponse
 {

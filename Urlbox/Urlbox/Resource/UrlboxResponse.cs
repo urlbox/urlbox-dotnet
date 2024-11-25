@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 /// <summary>
 /// abstract class for Urlbox response types.
 /// </summary>
