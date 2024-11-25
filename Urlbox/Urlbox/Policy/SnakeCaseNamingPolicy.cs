@@ -25,8 +25,19 @@ namespace UrlboxSDK
     {
         public override string ConvertName(string name)
         {
-            // Convert PascalCase to snake_case
-            return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+            // Insert underscores when:
+            // 1. Lowercase letter followed by an uppercase letter
+            // 2. Letter followed by a digit
+            // 3. Digit followed by a letter, but NOT when transitioning to "xx" or similar patterns
+            return string.Concat(name.Select((character, index) =>
+                index > 0 &&
+                ((char.IsLower(name[index - 1]) && char.IsUpper(character)) || // Lowercase followed by uppercase
+                 (char.IsLetter(name[index - 1]) && char.IsDigit(character)) || // Letter followed by number
+                 (char.IsDigit(name[index - 1]) && char.IsLetter(character) && // Number followed by letter
+                  !(index + 1 < name.Length && char.IsLower(name[index + 1])))) // Exclude cases like '4xx'
+                    ? "_" + character
+                    : character.ToString()))
+                .ToLower();
         }
     }
 
