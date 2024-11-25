@@ -90,6 +90,16 @@ dotnet add package urlbox.sdk.dotnet
 
 # Usage
 
+## Start here
+
+If you've not yet signed up for a trial, please do so by visiting [Urlbox](https://urlbox.com). Once you're in, you'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
+
+With a new account you'll only have one project, so click on it, and you should see something like this:
+
+![The project settings page](projectKeys.png)
+
+Copy over your three keys and place them somewhere safe. They'll be passed into our Urlbox instance in just a moment.
+
 ## Getting Started - `TakeScreenshot()`
 
 If you want something super simple, just call our `TakeScreenshot(options)` method with an instance of the UrlboxOptions:
