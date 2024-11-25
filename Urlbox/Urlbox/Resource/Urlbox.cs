@@ -207,11 +207,11 @@ namespace UrlboxSDK
         public async Task<SyncUrlboxResponse> Render(UrlboxOptions options)
         {
             AbstractUrlboxResponse result = await MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
-            if (result is SyncUrlboxResponse syncResponse)
+            return result switch
             {
-                return syncResponse;
-            }
-            throw new Exception("Rendered /async when should've rendered /sync.");
+                SyncUrlboxResponse syncResponse => syncResponse,
+                _ => throw new Exception("Response expected from .Render was one of SyncUrlboxResponse."),
+            };
         }
 
         /// <summary>
@@ -227,11 +227,11 @@ namespace UrlboxSDK
         public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
         {
             AbstractUrlboxResponse result = await MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
-            if (result is AsyncUrlboxResponse asyncResponse)
+            return result switch
             {
-                return asyncResponse;
-            }
-            throw new Exception("Rendered /sync when should've rendered /async.");
+                AsyncUrlboxResponse asyncResponse => asyncResponse,
+                _ => throw new Exception("Response expected from .Render was one of AsyncUrlboxResponse."),
+            };
         }
 
         // ** Download and File Handling Methods **
@@ -448,21 +448,19 @@ namespace UrlboxSDK
                 request.Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json");
 
                 request.Headers.Add("Authorization", $"Bearer {secret}");
+                var deserializerOptions = new JsonSerializerOptions
+                {
+                    // Convert camelCase JSON response to PascalCase class convention
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true,
+                };
 
                 HttpResponseMessage response = await httpClient.SendAsync(request);
 
+                string responseData = await response.Content.ReadAsStringAsync();
+
                 if (response.IsSuccessStatusCode)
                 {
-                    string responseData = await response.Content.ReadAsStringAsync();
-
-                    var deserializerOptions = new JsonSerializerOptions
-                    {
-                        // Convert camelCase JSON response to PascalCase class convention
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true,
-
-                    };
-
                     return endpoint switch
                     {
                         SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions),
@@ -472,7 +470,7 @@ namespace UrlboxSDK
                 }
                 else
                 {
-                    throw new Exception($"Could not make post request to {url}: {GetUrlboxErrorMessage(response)}");
+                    throw UrlboxException.FromResponse(responseData, deserializerOptions);
                 }
             }
         }
