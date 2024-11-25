@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace Screenshots
+namespace UrlboxSDK
 {
     /// <summary>
     /// A custom naming policy for converting property names from PascalCase to snake_case

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Configuration;
-using Screenshots;
+using UrlboxSDK;
 
 [TestClass]
 public class UrlTests
@@ -151,9 +151,9 @@ public class UrlTests
 
 
     [TestMethod]
-    public void GenerateUrlboxUrl_WithAllOptions()
+    public void GenerateRenderLink_WithAllOptions()
     {
-        var output = dummyUrlbox.GenerateUrlboxUrl(urlboxAllOptions);
+        var output = dummyUrlbox.GenerateRenderLink(urlboxAllOptions);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/1ffbcfe9f7b32e048c8712fa30fc6884f562ab60/png?pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&readable=true&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&s3_bucket=test&s3_path=test&s3_endpoint=test&s3_region=test&s3_storage_class=STANDARD&cdn_host=test&full_page_mode=test&scroll_increment=400&scroll_delay=123&detect_full_height=true&max_section_height=123&full_width=true&url=https%3A%2F%2Furlbox.com&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&allow_infinite=true&skip_scroll=true&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true",
@@ -162,7 +162,7 @@ public class UrlTests
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_withMultipleCookies()
+    public void GenerateRenderLink_withMultipleCookies()
     {
         UrlboxOptions options = new(url: "https://urlbox.com");
         options.Cookie = new string[] {
@@ -170,7 +170,7 @@ public class UrlTests
             "some=otherCookie",
             "some=thirdCookie"
         };
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/875571589b83579c5bd98b2724fee1e942e6191b/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie",
@@ -179,12 +179,12 @@ public class UrlTests
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_withOneCookie()
+    public void GenerateRenderLink_withOneCookie()
     {
         UrlboxOptions options = new(url: "https://urlbox.com");
         options.Cookie = "some=cookie";
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/98443bad9c26ff2ec632a88a5ca81042a8f01f6e/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie",
@@ -193,12 +193,12 @@ public class UrlTests
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_withMultipleBlockUrls()
+    public void GenerateRenderLink_withMultipleBlockUrls()
     {
         UrlboxOptions options = new(url: "https://shopify.com");
         options.BlockUrls = new string[] { "cdn.shopify.com", "otherDomain" };
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/d8b2541a21203c7277ce450623e4d5821b09b7ce/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com%2CotherDomain",
@@ -207,13 +207,13 @@ public class UrlTests
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_withOneBlockUrl()
+    public void GenerateRenderLink_withOneBlockUrl()
     {
 
         UrlboxOptions options = new(url: "https://shopify.com");
         options.BlockUrls = new string[] { "cdn.shopify.com" };
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/1d35723ba9b60ec38ccdb01d066665c788002f17/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com",
@@ -222,7 +222,7 @@ public class UrlTests
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_WithUrlEncodedOptions()
+    public void GenerateRenderLink_WithUrlEncodedOptions()
     {
         var options = new UrlboxOptions(url: "urlbox.com");
         options.Width = 1280;
@@ -230,32 +230,32 @@ public class UrlTests
         options.FullPage = true;
         options.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/5727321d7976d07d9f24649e6db556b2a6a71d9d/png?url=urlbox.com&width=1280&full_page=true&thumb_width=500&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36",
                         output);
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_UrlNeedsEncoding()
+    public void GenerateRenderLink_UrlNeedsEncoding()
     {
         var options = new UrlboxOptions(url: "https://www.hatchtank.io/markup/index.html?url2png=true&board=demo_1645_1430");
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/4b8ac501f3aaccbea2081a7105302593174ebc23/png?url=https%3A%2F%2Fwww.hatchtank.io%2Fmarkup%2Findex.html%3Furl2png%3Dtrue%26board%3Ddemo_1645_1430",
         output, "Not OK");
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_WithUserAgent()
+    public void GenerateRenderLink_WithUserAgent()
     {
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
         options.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36";
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/c2708392a4d881b4816e61b3ed4d89ae4f2c4a57/png?url=https%3A%2F%2Fbbc.co.uk&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_12_6%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F62.0.3202.94%20Safari%2F537.36", output);
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_IgnoreEmptyValuesAndFormat()
+    public void GenerateRenderLink_IgnoreEmptyValuesAndFormat()
     {
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
         options.FullPage = false;
@@ -267,48 +267,48 @@ public class UrlTests
         options.BlockUrls = new string[] { };
         options.Cookie = "";
 
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
                         output);
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_FormatWorks()
+    public void GenerateRenderLink_FormatWorks()
     {
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
-        var output = dummyUrlbox.GenerateUrlboxUrl(options, "jpeg");
+        var output = dummyUrlbox.GenerateRenderLink(options, "jpeg");
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_WithHtml()
+    public void GenerateRenderLink_WithHtml()
     {
         var options = new UrlboxOptions(html: "<h1>test</h1>");
         options.FullPage = true;
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/6e911f299782a8de56b56f47d8670bd0f085f41b/png?html=%3Ch1%3Etest%3C%2Fh1%3E&full_page=true", output);
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_WithSimpleURL()
+    public void GenerateRenderLink_WithSimpleURL()
     {
         var options = new UrlboxOptions(url: "bbc.co.uk");
-        var output = dummyUrlbox.GenerateUrlboxUrl(options);
+        var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/75c9016e7f98f90f5eabfd348f3091f7bf625153/png?url=bbc.co.uk",
                         output, "Not OK");
     }
 
     [TestMethod]
-    public void GenerateUrlboxUrl_ShouldRemoveFormatFromQueryString()
+    public void GenerateRenderLink_ShouldRemoveFormatFromQueryString()
     {
         var options = new UrlboxOptions(url: "https://urlbox.com")
         {
             Format = "png",
             FullPage = true
         };
-        var output = urlGenerator.GenerateUrlboxUrl(options);
+        var output = urlGenerator.GenerateRenderLink(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/bba10010e9ece486d34a82344170ae5b4dd5f347/png?url=https%3A%2F%2Furlbox.com&full_page=true", output);
     }

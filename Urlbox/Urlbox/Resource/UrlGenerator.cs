@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 /// <summary>
 /// A class encompassing Url Generation logic.
 /// </summary>
@@ -86,7 +86,7 @@ public sealed class UrlGenerator
     /// <param name="options"></param>
     /// <param name="format"></param>
     /// <returns>The Urlbox Render Link</returns>
-    public string GenerateUrlboxUrl(UrlboxOptions options, string format = "png")
+    public string GenerateRenderLink(UrlboxOptions options, string format = "png")
     {
         var qs = ToQueryString(options);
         return string.Format("https://api.urlbox.com/v1/{0}/{1}/{2}?{3}",

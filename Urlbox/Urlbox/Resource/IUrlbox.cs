@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 
 public interface IUrlbox
 {
@@ -25,7 +25,7 @@ public interface IUrlbox
     string GeneratePNGUrl(UrlboxOptions options);
     string GenerateJPEGUrl(UrlboxOptions options);
     string GeneratePDFUrl(UrlboxOptions options);
-    string GenerateUrlboxUrl(UrlboxOptions options, string format = "png");
+    string GenerateRenderLink(UrlboxOptions options, string format = "png");
 
     // Status and Validation Methods
     Task<AsyncUrlboxResponse> GetStatus(string statusUrl);

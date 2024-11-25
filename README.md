@@ -29,7 +29,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [Using the options builder](#using-the-options-builder)
     * [Using the `new` keyword, setting during initialization](#using-the-new-keyword-setting-during-initialization)
     * [Using the `new` keyword, setting after initalization](#using-the-new-keyword-setting-after-initalization)
-  * [Render Links - `GenerateUrlboxUrl()`](#render-links---generateurlboxurl)
+  * [Render Links - `GenerateRenderLink()`](#render-links---generaterenderlink)
   * [Sync Requests - `Render()`](#sync-requests---render)
   * [Async Requests - `RenderAsync()`](#async-requests---renderasync)
     * [Polling](#polling)
@@ -108,7 +108,7 @@ If you want something super simple, just call our `TakeScreenshot(options)` meth
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Screenshots; // This is our package
+using UrlboxSDK; // This is our package
 
 namespace MyNamespace
 {
@@ -202,13 +202,13 @@ AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
 
 ***
 
-## Render Links - `GenerateUrlboxUrl()`
+## Render Links - `GenerateRenderLink()`
 
 With Urlbox you can get a screenshot in a number of ways. It may seem a little complex at first, but each method has its purpose.
 
 Take a look at the [section in our docs](https://urlbox.com/docs/api/rest-api-vs-render-links#render-links) which explains the main benefits of using a render link over our `/sync` and `/async` methods.
 
-To get a render link, run the `GenerateUrlboxUrl(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
+To get a render link, run the `GenerateRenderLink(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
 
 Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an `<img>` tag.
 
@@ -223,7 +223,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-string renderLink = urlbox.GenerateUrlboxUrl(options);
+string renderLink = urlbox.GenerateRenderLink(options);
 ```
 
 ## Sync Requests - `Render()`
@@ -245,16 +245,16 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-SyncUrlboxResponse = urlbox.render(options);
+SyncUrlboxResponse = urlbox.Render(options);
 ```
 
 If you haven't explicitly asked for a binary response in your options, a 200 response would look like this:
 
 ```JSON
 {
-    // Where the final screenshot is stored -- If you setup S3, it will be your bucket in the URL.
+    # Where the final screenshot is stored -- If you setup S3, it will be your bucket in the URL.
     "renderUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.mp4",
-    // The size of the file in bytes
+    # The size of the file in bytes
     "size": 272154
 }
 ```
@@ -282,18 +282,18 @@ UrlboxOptions options = Urlbox.Options(
                 .Format("pdf")
                 .Build();
 
-AsyncUrlboxResponse = urlbox.renderAsync(options);
+AsyncUrlboxResponse = urlbox.RenderAsync(options);
 ```
 
 This returns you:
 
 ```JSON
 {
-    // When this is "succeeded", your render will be ready
+    # When this is "succeeded", your render will be ready
     "status": "created",
-    // This is your unique render id
+    # This is your unique render id
     "renderId": "fe7af5df-80e7-4b38-973a-005ebf06dabb", 
-    // Make a GET to this to find out if your render is ready
+    # Make a GET to this to find out if your render is ready
     "statusUrl": "https://api.urlbox.com/v1/render/fe7af5df-80e7-4b38-973a-005ebf06dabb"
 }
 ```
@@ -377,7 +377,7 @@ UrlboxOptions options = Urlbox.Options(
                 .Metadata() // This extracts the metadata from the URL/HTML, and sends it back in the response without saving it to the cloud.
                 .Build();
 
-SyncUrlboxResponse = urlbox.render(options);
+SyncUrlboxResponse = urlbox.Render(options);
 ```
 
 The JSON response for this request would look like this:
@@ -435,7 +435,7 @@ You can opt to save the final screenshot to your own cloud provider.
 
 We would _**highly**_ recommend you follow our S3 setup instructions. Setting up a cloud bucket can be tedious at the best of times, so [this](https://urlbox.com/docs/storage/configure-s3) part of our docs can help untangle the process.
 
-The current cloud providers we support are:
+In theory, we support any S3 compatible provider, though we have tested the following providers:
 
 - BackBlaze B2
 - AWS S3
@@ -443,7 +443,7 @@ The current cloud providers we support are:
 - Google Cloud Storage
 - Digital Ocean Spaces
 
-Though if there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
+If there's another cloud provider you would like to use, please try to reach out to us if you're struggling to get setup.
 
 We allow for public CDN hosts, private buckets and buckets with object locking enabled.
 
@@ -544,7 +544,7 @@ Here's an example of verifying the webhook with something (very) basic:
 ```CS
 
 using System.Text;
-using Screenshots;
+using UrlboxSDK;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -652,7 +652,7 @@ Below is a brief description of every publicly available method our SDK provides
 - **`string GeneratePDFUrl(UrlboxOptions options);`**  
   Generates a PDF URL for the specified screenshot options.
 
-- **`string GenerateUrlboxUrl(UrlboxOptions options, string format = "png");`**  
+- **`string GenerateRenderLink(UrlboxOptions options, string format = "png");`**  
   Constructs an Urlbox URL for the specified format and options.
 
 ---

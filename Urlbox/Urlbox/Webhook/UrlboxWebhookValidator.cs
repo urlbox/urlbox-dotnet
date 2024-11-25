@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Screenshots;
+namespace UrlboxSDK;
 /// <summary>
 /// A class encompassing webhook validation logic.
 /// </summary>

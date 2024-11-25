@@ -1,4 +1,4 @@
-namespace Screenshots;
+namespace UrlboxSDK;
 
 public sealed class UrlboxOptionsBuilder
 {

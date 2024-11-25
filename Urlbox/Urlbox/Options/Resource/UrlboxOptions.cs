@@ -1,4 +1,5 @@
-namespace Screenshots;
+namespace UrlboxSDK;
+
 /// <summary>
 /// Initializes a new instance of the UrlboxOptions. These are used as part of a Urlbox method which requires render options.
 /// </summary>
