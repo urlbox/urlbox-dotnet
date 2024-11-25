@@ -1,12 +1,11 @@
 [![image](/Urlbox/Urlbox/urlbox-io-graphic.jpg)](https://www.urlbox.com)
 
-### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 
 ***
 
 # The Urlbox .NET SDK
 
-The Urlbox .NET SDK provides easy access to the [Urlbox website screenshot API](https://urlbox.com/) from your application.
+The Urlbox .NET SDK provides easy access to the [Urlbox API](https://urlbox.com/) from your application.
 
 Just initialise Urlbox and generate a screenshot of a URL or HTML in no time.
 
@@ -14,6 +13,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 
 > **Note:** At Urlbox we make `Renders`. Typically, when we refer to a render here or anywhere else, we are referring to the entire process as a whole of taking your options, performing our magic, and sending back a screenshot your way.
 
+#### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 ***
 
 # Table Of Contents
@@ -23,6 +23,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 * [Requirements](#requirements)
 * [Installation](#installation)
 * [Usage](#usage)
+  * [Start here](#start-here)
   * [Getting Started - `TakeScreenshot()`](#getting-started---takescreenshot)
   * [Configuring Options](#configuring-options-)
     * [Using the options builder](#using-the-options-builder)
@@ -52,7 +53,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
   * [Using Webhooks](#using-webhooks)
     * [1. Visit your Urlbox dashboard, and get your Webhook Secret.](#1-visit-your-urlbox-dashboard-and-get-your-webhook-secret)
     * [2. Create your Urlbox instance in your C# project:](#2-create-your-urlbox-instance-in-your-c-project)
-    * [3. Make a request through any of our screenshotting methods.](#3-make-a-request-through-any-of-our-screenshotting-methods-)
+    * [3. Make a request through any of our rendering methods.](#3-make-a-request-through-any-of-our-rendering-methods-)
     * [4. Verify that the webhook comes from Urlbox](#4-verify-that-the-webhook-comes-from-urlbox)
 * [API Reference](#api-reference)
   * [Urlbox API Reference](#urlbox-api-reference)
@@ -132,7 +133,7 @@ namespace MyNamespace
 
 Options are simply extra inputs that we use to adapt the way we take the screenshot, or adapt any of the other steps involved in the rendering process.
 
->**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are screenshotting for you.
+>**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are rendering for you.
 
 You could, for example, change the way the request is made to your desired URL (like using a proxy server, passing in extra headers, an authorization token or some cookies), or change the way the page looks (like injecting Javascript, highlighting words, or making the background a tasteful fuchsia pink). 
 
@@ -484,7 +485,7 @@ Go to your [projects](https://urlbox.com/dashboard/projects) page, select a proj
 Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 ```
 
-### 3. Make a request through any of our screenshotting methods. 
+### 3. Make a request through any of our rendering methods. 
 
 The most common use case for a webhook is when you need to use the `/async` endpoint to handle a larger render.
 
@@ -660,7 +661,7 @@ We hope that the above has given you enough of an understanding to suit your use
 
 If you are still struggling, spot a bug, or have any suggestions, feel free to contact us at: `support@urlbox.com` or use our chat function on [our website](https://urlbox.com/).
 
-Get screenshotting!
+Get rendering!
 
 ## Changelog
 
