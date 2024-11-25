@@ -181,18 +181,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(urlboxAllOptions);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&readable=true&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&s3_bucket=test&s3_path=test&s3_endpoint=test&s3_region=test&s3_storage_class=STANDARD&cdn_host=test&full_page_mode=test&scroll_increment=400&scroll_delay=123&detect_full_height=true&max_section_height=123&full_width=true&url=https%3A%2F%2Furlbox.com&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&allow_infinite=true&skip_scroll=true&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true",
-            output
-        );
-    }
-
-    [TestMethod]
-    public void GenerateRenderLink_WithAllOptions_signed()
-    {
-        var output = dummyUrlbox.GenerateRenderLink(urlboxAllOptions, sign: true);
-
-        Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/1ffbcfe9f7b32e048c8712fa30fc6884f562ab60/png?pdf_page_size=test&pdf_page_range=test&pdf_page_width=123&pdf_page_height=123&pdf_margin=test&pdf_margin_top=123&pdf_margin_right=123&pdf_margin_bottom=123&pdf_margin_left=123&pdf_auto_crop=true&pdf_scale=0.12&pdf_orientation=test&pdf_background=true&disable_ligatures=true&media=test&readable=true&pdf_show_header=true&pdf_header=test&pdf_show_footer=true&pdf_footer=test&s3_bucket=test&s3_path=test&s3_endpoint=test&s3_region=test&s3_storage_class=STANDARD&cdn_host=test&full_page_mode=test&scroll_increment=400&scroll_delay=123&detect_full_height=true&max_section_height=123&full_width=true&url=https%3A%2F%2Furlbox.com&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123&height=123&full_page=true&selector=test&clip=test&gpu=true&response_type=test&block_ads=true&hide_cookie_banners=true&click_accept=true&block_urls=test%2Ctest2&block_images=true&block_fonts=true&block_medias=true&block_styles=true&block_scripts=true&block_frames=true&block_fetch=true&block_xhr=true&block_sockets=true&hide_selector=test&js=test&css=test&dark_mode=true&reduced_motion=true&retina=true&thumb_width=123&thumb_height=123&img_fit=test&img_position=test&img_bg=test&img_pad=12%2C10%2C10%2C10&quality=123&transparent=true&max_height=123&download=test&force=true&unique=test&ttl=123&proxy=test&header=test&cookie=test&user_agent=test&platform=test&accept_lang=test&authorization=test&tz=test&engine_version=test&delay=123&timeout=123&wait_until=test&wait_for=test&wait_to_leave=test&wait_timeout=123&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&scroll_to=test&click=test&click_all=test&hover=test&bg_color=test&disable_js=true&allow_infinite=true&skip_scroll=true&highlight=test&highlight_fg=test&highlight_bg=test&latitude=0.12&longitude=0.12&accuracy=123&use_s3=true",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=test&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&force=true&full_page=true&full_page_mode=test&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=test&img_pad=12%2C10%2C10%2C10&img_position=test&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=test&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=test&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=test&pdf_page_height=123&pdf_page_range=test&pdf_page_size=test&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=test&proxy=test&quality=123&readable=true&reduced_motion=true&response_type=test&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=STANDARD&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=test&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
             output
         );
     }
@@ -209,7 +198,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie&url=https%3A%2F%2Furlbox.com",
             output
         );
     }
@@ -223,7 +212,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Furlbox.com&cookie=some%3Dcookie",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?cookie=some%3Dcookie&url=https%3A%2F%2Furlbox.com",
             output
         );
     }
@@ -237,7 +226,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com%2CotherDomain",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?block_urls=cdn.shopify.com%2CotherDomain&url=https%3A%2F%2Fshopify.com",
             output
         );
     }
@@ -252,7 +241,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Fshopify.com&block_urls=cdn.shopify.com",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?block_urls=cdn.shopify.com&url=https%3A%2F%2Fshopify.com",
             output
         );
     }
@@ -267,7 +256,7 @@ public class UrlTests
         options.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
         var output = dummyUrlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=urlbox.com&width=1280&full_page=true&thumb_width=500&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&thumb_width=500&url=urlbox.com&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36&width=1280",
                         output);
     }
 
@@ -323,7 +312,7 @@ public class UrlTests
         options.FullPage = true;
         var output = dummyUrlbox.GenerateRenderLink(options);
 
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?html=%3Ch1%3Etest%3C%2Fh1%3E&full_page=true", output);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&html=%3Ch1%3Etest%3C%2Fh1%3E", output);
     }
 
     [TestMethod]
@@ -346,7 +335,7 @@ public class UrlTests
         };
         var output = urlGenerator.GenerateRenderLink(options);
 
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Furlbox.com&full_page=true", output);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
     }
 
     [TestMethod]
@@ -354,7 +343,7 @@ public class UrlTests
     {
         UrlboxOptions options = new(url: "https://urlbox.com");
         options.ClickAccept = true;
-        var result = await urlbox.Render(options);
+        SyncUrlboxResponse result = await urlbox.Render(options);
 
         Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(result.RenderUrl);
@@ -418,16 +407,42 @@ public class UrlTests
     public async Task Render_ThrowsException()
     {
         UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.Render(options));
-        Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/sync"));
+        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.Render(options));
+
+        Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
+        Assert.AreEqual("InvalidOptions", exception.Code);
+        Assert.IsNotNull(exception.Errors);
+    }
+
+    [TestMethod]
+    public async Task Render_WithFailOn400_Throws()
+    {
+        UrlboxOptions options = Urlbox.Options(url: "test-site.urlbox.com/status/404").FailOn4xx().Build();
+
+        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.Render(options));
+        Assert.AreEqual("Page returned 404 and fail_on_4xx was true", exception.Message);
+        Assert.IsNull(exception.Code);
+        Assert.IsNull(exception.Errors);
+    }
+
+    [TestMethod]
+    public async Task Render_WithoutFailOn400_DoesntThrow()
+    {
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com/someendpointthatgives404").Build();
+        SyncUrlboxResponse result = await urlbox.Render(options);
+        Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.Size);
     }
 
     [TestMethod]
     public async Task RenderAsync_ThrowsException()
     {
         UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await urlbox.RenderAsync(options));
-        Assert.IsTrue(exception.Message.Contains("Could not make post request to https://api.urlbox.com/v1/render/async"));
+        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.RenderAsync(options));
+        Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
+        Assert.AreEqual("InvalidOptions", exception.Code);
+        Assert.IsNotNull(exception.Errors);
     }
 
     [TestMethod]

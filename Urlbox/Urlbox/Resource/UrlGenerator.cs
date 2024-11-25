@@ -37,6 +37,7 @@ public sealed class UrlGenerator
                         !(value is string && string.IsNullOrEmpty((string)value)) && // skip empty strings if string
                         !(value is string[] arr && arr.Length == 0); // skip empty arrays
                 })
+            .OrderBy((prop) => prop.Name)
             // Convert values to string reps
             .Select(prop => new KeyValuePair<string, string>(prop.Name, ConvertToString(prop.GetValue(options))))
             .Where(pair => !pair.Key.ToLower().Equals("format")) // Skip 'format' if present
