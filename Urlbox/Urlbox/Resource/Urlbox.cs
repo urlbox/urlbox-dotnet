@@ -243,7 +243,7 @@ namespace UrlboxSDK
         /// <returns>A Base64-encoded string of the screenshot.</returns>
         public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png")
         {
-            var urlboxUrl = GenerateUrlboxUrl(options, format);
+            var urlboxUrl = GenerateRenderLink(options, format);
             return await DownloadAsBase64(urlboxUrl);
         }
 
@@ -294,7 +294,7 @@ namespace UrlboxSDK
         /// <returns>The contents of the downloaded file as a string.</returns>
         public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png")
         {
-            var urlboxUrl = GenerateUrlboxUrl(options, format);
+            var urlboxUrl = GenerateRenderLink(options, format);
             return await DownloadToFile(urlboxUrl, filename);
         }
 
@@ -307,7 +307,7 @@ namespace UrlboxSDK
         /// <returns>A render link Url to render a PNG screenshot.</returns>
         public string GeneratePNGUrl(UrlboxOptions options)
         {
-            return GenerateUrlboxUrl(options, "png");
+            return GenerateRenderLink(options, "png");
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace UrlboxSDK
         /// <returns>A render link Url to render a JPEG screenshot.</returns>
         public string GenerateJPEGUrl(UrlboxOptions options)
         {
-            return GenerateUrlboxUrl(options, "jpg");
+            return GenerateRenderLink(options, "jpg");
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace UrlboxSDK
         /// <returns>A render link Url to render a PDF file.</returns>
         public string GeneratePDFUrl(UrlboxOptions options)
         {
-            return GenerateUrlboxUrl(options, "pdf");
+            return GenerateRenderLink(options, "pdf");
         }
 
         /// <summary>
@@ -336,9 +336,9 @@ namespace UrlboxSDK
         /// <param name="options">The options for generating the screenshot or PDF.</param>
         /// <param name="format">The format of the output, e.g., "png", "jpg", "pdf".</param>
         /// <returns>A render link URL to render the content.</returns>
-        public string GenerateUrlboxUrl(UrlboxOptions options, string format = "png")
+        public string GenerateRenderLink(UrlboxOptions options, string format = "png")
         {
-            return urlGenerator.GenerateUrlboxUrl(options, format);
+            return urlGenerator.GenerateRenderLink(options, format);
         }
 
         // ** Status and Validation Methods **
