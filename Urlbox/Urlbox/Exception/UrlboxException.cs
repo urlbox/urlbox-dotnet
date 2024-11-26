@@ -31,21 +31,21 @@ public sealed class UrlboxException : Exception
     public sealed class UrlboxError
     {
         [JsonPropertyName("message")]
-        public string Message { get; init; }
+        public string Message { get; }
 
         [JsonPropertyName("code")]
-        public string Code { get; init; }
+        public string Code { get; }
 
         [JsonPropertyName("errors")]
-        public string Errors { get; init; }
+        public string Errors { get; }
     }
 
     private sealed class RawResponse
     {
         [JsonPropertyName("error")]
-        public UrlboxError Error { get; init; }
+        public UrlboxError Error { get; }
 
         [JsonPropertyName("requestId")]
-        public string RequestId { get; init; }
+        public string RequestId { get; }
     }
 }
