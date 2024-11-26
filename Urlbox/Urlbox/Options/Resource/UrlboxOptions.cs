@@ -142,7 +142,13 @@ public sealed class UrlboxOptions
     public string Hover { get; set; }
     public string BgColor { get; set; }
     public bool DisableJs { get; set; }
-    public string FullPageMode { get; set; } // stitch native
+
+    public enum FullPageModeOption
+    {
+        stitch,
+        native
+    }
+    public FullPageModeOption? FullPageMode { get; set; }
     public bool FullWidth { get; set; }
     public bool AllowInfinite { get; set; }
     public bool SkipScroll { get; set; }

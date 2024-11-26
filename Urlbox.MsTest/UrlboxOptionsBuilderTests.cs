@@ -314,7 +314,7 @@ public class UrlboxOptionsBuilderTests
                 .Hover(".hover-element")
                 .BgColor("#FAFAFA")
                 .DisableJs()
-                .FullPageMode("native")
+                .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
                 .FullWidth()
                 .AllowInfinite()
                 .SkipScroll()
@@ -354,7 +354,7 @@ public class UrlboxOptionsBuilderTests
         Assert.ThrowsException<ArgumentException>(() =>
         {
             Urlbox.Options(url: "https://urlbox.com").Format("png")
-            .FullPageMode("stitch")
+            .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
             .Build();
         });
 

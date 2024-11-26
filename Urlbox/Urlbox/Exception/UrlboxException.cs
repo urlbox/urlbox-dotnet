@@ -5,8 +5,8 @@ namespace UrlboxSDK;
 public sealed class UrlboxException : Exception
 {
     public string RequestId { get; }
-    public string Code { get; }
-    public string Errors { get; }
+    public string? Code { get; }
+    public string? Errors { get; }
 
     public UrlboxException(UrlboxError error, string requestId)
         : base(error.Message)
@@ -22,8 +22,10 @@ public sealed class UrlboxException : Exception
             throw new ArgumentException("Response cannot be null or empty", nameof(response));
 
         var root = JsonSerializer.Deserialize<RawResponse>(response, deserializerOptions);
-        if (root?.Error == null || string.IsNullOrWhiteSpace(root?.Error.Message) || string.IsNullOrWhiteSpace(root.RequestId))
+        if (root == null || root?.Error == null || string.IsNullOrWhiteSpace(root?.Error.Message) || string.IsNullOrWhiteSpace(root.RequestId))
+        {
             throw new JsonException("Invalid JSON response structure");
+        }
 
         throw new UrlboxException(root.Error, root.RequestId);
     }
@@ -34,10 +36,19 @@ public sealed class UrlboxException : Exception
         public string Message { get; }
 
         [JsonPropertyName("code")]
-        public string Code { get; }
+        public string? Code { get; }
 
         [JsonPropertyName("errors")]
-        public string Errors { get; }
+        public string? Errors { get; }
+
+        [JsonConstructor]
+        public UrlboxError(string message, string? code, string? errors)
+        {
+            Message = message;
+            Code = code;
+            Errors = errors;
+        }
+
     }
 
     private sealed class RawResponse
@@ -47,5 +58,12 @@ public sealed class UrlboxException : Exception
 
         [JsonPropertyName("requestId")]
         public string RequestId { get; }
+
+        [JsonConstructor]
+        public RawResponse(UrlboxError error, string requestId)
+        {
+            Error = error;
+            RequestId = requestId;
+        }
     }
 }

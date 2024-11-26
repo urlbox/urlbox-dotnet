@@ -862,7 +862,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder FullPageMode(string fullPageMode)
+    public UrlboxOptionsBuilder FullPageMode(UrlboxOptions.FullPageModeOption fullPageMode)
     {
         _options.FullPageMode = fullPageMode;
         return this;
