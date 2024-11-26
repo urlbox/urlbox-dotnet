@@ -170,7 +170,7 @@ public class AsyncUrlboxResponseTests
 
 
 [TestClass]
-public class WebhookUrlboxResponseTests
+public class UrlboxWebhookResponseTests
 {
     [TestMethod]
     public void WebhookError_creates()
@@ -190,7 +190,7 @@ public class WebhookUrlboxResponseTests
     }
 
     [TestMethod]
-    public void WebhookUrlboxResponse_CreatesMinGetters()
+    public void UrlboxWebhookResponse_CreatesMinGetters()
     {
         SyncUrlboxResponse response = new(
             renderUrl: "https://urlbox.com",
@@ -199,14 +199,14 @@ public class WebhookUrlboxResponseTests
 
         Meta meta = new(startTime: "START", endTime: "END");
 
-        WebhookUrlboxResponse webhookResponse = new(
+        UrlboxWebhookResponse webhookResponse = new(
             Event: "render.succeeded",
             renderId: "renderId",
             result: response,
             meta: meta
         );
 
-        Assert.IsInstanceOfType(webhookResponse, typeof(WebhookUrlboxResponse));
+        Assert.IsInstanceOfType(webhookResponse, typeof(UrlboxWebhookResponse));
         Assert.IsInstanceOfType(webhookResponse.Result, typeof(SyncUrlboxResponse));
         Assert.AreEqual("render.succeeded", webhookResponse.Event);
         Assert.AreSame(response, webhookResponse.Result);
@@ -214,19 +214,19 @@ public class WebhookUrlboxResponseTests
     }
 
     [TestMethod]
-    public void WebhookUrlboxResponse_CreatesMinGettersWithError()
+    public void UrlboxWebhookResponse_CreatesMinGettersWithError()
     {
         WebhookError error = new(message: "message");
         Meta meta = new(startTime: "START", endTime: "END");
 
-        WebhookUrlboxResponse webhookResponse = new(
+        UrlboxWebhookResponse webhookResponse = new(
             Event: "render.succeeded",
             renderId: "renderId",
             error: error,
             meta: meta
         );
 
-        Assert.IsInstanceOfType(webhookResponse, typeof(WebhookUrlboxResponse));
+        Assert.IsInstanceOfType(webhookResponse, typeof(UrlboxWebhookResponse));
         Assert.AreEqual("render.succeeded", webhookResponse.Event);
         Assert.AreSame(error, webhookResponse.Error);
         Assert.AreSame(meta, webhookResponse.Meta);

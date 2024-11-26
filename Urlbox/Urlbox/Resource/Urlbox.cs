@@ -15,7 +15,7 @@ namespace UrlboxSDK
     {
         private readonly string secret;
         private readonly UrlGenerator urlGenerator;
-        private readonly UrlboxWebhookValidator urlboxWebhookValidator;
+        private readonly UrlboxWebhookValidator? urlboxWebhookValidator;
         private readonly HttpClient httpClient;
         public const string BASE_URL = "https://api.urlbox.com";
         private const string SYNC_ENDPOINT = "/v1/render/sync";
@@ -30,11 +30,11 @@ namespace UrlboxSDK
         /// <param name="html"></param>
         /// <returns></returns>
         public static UrlboxOptionsBuilder Options(
-            string url = null,
-            string html = null
+            string? url = null,
+            string? html = null
             ) => new(url, html);
 
-        public Urlbox(string key, string secret, string webhookSecret = null)
+        public Urlbox(string key, string secret, string? webhookSecret = null)
         {
             if (String.IsNullOrEmpty(key))
             {
@@ -75,8 +75,14 @@ namespace UrlboxSDK
         /// <returns>The Error message as a string</returns>
         private static string GetUrlboxErrorMessage(HttpResponseMessage response)
         {
-            var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string> values);
-            return $"Request failed: {values.FirstOrDefault()}";
+            var errorMessage = response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string>? values);
+
+            if (values != null)
+            {
+                return $"Request failed: {values.FirstOrDefault()}";
+            }
+            // TODO test for this case
+            return $"Request failed: No x-urlbox-error-message header found";
         }
 
         // PUBLIC
@@ -369,17 +375,18 @@ namespace UrlboxSDK
 
                 var deserializerOptions = new JsonSerializerOptions
                 {
-                    // Convert camelCase JSON response to PascalCase class convention
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     PropertyNameCaseInsensitive = true,
                 };
 
-                return JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions);
+                AsyncUrlboxResponse? asyncResponse = JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions);
+
+                if (asyncResponse != null)
+                {
+                    return asyncResponse;
+                }
             }
-            else
-            {
-                throw new ArgumentException($"Failed to check status of async request: {GetUrlboxErrorMessage(response)}");
-            }
+            throw new ArgumentException($"Failed to check status of async request: {GetUrlboxErrorMessage(response)}");
         }
 
         /// <summary>
@@ -388,9 +395,9 @@ namespace UrlboxSDK
         /// </summary>
         /// <param name="header">The x-urlbox-signature header.</param>
         /// <param name="content">The content to verify.</param>
-        /// <returns>Returns a WebhookUrlboxResponse</returns>
+        /// <returns>Returns a UrlboxWebhookResponse</returns>
         /// <exception cref="ArgumentException">Thrown when the webhook secret is not set in the Urlbox instance.</exception>
-        public WebhookUrlboxResponse VerifyWebhookSignature(string header, string content)
+        public UrlboxWebhookResponse VerifyWebhookSignature(string header, string content)
         {
             if (urlboxWebhookValidator is null)
             {
@@ -410,7 +417,7 @@ namespace UrlboxSDK
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<WebhookUrlboxResponse>(content, deserializerOptions);
+            return JsonSerializer.Deserialize<UrlboxWebhookResponse>(content, deserializerOptions);
         }
 
         // PRIVATE
@@ -448,9 +455,9 @@ namespace UrlboxSDK
                 request.Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json");
 
                 request.Headers.Add("Authorization", $"Bearer {secret}");
+                // TODO use DI for new calls ?? 
                 var deserializerOptions = new JsonSerializerOptions
                 {
-                    // Convert camelCase JSON response to PascalCase class convention
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     PropertyNameCaseInsensitive = true,
                 };

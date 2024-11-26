@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace UrlboxSDK;
 
-public sealed class WebhookUrlboxResponse
+public sealed class UrlboxWebhookResponse
 {
     public string Event { get; }
     public string RenderId { get; }
@@ -11,7 +11,7 @@ public sealed class WebhookUrlboxResponse
     public Meta Meta { get; }
 
     [JsonConstructor]
-    public WebhookUrlboxResponse(
+    public UrlboxWebhookResponse(
         string Event,
         string renderId,
         Meta meta,
@@ -21,7 +21,7 @@ public sealed class WebhookUrlboxResponse
     {
         if (result != null && error != null)
         {
-            throw new ArgumentException("The WebhookUrlboxResponse must have one of Error or Response, not both.");
+            throw new ArgumentException("The UrlboxWebhookResponse must have one of Error or Response, not both.");
         }
 
         this.Event = Event;

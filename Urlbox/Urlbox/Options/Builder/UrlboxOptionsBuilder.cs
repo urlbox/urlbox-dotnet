@@ -182,7 +182,7 @@ public sealed class UrlboxOptionsBuilder
     /// </summary>
     /// <param name="url"></param>
     /// <param name="html"></param>
-    public UrlboxOptionsBuilder(string url = null, string html = null)
+    public UrlboxOptionsBuilder(string? url = null, string? html = null)
     {
         this._options = new UrlboxOptions(
             url,
@@ -315,7 +315,7 @@ public sealed class UrlboxOptionsBuilder
          });
     }
 
-    private bool IsNonDefaultValue(object value)
+    private bool IsNonDefaultValue(object? value)
     {
         return value switch
         {
@@ -778,7 +778,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder WaitUntil(string waitUntil)
+    public UrlboxOptionsBuilder WaitUntil(UrlboxOptions.WaitUntilOption waitUntil)
     {
         _options.WaitUntil = waitUntil;
         return this;
@@ -862,7 +862,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder FullPageMode(string fullPageMode)
+    public UrlboxOptionsBuilder FullPageMode(UrlboxOptions.FullPageModeOption fullPageMode)
     {
         _options.FullPageMode = fullPageMode;
         return this;

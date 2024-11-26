@@ -199,7 +199,7 @@ public class UrlboxOptionsBuilderTests
         var options = Urlbox.Options(url: "https://example.com")
             .Delay(1000)
             .Timeout(30000)
-            .WaitUntil("domloaded")
+            .WaitUntil(UrlboxOptions.WaitUntilOption.domloaded)
             .WaitFor("#content")
             .WaitToLeave(".loading")
             .WaitTimeout(5000)
@@ -211,7 +211,7 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual(1000, options.Delay);
         Assert.AreEqual(30000, options.Timeout);
-        Assert.AreEqual("domloaded", options.WaitUntil);
+        Assert.AreEqual(UrlboxOptions.WaitUntilOption.domloaded, options.WaitUntil);
         Assert.AreEqual("#content", options.WaitFor);
         Assert.AreEqual(".loading", options.WaitToLeave);
         Assert.AreEqual(5000, options.WaitTimeout);
@@ -300,7 +300,7 @@ public class UrlboxOptionsBuilderTests
                 .EngineVersion("1.0.0")
                 .Delay(1000)
                 .Timeout(30000)
-                .WaitUntil("domloaded")
+                .WaitUntil(UrlboxOptions.WaitUntilOption.domloaded)
                 .WaitFor("#content")
                 .WaitToLeave(".loading")
                 .WaitTimeout(5000)
@@ -314,7 +314,7 @@ public class UrlboxOptionsBuilderTests
                 .Hover(".hover-element")
                 .BgColor("#FAFAFA")
                 .DisableJs()
-                .FullPageMode("native")
+                .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
                 .FullWidth()
                 .AllowInfinite()
                 .SkipScroll()
@@ -354,7 +354,7 @@ public class UrlboxOptionsBuilderTests
         Assert.ThrowsException<ArgumentException>(() =>
         {
             Urlbox.Options(url: "https://urlbox.com").Format("png")
-            .FullPageMode("stitch")
+            .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
             .Build();
         });
 
