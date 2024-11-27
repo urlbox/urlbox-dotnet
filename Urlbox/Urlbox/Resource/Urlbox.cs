@@ -416,8 +416,10 @@ namespace UrlboxSDK
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             };
+            UrlboxWebhookResponse? urlboxWebhookResponse = JsonSerializer.Deserialize<UrlboxWebhookResponse>(content, deserializerOptions) ??
+                throw new Exception("Cannot verify that this response came from Urlbox. Response could not be deserialized.");
 
-            return JsonSerializer.Deserialize<UrlboxWebhookResponse>(content, deserializerOptions);
+            return urlboxWebhookResponse;
         }
 
         // PRIVATE
@@ -470,8 +472,10 @@ namespace UrlboxSDK
                 {
                     return endpoint switch
                     {
-                        SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions),
-                        ASYNC_ENDPOINT => JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions),
+                        SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions)
+                            ?? throw new Exception("Could not deserialize response from Urlbox API."),
+                        ASYNC_ENDPOINT => JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions)
+                            ?? throw new Exception("Could not deserialize response from Urlbox API."),
                         _ => throw new ArgumentException("Invalid endpoint."),
                     };
                 }

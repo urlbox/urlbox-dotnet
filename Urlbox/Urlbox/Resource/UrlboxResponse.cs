@@ -27,19 +27,19 @@ public abstract class AbstractUrlboxResponse
         return url;
     }
 
-    public string HtmlUrl { get; }
-    public string MhtmlUrl { get; }
-    public string MetadataUrl { get; }
-    public string MarkdownUrl { get; }
-    public UrlboxMetadata Metadata { get; }
+    public string? HtmlUrl { get; }
+    public string? MhtmlUrl { get; }
+    public string? MetadataUrl { get; }
+    public string? MarkdownUrl { get; }
+    public UrlboxMetadata? Metadata { get; }
 
     [JsonConstructor]
     protected AbstractUrlboxResponse(
-        string htmlUrl = null,
-        string mhtmlUrl = null,
-        string metadataUrl = null,
-        string markdownUrl = null,
-        UrlboxMetadata metadata = null
+        string? htmlUrl = null,
+        string? mhtmlUrl = null,
+        string? metadataUrl = null,
+        string? markdownUrl = null,
+        UrlboxMetadata? metadata = null
     )
     {
         HtmlUrl = string.IsNullOrEmpty(htmlUrl) ? null : CheckExtension(htmlUrl, EXTENSION_HTML);
@@ -68,11 +68,11 @@ public sealed class SyncUrlboxResponse : AbstractUrlboxResponse
     public SyncUrlboxResponse(
         string renderUrl,
         int size,
-        string htmlUrl = null,
-        string mhtmlUrl = null,
-        string metadataUrl = null,
-        string markdownUrl = null,
-        UrlboxMetadata metadata = null
+        string? htmlUrl = null,
+        string? mhtmlUrl = null,
+        string? metadataUrl = null,
+        string? markdownUrl = null,
+        UrlboxMetadata? metadata = null
     ) : base(htmlUrl, mhtmlUrl, metadataUrl, markdownUrl, metadata)
     {
         RenderUrl = renderUrl;
@@ -89,7 +89,7 @@ public sealed class AsyncUrlboxResponse : AbstractUrlboxResponse
     public string RenderId { get; } // A UUID for the request
     public string StatusUrl { get; } // A url which you can poll to check the render's status
 
-    public string RenderUrl { get; } // only on status succeeded
+    public string? RenderUrl { get; } // only on status succeeded
     public int? Size { get; } // only on status succeeded
 
     [JsonConstructor]
@@ -98,12 +98,12 @@ public sealed class AsyncUrlboxResponse : AbstractUrlboxResponse
         string renderId,
         string statusUrl,
         int? size = null,
-        string renderUrl = null,
-        string htmlUrl = null,
-        string mhtmlUrl = null,
-        string metadataUrl = null,
-        string markdownUrl = null,
-        UrlboxMetadata metadata = null
+        string? renderUrl = null,
+        string? htmlUrl = null,
+        string? mhtmlUrl = null,
+        string? metadataUrl = null,
+        string? markdownUrl = null,
+        UrlboxMetadata? metadata = null
         ) : base(htmlUrl, mhtmlUrl, metadataUrl, markdownUrl, metadata)
     {
         Status = status;
