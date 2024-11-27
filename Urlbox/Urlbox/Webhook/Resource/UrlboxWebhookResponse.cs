@@ -6,8 +6,8 @@ public sealed class UrlboxWebhookResponse
 {
     public string Event { get; }
     public string RenderId { get; }
-    public WebhookError Error { get; }
-    public SyncUrlboxResponse Result { get; }
+    public WebhookError? Error { get; }
+    public SyncUrlboxResponse? Result { get; }
     public Meta Meta { get; }
 
     [JsonConstructor]
@@ -15,8 +15,8 @@ public sealed class UrlboxWebhookResponse
         string Event,
         string renderId,
         Meta meta,
-        SyncUrlboxResponse result = null,
-        WebhookError error = null
+        SyncUrlboxResponse? result = null,
+        WebhookError? error = null
     )
     {
         if (result != null && error != null)
@@ -27,8 +27,8 @@ public sealed class UrlboxWebhookResponse
         this.Event = Event;
         RenderId = renderId;
         Meta = meta;
-        Result = result;
-        Error = error;
+        if (result != null) Result = result;
+        if (error != null) Error = error;
     }
 }
 

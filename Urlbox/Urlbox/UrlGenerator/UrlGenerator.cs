@@ -31,15 +31,21 @@ public sealed class UrlGenerator
                 {
                     var value = prop.GetValue(options, null);
                     return value != null &&
-                        !(value is bool && (bool)value == false) && // skip false if bool
-                        !(value is int && (int)value == 0) && // skip 0's if int
-                        !(value is double && (double)value == 0.0) && // skip 0's if double
-                        !(value is string && string.IsNullOrEmpty((string)value)) && // skip empty strings if string
-                        !(value is string[] arr && arr.Length == 0); // skip empty arrays
+                        !(value is bool valueBool && valueBool == false) && // skip false if bool
+                        !(value is int valueInt && valueInt == 0) && // skip 0's if int
+                        !(value is double valueDouble && valueDouble == 0.0) && // skip 0's if double
+                        !(value is string valueString && string.IsNullOrEmpty(valueString)) && // skip empty strings if string
+                        !(value is string[] valueArray && valueArray.Length == 0); // skip empty arrays
                 })
-            .OrderBy((prop) => prop.Name)
-            // Convert values to string reps
-            .Select(prop => new KeyValuePair<string, string>(prop.Name, ConvertToString(prop.GetValue(options))))
+            .OrderBy(prop => prop.Name)
+            // Convert not null values to string representation
+            .Select(prop =>
+            {
+                var propValue = prop.GetValue(options) ??
+                    throw new ArgumentException($"Cannot convert options to a query string: trying to convert {prop.Name} which has a null value.");
+                string stringValue = ConvertToString(propValue);
+                return new KeyValuePair<string, string>(prop.Name, stringValue);
+            })
             .Where(pair => !pair.Key.ToLower().Equals("format")) // Skip 'format' if present
             .Select(pair => string.Format("{0}={1}", FormatKeyName(pair.Key), Uri.EscapeDataString(pair.Value)))
             .ToArray();
@@ -74,11 +80,19 @@ public sealed class UrlGenerator
         }
 
         var result = Convert.ToString(value);
-        if (result.Equals("False") || result.Equals("True"))
+        if (result == null)
         {
-            result = result.ToLower();
+            // TODO Test for this
+            throw new Exception("Could not convert value to string.");
         }
-        return result;
+        else
+        {
+            if (result.Equals("False") || result.Equals("True"))
+            {
+                result = result.ToLower();
+            }
+            return result;
+        }
     }
 
     /// <summary>
