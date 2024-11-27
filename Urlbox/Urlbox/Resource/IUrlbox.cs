@@ -29,5 +29,5 @@ public interface IUrlbox
 
     // Status and Validation Methods
     Task<AsyncUrlboxResponse> GetStatus(string statusUrl);
-    WebhookUrlboxResponse VerifyWebhookSignature(string header, string content);
+    UrlboxWebhookResponse VerifyWebhookSignature(string header, string content);
 }
