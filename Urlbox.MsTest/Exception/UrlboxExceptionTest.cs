@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
+using UrlboxSDK.Exception;
 
 [TestClass]
 public class UrlboxExceptionTests

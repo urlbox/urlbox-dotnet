@@ -295,4 +295,3 @@ public sealed class UrlboxOptions
     public bool SaveMarkdown { get; set; }
     public bool SaveMetadata { get; set; }
     public bool Metadata { get; set; }
-}
