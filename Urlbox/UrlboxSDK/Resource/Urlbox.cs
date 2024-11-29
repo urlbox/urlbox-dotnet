@@ -410,6 +410,7 @@ public sealed class Urlbox : IUrlbox
     public async Task<AsyncUrlboxResponse> GetStatus(string renderId)
     {
         string statusUrl = $"{this.baseUrl}{STATUS_ENDPOINT}/{renderId}";
+
         HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
         if (response.IsSuccessStatusCode)
         {

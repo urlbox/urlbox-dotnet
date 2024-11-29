@@ -718,3 +718,37 @@ public class DownloadTests
         );
     }
 }
+
+
+[TestClass]
+public class GetStatusTests
+{
+    [TestMethod]
+    public async Task GetStatus_succeeds()
+    {
+        string renderId = "ca482d7e-9417-4569-90fe-80f7c5e1c781";
+        Urlbox urlbox = Urlbox.FromCredentials("KEY", "SECRET", "WEBHOOK");
+
+        AsyncUrlboxResponse status = await urlbox.GetStatus(renderId);
+
+        Assert.AreEqual(status.RenderId, renderId);
+        Assert.IsNotNull(status.Status);
+        Assert.AreEqual(status.Status, "created");
+    }
+
+    [TestMethod]
+    public async Task GetStatus_fails()
+    {
+        string renderId = "ca482d7e-9417-4569-90fe-80f7c5e1c781";
+        Urlbox urlbox = Urlbox.FromCredentials("KEY", "SECRET", "WEBHOOK", "https://example.com");
+
+        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(
+            async () => await urlbox.GetStatus(renderId)
+        );
+
+        Assert.AreEqual(
+            "Failed to check status of async request: Request failed: No x-urlbox-error-message header found",
+             exception.Message
+        );
+    }
+}
