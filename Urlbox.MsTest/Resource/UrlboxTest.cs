@@ -118,6 +118,7 @@ public class UrlTests
     };
 
     private Urlbox urlbox;
+    private Urlbox urlboxEu;
     private Urlbox dummyUrlbox;
     private UrlGenerator urlGenerator;
 
@@ -143,6 +144,7 @@ public class UrlTests
         }
         // With genuine API key and Secret
         urlbox = new Urlbox(urlboxKey, urlboxSecret, "webhook_secret");
+        urlboxEu = new Urlbox(urlboxKey, urlboxSecret, "webhook_secret", "https://api-eu.urlbox.com");
         urlGenerator = new UrlGenerator("MY_API_KEY", "secret");
 
         // With dummy API key and Secret
@@ -182,6 +184,17 @@ public class UrlTests
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=test&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=Tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=123&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
+            output
+        );
+    }
+
+    [TestMethod]
+    public void GenerateRenderLink_eu()
+    {
+        var output = urlboxEu.GenerateRenderLink(urlboxAllOptions);
+
+        Assert.AreEqual(
+            "https://api-eu.urlbox.com/v1/rDksAC9TwlPFqvWw/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=test&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=Tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=123&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
             output
         );
     }
@@ -333,7 +346,7 @@ public class UrlTests
             Format = UrlboxOptions.FormatOption.png,
             FullPage = true
         };
-        var output = urlGenerator.GenerateRenderLink(options);
+        var output = urlGenerator.GenerateRenderLink(Urlbox.BASE_URL, options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
     }
@@ -344,6 +357,18 @@ public class UrlTests
         UrlboxOptions options = new(url: "https://urlbox.com");
         options.ClickAccept = true;
         SyncUrlboxResponse result = await urlbox.Render(options);
+
+        Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
+    public async Task RenderSync_Succeeds_eu()
+    {
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
+        options.ClickAccept = true;
+        SyncUrlboxResponse result = await urlboxEu.Render(options);
 
         Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(result.RenderUrl);

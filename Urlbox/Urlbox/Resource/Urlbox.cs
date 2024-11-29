@@ -17,10 +17,12 @@ namespace UrlboxSDK
         private readonly UrlGenerator urlGenerator;
         private readonly UrlboxWebhookValidator? urlboxWebhookValidator;
         private readonly HttpClient httpClient;
-        public const string BASE_URL = "https://api.urlbox.com";
+        private readonly string baseUrl;
+        public const string DOMAIN = "urlbox.com";
+        public const string BASE_URL = "https://api." + DOMAIN;
         private const string SYNC_ENDPOINT = "/v1/render/sync";
         private const string ASYNC_ENDPOINT = "/v1/render/async";
-        private const string STATUS_ENDPOINT = BASE_URL + "/v1/render";
+        private const string STATUS_ENDPOINT = "/v1/render";
         public const int DEFAULT_TIMEOUT = 60000; // 60 seconds
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace UrlboxSDK
             string? html = null
             ) => new(url, html);
 
-        public Urlbox(string key, string secret, string? webhookSecret = null)
+        public Urlbox(string key, string secret, string? webhookSecret = null, string? baseUrl = BASE_URL)
         {
             if (String.IsNullOrEmpty(key))
             {
@@ -45,6 +47,7 @@ namespace UrlboxSDK
                 throw new ArgumentException("Please provide your Urlbox.com API Secret");
             }
             this.secret = secret;
+            this.baseUrl = baseUrl ?? BASE_URL;
             urlGenerator = new UrlGenerator(key, secret);
             httpClient = new HttpClient();
             if (!String.IsNullOrEmpty(webhookSecret))
@@ -64,9 +67,9 @@ namespace UrlboxSDK
         /// <param name="client"></param>
         /// <returns>A new instance of the Urlbox class.</returns>
         /// <exception cref="ArgumentException">Thrown when there is no api key or secret</exception>
-        public static Urlbox FromCredentials(string apiKey, string apiSecret, string webhookSecret)
+        public static Urlbox FromCredentials(string apiKey, string apiSecret, string? webhookSecret, string? baseUrl = BASE_URL)
         {
-            return new Urlbox(apiKey, apiSecret, webhookSecret);
+            return new Urlbox(apiKey, apiSecret, webhookSecret, baseUrl);
         }
 
         /// <summary>
@@ -345,7 +348,7 @@ namespace UrlboxSDK
         /// <returns>A render link URL to render the content.</returns>
         public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = false)
         {
-            return urlGenerator.GenerateRenderLink(options, format, sign);
+            return urlGenerator.GenerateRenderLink(this.baseUrl, options, format, sign);
         }
 
         /// <summary>
@@ -356,7 +359,7 @@ namespace UrlboxSDK
         /// <returns>A render link URL to render the content.</returns>
         public string GenerateSignedRenderLink(UrlboxOptions options, string format = "png")
         {
-            return urlGenerator.GenerateRenderLink(options, format, true);
+            return urlGenerator.GenerateRenderLink(this.baseUrl, options, format, true);
         }
 
         // ** Status and Validation Methods **
@@ -367,7 +370,7 @@ namespace UrlboxSDK
         /// <returns></returns>
         public async Task<AsyncUrlboxResponse> GetStatus(string renderId)
         {
-            string statusUrl = $"{STATUS_ENDPOINT}/{renderId}";
+            string statusUrl = $"{this.baseUrl}{STATUS_ENDPOINT}/{renderId}";
             HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
             if (response.IsSuccessStatusCode)
             {
