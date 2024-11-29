@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox", "Urlbox/Urlbox/UrlboxSDK.csproj", "{EB9CA65B-8F85-4CF9-913A-A8C75E72A926}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox", "UrlboxSDK/UrlboxSDK.csproj", "{EB9CA65B-8F85-4CF9-913A-A8C75E72A926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox.MsTest", "Urlbox.MsTest\Urlbox.MsTest.csproj", "{B9E8D269-174F-42C1-9569-FCA4CC8C05E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox.MsTest", "UrlboxSDK.MsTest/UrlboxSDK.MsTest.csproj", "{B9E8D269-174F-42C1-9569-FCA4CC8C05E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
