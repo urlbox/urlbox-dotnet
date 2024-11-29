@@ -5,12 +5,13 @@ namespace UrlboxSDK;
 /// <summary>
 /// A class encompassing Url Generation logic.
 /// </summary>
-public sealed class UrlGenerator
+/// 
+public sealed class RenderLinkGenerator
 {
     private readonly String key;
     private readonly String secret;
 
-    public UrlGenerator(string key, string secret)
+    public RenderLinkGenerator(string key, string secret)
     {
         this.key = key;
         this.secret = secret;
@@ -82,7 +83,6 @@ public sealed class UrlGenerator
         var result = Convert.ToString(value);
         if (result == null)
         {
-            // TODO Test for this
             throw new Exception("Could not convert value to string.");
         }
         else

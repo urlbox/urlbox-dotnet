@@ -14,7 +14,7 @@ namespace UrlboxSDK
     public sealed class Urlbox : IUrlbox
     {
         private readonly string secret;
-        private readonly UrlGenerator urlGenerator;
+        private readonly RenderLinkGenerator renderLinkGenerator;
         private readonly UrlboxWebhookValidator? urlboxWebhookValidator;
         private readonly HttpClient httpClient;
         private readonly string baseUrl;
@@ -48,7 +48,7 @@ namespace UrlboxSDK
             }
             this.secret = secret;
             this.baseUrl = baseUrl ?? BASE_URL;
-            urlGenerator = new UrlGenerator(key, secret);
+            renderLinkGenerator = new RenderLinkGenerator(key, secret);
             httpClient = new HttpClient();
             if (!String.IsNullOrEmpty(webhookSecret))
             {
@@ -387,7 +387,7 @@ namespace UrlboxSDK
         /// <returns>A render link URL to render the content.</returns>
         public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = false)
         {
-            return urlGenerator.GenerateRenderLink(this.baseUrl, options, format, sign);
+            return renderLinkGenerator.GenerateRenderLink(this.baseUrl, options, format, sign);
         }
 
         /// <summary>
@@ -398,7 +398,7 @@ namespace UrlboxSDK
         /// <returns>A render link URL to render the content.</returns>
         public string GenerateSignedRenderLink(UrlboxOptions options, string format = "png")
         {
-            return urlGenerator.GenerateRenderLink(this.baseUrl, options, format, true);
+            return renderLinkGenerator.GenerateRenderLink(this.baseUrl, options, format, true);
         }
 
         // ** Status and Validation Methods **
