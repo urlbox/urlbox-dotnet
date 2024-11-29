@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Configuration;
 using UrlboxSDK;
 using System.Collections.Generic;
+using UrlboxSDK.Exception;
 
 [TestClass]
 public class UrlTests

@@ -83,7 +83,7 @@ public sealed class RenderLinkGenerator
         var result = Convert.ToString(value);
         if (result == null)
         {
-            throw new Exception("Could not convert value to string.");
+            throw new System.Exception("Could not convert value to string.");
         }
         else
         {

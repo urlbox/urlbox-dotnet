@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace UrlboxSDK;
+namespace UrlboxSDK.Exception;
 
-public sealed class UrlboxException : Exception
+public sealed class UrlboxException : System.Exception
 {
     public string RequestId { get; }
     public string? Code { get; }
