@@ -224,6 +224,25 @@ namespace UrlboxSDK
         }
 
         /// <summary>
+        /// Sends a synchronous render request to the Urlbox API and returns the rendered screenshot url and size.
+        /// </summary>
+        /// <param name="options">The configuration options for the API request.</param>
+        /// <returns>A <see cref="SyncUrlboxResponse"/> containing the result of the render request.</returns>
+        /// <exception cref="Exception">Thrown when the response is of an asynchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the v1/render/sync endpoint, expecting a synchronous response. 
+        /// </remarks>
+        public async Task<SyncUrlboxResponse> Render(IDictionary<string, object> options)
+        {
+            AbstractUrlboxResponse result = await MakeUrlboxPostRequest(SYNC_ENDPOINT, options);
+            return result switch
+            {
+                SyncUrlboxResponse syncResponse => syncResponse,
+                _ => throw new Exception("Response expected from .Render was one of SyncUrlboxResponse."),
+            };
+        }
+
+        /// <summary>
         /// Sends an asynchronous render request to the Urlbox API and returns the status of the render request, as 
         /// well as a renderId and a statusUrl which can be polled to find out when the render succeeds.
         /// </summary>
@@ -234,6 +253,26 @@ namespace UrlboxSDK
         /// This method makes an HTTP POST request to the /render/async endpoint, expecting an asynchronous response. 
         /// </remarks>
         public async Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options)
+        {
+            AbstractUrlboxResponse result = await MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
+            return result switch
+            {
+                AsyncUrlboxResponse asyncResponse => asyncResponse,
+                _ => throw new Exception("Response expected from .Render was one of AsyncUrlboxResponse."),
+            };
+        }
+
+        /// <summary>
+        /// Sends an asynchronous render request to the Urlbox API and returns the status of the render request, as 
+        /// well as a renderId and a statusUrl which can be polled to find out when the render succeeds.
+        /// </summary>
+        /// <param name="options">The configuration options for the API request.</param>
+        /// <returns>A <see cref="AsyncUrlboxResponse"/> containing the result of the asynchronous render request, including the statusUrl, status and renderId.</returns>
+        /// <exception cref="Exception">Thrown when the response is of a synchronous type, indicating an incorrect endpoint was called.</exception>
+        /// <remarks>
+        /// This method makes an HTTP POST request to the /render/async endpoint, expecting an asynchronous response. 
+        /// </remarks>
+        public async Task<AsyncUrlboxResponse> RenderAsync(IDictionary<string, object> options)
         {
             AbstractUrlboxResponse result = await MakeUrlboxPostRequest(ASYNC_ENDPOINT, options);
             return result switch
@@ -438,14 +477,13 @@ namespace UrlboxSDK
         /// The method first validates the endpoint, then constructs the request with the provided options, serializing them to JSON using the snake_case naming policy. 
         /// The request is authenticated via a Bearer token, and the response is deserialized from camelCase to PascalCase to fit C# conventions.
         /// </remarks>
-        private async Task<AbstractUrlboxResponse> MakeUrlboxPostRequest(string endpoint, UrlboxOptions options)
+        private async Task<AbstractUrlboxResponse> MakeUrlboxPostRequest(string endpoint, object options)
         {
             if (endpoint != SYNC_ENDPOINT && endpoint != ASYNC_ENDPOINT)
             {
                 throw new ArgumentException("Endpoint must be one of /render/sync or /render/async.");
             }
-            string url = BASE_URL + endpoint;
-
+            string url = this.baseUrl + endpoint;
             JsonSerializerOptions serializeOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy(),

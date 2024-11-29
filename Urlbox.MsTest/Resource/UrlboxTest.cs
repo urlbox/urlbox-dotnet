@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Configuration;
 using UrlboxSDK;
+using System.Collections.Generic;
 
 [TestClass]
 public class UrlTests
@@ -364,6 +365,21 @@ public class UrlTests
     }
 
     [TestMethod]
+    public async Task RenderSync_Dictionary_Succeeds()
+    {
+        IDictionary<string, object> options = new Dictionary<string, object>
+        {
+            { "click_accept", true },
+            { "url", "https://urlbox.com" }
+        };
+        SyncUrlboxResponse result = await urlbox.Render(options);
+
+        Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
+        Assert.IsNotNull(result.RenderUrl);
+        Assert.IsNotNull(result.Size);
+    }
+
+    [TestMethod]
     public async Task RenderSync_Succeeds_eu()
     {
         UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
@@ -431,9 +447,50 @@ public class UrlTests
     }
 
     [TestMethod]
+    public async Task RenderAsync_Dictionary_Succeeds()
+    {
+        IDictionary<string, object> options = new Dictionary<string, object>
+        {
+            { "click_accept", true },
+            { "url", "https://urlbox.com" }
+        };
+        var result = await urlbox.RenderAsync(options);
+
+        Assert.IsInstanceOfType(result, typeof(AsyncUrlboxResponse));
+        Assert.IsNotNull(result.Status);
+        Assert.IsNotNull(result.RenderId);
+        Assert.IsNotNull(result.StatusUrl);
+
+        Assert.AreEqual("created", result.Status, "Render Async Failed");
+
+        // Assert that optional fields should still be null
+        Assert.IsNull(result.RenderUrl);
+        Assert.IsNull(result.HtmlUrl);
+        Assert.IsNull(result.MhtmlUrl);
+        Assert.IsNull(result.MarkdownUrl);
+        Assert.IsNull(result.MetadataUrl);
+        Assert.IsNull(result.Metadata);
+        Assert.IsNull(result.Size);
+    }
+
+    [TestMethod]
     public async Task Render_ThrowsException()
     {
         UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
+        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.Render(options));
+
+        Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
+        Assert.AreEqual("InvalidOptions", exception.Code);
+        Assert.IsNotNull(exception.Errors);
+    }
+
+    [TestMethod]
+    public async Task Render_Dictionary_ThrowsException()
+    {
+        IDictionary<string, object> options = new Dictionary<string, object>
+        {
+            { "url", "https://FAKE_WEBSITE.com" }
+        };
         var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.Render(options));
 
         Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
@@ -466,6 +523,19 @@ public class UrlTests
     public async Task RenderAsync_ThrowsException()
     {
         UrlboxOptions options = new(url: "https://FAKE_WEBSITE.com");
+        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.RenderAsync(options));
+        Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
+        Assert.AreEqual("InvalidOptions", exception.Code);
+        Assert.IsNotNull(exception.Errors);
+    }
+
+    [TestMethod]
+    public async Task RenderAsync_Dictionary_ThrowsException()
+    {
+        IDictionary<string, object> options = new Dictionary<string, object>
+        {
+            { "url", "https://FAKE_WEBSITE.com" }
+        };
         var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(async () => await urlbox.RenderAsync(options));
         Assert.IsTrue(exception.Message.Contains("Invalid options, please check errors -"));
         Assert.AreEqual("InvalidOptions", exception.Code);
