@@ -243,7 +243,7 @@ public sealed class UrlboxOptionsBuilder
 
     private UrlboxOptions ValidateScreenshotOptions(UrlboxOptions options)
     {
-        var thumbSizes = options.ThumbWidth != 0 || options.ThumbHeight != 0;
+        var thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
         bool hasImgFit = options.ImgFit != null && Enum.IsDefined(typeof(UrlboxOptions.ImgFitOption), options.ImgFit);
         bool hasImgPosition = options.ImgPosition != null && Enum.IsDefined(typeof(UrlboxOptions.ImgPositionOption), options.ImgPosition);
 

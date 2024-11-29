@@ -73,8 +73,8 @@ public sealed class UrlboxOptions
     public bool DarkMode { get; set; }
     public bool ReducedMotion { get; set; }
     public bool Retina { get; set; }
-    public int ThumbWidth { get; set; }
-    public int ThumbHeight { get; set; }
+    public int? ThumbWidth { get; set; }
+    public int? ThumbHeight { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ImgFitOption
@@ -105,9 +105,9 @@ public sealed class UrlboxOptions
 
     public string? ImgBg { get; set; } // red #ccc rgb() rgba() or hsl()
     public string? ImgPad { get; set; } // either 10 or 10,10,10,10
-    public int Quality { get; set; } // between 0 to 100
+    public int? Quality { get; set; } // between 0 to 100
     public bool Transparent { get; set; }
-    public int MaxHeight { get; set; }
+    public int? MaxHeight { get; set; }
     public string? Download { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -127,8 +127,8 @@ public sealed class UrlboxOptions
     }
     public PdfPageSizeOption? PdfPageSize { get; set; }
     public string? PdfPageRange { get; set; }
-    public int PdfPageWidth { get; set; }
-    public int PdfPageHeight { get; set; }
+    public int? PdfPageWidth { get; set; }
+    public int? PdfPageHeight { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PdfMarginOption
@@ -138,10 +138,10 @@ public sealed class UrlboxOptions
         minimum
     }
     public PdfMarginOption? PdfMargin { get; set; } //none default minimum
-    public int PdfMarginTop { get; set; }
-    public int PdfMarginRight { get; set; }
-    public int PdfMarginBottom { get; set; }
-    public int PdfMarginLeft { get; set; }
+    public int? PdfMarginTop { get; set; }
+    public int? PdfMarginRight { get; set; }
+    public int? PdfMarginBottom { get; set; }
+    public int? PdfMarginLeft { get; set; }
     public bool PdfAutoCrop { get; set; }
     public double PdfScale { get; set; } // 0.1 up to 2
 
@@ -165,7 +165,7 @@ public sealed class UrlboxOptions
     public bool Readable { get; set; }
     public bool Force { get; set; }
     public string? Unique { get; set; }
-    public int Ttl { get; set; }
+    public int? Ttl { get; set; }
     public string? Proxy { get; set; }
 
     private object? _header;
@@ -222,8 +222,8 @@ public sealed class UrlboxOptions
     public string? Authorization { get; set; }
     public string? Tz { get; set; }
     public string? EngineVersion { get; set; }
-    public int Delay { get; set; }
-    public int Timeout { get; set; }
+    public int? Delay { get; set; }
+    public int? Timeout { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum WaitUntilOption
@@ -236,7 +236,7 @@ public sealed class UrlboxOptions
     public WaitUntilOption? WaitUntil { get; set; }
     public string? WaitFor { get; set; }
     public string? WaitToLeave { get; set; }
-    public int WaitTimeout { get; set; }
+    public int? WaitTimeout { get; set; }
     public bool FailIfSelectorMissing { get; set; }
     public bool FailIfSelectorPresent { get; set; }
     public bool FailOn4xx { get; set; }
@@ -259,15 +259,15 @@ public sealed class UrlboxOptions
     public bool AllowInfinite { get; set; }
     public bool SkipScroll { get; set; }
     public bool DetectFullHeight { get; set; }
-    public int MaxSectionHeight { get; set; }
-    public int ScrollIncrement { get; set; }
-    public int ScrollDelay { get; set; }
+    public int? MaxSectionHeight { get; set; }
+    public int? ScrollIncrement { get; set; }
+    public int? ScrollDelay { get; set; }
     public string? Highlight { get; set; }
     public string? HighlightFg { get; set; }
     public string? HighlightBg { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-    public int Accuracy { get; set; }
+    public int? Accuracy { get; set; }
     public bool UseS3 { get; set; }
     public string? S3Path { get; set; }
     public string? S3Bucket { get; set; }
