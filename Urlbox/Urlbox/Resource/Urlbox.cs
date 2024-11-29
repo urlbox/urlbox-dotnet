@@ -152,7 +152,7 @@ namespace UrlboxSDK
         /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
         public async Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options)
         {
-            options.Format = "pdf";
+            options.Format = UrlboxOptions.FormatOption.pdf;
             return await this.TakeScreenshot(options);
         }
 
@@ -163,7 +163,7 @@ namespace UrlboxSDK
         /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
         public async Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options)
         {
-            options.Format = "mp4";
+            options.Format = UrlboxOptions.FormatOption.mp4;
             return await this.TakeScreenshot(options);
         }
 

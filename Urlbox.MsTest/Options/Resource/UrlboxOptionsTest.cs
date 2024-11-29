@@ -1,4 +1,7 @@
+#nullable enable
+
 using System;
+using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK;
 
@@ -75,5 +78,45 @@ public class UrlboxOptionsTest
         };
 
         Assert.IsTrue(urlboxOptions.FullPage);
+    }
+
+    /// <summary>
+    /// Tests the string validation for platform
+    /// </summary>
+    /// <param name="platform"></param>
+    /// <param name="expectation"></param>
+    [TestMethod]
+    [DataRow("Linux armv81", "Linux armv81")]
+    [DataRow("Linux x86_64", "Linux x86_64")]
+    [DataRow("Win32", "Win32")]
+    [DataRow("MacIntel", "MacIntel")]
+    [DataRow("something not acceptable", null)]
+    public void UrlboxOptions_CreatedWithPlatforms(
+        string platform,
+        string? expectation
+    )
+    {
+        if (expectation == null)
+        {
+            Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
+        .Platform(platform)
+        .Build());
+        }
+        else
+        {
+            UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
+            .Platform(platform)
+            .Build();
+            JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy(),
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
+                WriteIndented = true
+            };
+
+            Assert.AreEqual(platform, options.Platform);
+            string serialized = JsonSerializer.Serialize(options, serializeOptions);
+            Assert.IsTrue(serialized.Contains(expectation));
+        }
     }
 }

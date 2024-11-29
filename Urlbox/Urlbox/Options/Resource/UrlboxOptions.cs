@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace UrlboxSDK;
 
 /// <summary>
@@ -11,7 +13,7 @@ public sealed class UrlboxOptions
     {
         if (
             (String.IsNullOrEmpty(url) && !String.IsNullOrEmpty(html)) ||
-            (!String.IsNullOrEmpty(url) && String.IsNullOrEmpty(html))
+        (!String.IsNullOrEmpty(url) && String.IsNullOrEmpty(html))
          )
         {
             Url = url;
@@ -26,14 +28,32 @@ public sealed class UrlboxOptions
     public string? Url { get; }
     public string? WebhookUrl { get; set; }
     public string? Html { get; }
-    public string? Format { get; set; } // png jpeg webp avif svg pdf html mp4 webm md
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum FormatOption
+    {
+        png,
+        jpeg,
+        webp,
+        avif,
+        svg,
+        pdf,
+        html,
+        mp4,
+        webm,
+        md
+    }
+    public FormatOption? Format { get; set; }
     public int? Width { get; set; }
     public int? Height { get; set; }
     public bool FullPage { get; set; }
     public string? Selector { get; set; }
     public string? Clip { get; set; } // x,y,width,height EG "0,0,400,400"
     public bool Gpu { get; set; }
-    public string? ResponseType { get; set; } // one of json or binary
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ResponseTypeOption { json, binary }
+    public ResponseTypeOption? ResponseType { get; set; }
     public bool BlockAds { get; set; }
     public bool HideCookieBanners { get; set; }
     public bool ClickAccept { get; set; }
@@ -55,8 +75,33 @@ public sealed class UrlboxOptions
     public bool Retina { get; set; }
     public int ThumbWidth { get; set; }
     public int ThumbHeight { get; set; }
-    public string? ImgFit { get; set; } // cover contain fill inside outside
-    public string? ImgPosition { get; set; } // if img_fit is cover or contain then possible values for this are: north northeast east southeast south southwest west northwest center centre
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ImgFitOption
+    {
+        cover,
+        contain,
+        fill,
+        inside,
+        outside
+    }
+    public ImgFitOption? ImgFit { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ImgPositionOption
+    {
+        north,
+        northeast,
+        east,
+        southeast,
+        south,
+        southwest,
+        west,
+        northwest,
+        center,
+        centre
+    }
+    public ImgPositionOption? ImgPosition { get; set; }
 
     public string? ImgBg { get; set; } // red #ccc rgb() rgba() or hsl()
     public string? ImgPad { get; set; } // either 10 or 10,10,10,10
@@ -64,21 +109,55 @@ public sealed class UrlboxOptions
     public bool Transparent { get; set; }
     public int MaxHeight { get; set; }
     public string? Download { get; set; }
-    public string? PdfPageSize { get; set; } // A0 A1 A2 A3 A4 A5 A6 Legal Letter Ledger Tabloid
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfPageSizeOption
+    {
+        A0,
+        A1,
+        A2,
+        A3,
+        A4,
+        A5,
+        A6,
+        Legal,
+        Letter,
+        Ledger,
+        Tabloid
+    }
+    public PdfPageSizeOption? PdfPageSize { get; set; }
     public string? PdfPageRange { get; set; }
     public int PdfPageWidth { get; set; }
     public int PdfPageHeight { get; set; }
-    public string? PdfMargin { get; set; } //none default minimum
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfMarginOption
+    {
+        none,
+        @default,
+        minimum
+    }
+    public PdfMarginOption? PdfMargin { get; set; } //none default minimum
     public int PdfMarginTop { get; set; }
     public int PdfMarginRight { get; set; }
     public int PdfMarginBottom { get; set; }
     public int PdfMarginLeft { get; set; }
     public bool PdfAutoCrop { get; set; }
     public double PdfScale { get; set; } // 0.1 up to 2
-    public string? PdfOrientation { get; set; } // portrait landscape
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfOrientationOption
+    {
+        portrait,
+        landscape
+    }
+    public PdfOrientationOption? PdfOrientation { get; set; }
     public bool PdfBackground { get; set; }
     public bool DisableLigatures { get; set; }
-    public string? Media { get; set; } // print or screen
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum MediaOption { print, screen }
+    public MediaOption? Media { get; set; }
     public bool PdfShowHeader { get; set; }
     public string? PdfHeader { get; set; }
     public bool PdfShowFooter { get; set; }
@@ -124,7 +203,21 @@ public sealed class UrlboxOptions
     }
 
     public string? UserAgent { get; set; }
-    public string? Platform { get; set; } // MacIntel | Linux x86_64 | Linux armv81 | Win32
+    private string? _platform;
+
+    public string? Platform
+    {
+        get => _platform;
+        set
+        {
+            if (value != "MacIntel" && value != "Linux x86_64" && value != "Linux armv81" && value != "Win32")
+            {
+                throw new ArgumentException("Platform must be one of: MacIntel, Linux x86_64, Linux armv81, or Win32.");
+            }
+            _platform = value;
+        }
+    }
+
     public string? AcceptLang { get; set; }
     public string? Authorization { get; set; }
     public string? Tz { get; set; }
@@ -132,7 +225,7 @@ public sealed class UrlboxOptions
     public int Delay { get; set; }
     public int Timeout { get; set; }
 
-
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum WaitUntilOption
     {
         domloaded,
@@ -155,6 +248,7 @@ public sealed class UrlboxOptions
     public string? BgColor { get; set; }
     public bool DisableJs { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FullPageModeOption
     {
         stitch,
@@ -180,7 +274,20 @@ public sealed class UrlboxOptions
     public string? S3Endpoint { get; set; }
     public string? S3Region { get; set; }
     public string? CdnHost { get; set; }
-    public string? S3StorageClass { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum S3StorageClassOptions
+    {
+        standard,
+        standard_ia,
+        reduced_redundancy,
+        onezone_ia,
+        intelligent_tiering,
+        glacier,
+        deep_archive,
+        outposts
+    }
+    public S3StorageClassOptions? S3StorageClass { get; set; }
 
     // Side line renders
     public bool SaveHtml { get; set; }

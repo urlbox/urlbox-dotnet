@@ -244,9 +244,10 @@ public sealed class UrlboxOptionsBuilder
     private UrlboxOptions ValidateScreenshotOptions(UrlboxOptions options)
     {
         var thumbSizes = options.ThumbWidth != 0 || options.ThumbHeight != 0;
-        var hasImgFit = !string.IsNullOrEmpty(options.ImgFit);
-        var hasImgPosition = !string.IsNullOrEmpty(options.ImgPosition);
-        var imgFitIsCoverOrContain = options.ImgFit == "cover" || options.ImgFit == "contain";
+        bool hasImgFit = options.ImgFit != null && Enum.IsDefined(typeof(UrlboxOptions.ImgFitOption), options.ImgFit);
+        bool hasImgPosition = options.ImgPosition != null && Enum.IsDefined(typeof(UrlboxOptions.ImgPositionOption), options.ImgPosition);
+
+        var imgFitIsCoverOrContain = options.ImgFit == UrlboxOptions.ImgFitOption.cover || options.ImgFit == UrlboxOptions.ImgFitOption.contain;
 
         if (!thumbSizes && hasImgFit)
         {
@@ -286,7 +287,7 @@ public sealed class UrlboxOptionsBuilder
 
     private UrlboxOptions ValidatePdfOptions(UrlboxOptions options)
     {
-        if (options.Format != "pdf" && HasOptionsInCategory(PdfOptions, options))
+        if (options.Format != UrlboxOptions.FormatOption.pdf && HasOptionsInCategory(PdfOptions, options))
         {
             throw new ArgumentException("One or more PDF-specific options are only valid for the PDF format.");
         }
@@ -333,7 +334,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder Format(string format)
+    public UrlboxOptionsBuilder Format(UrlboxOptions.FormatOption format)
     {
         _options.Format = format;
         return this;
@@ -375,7 +376,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder ResponseType(string responseType)
+    public UrlboxOptionsBuilder ResponseType(UrlboxOptions.ResponseTypeOption responseType)
     {
         _options.ResponseType = responseType;
         return this;
@@ -507,13 +508,13 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder ImgFit(string imgFit)
+    public UrlboxOptionsBuilder ImgFit(UrlboxOptions.ImgFitOption imgFit)
     {
         _options.ImgFit = imgFit;
         return this;
     }
 
-    public UrlboxOptionsBuilder ImgPosition(string imgPosition)
+    public UrlboxOptionsBuilder ImgPosition(UrlboxOptions.ImgPositionOption imgPosition)
     {
         _options.ImgPosition = imgPosition;
         return this;
@@ -555,7 +556,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfPageSize(string pdfPageSize)
+    public UrlboxOptionsBuilder PdfPageSize(UrlboxOptions.PdfPageSizeOption pdfPageSize)
     {
         _options.PdfPageSize = pdfPageSize;
         return this;
@@ -579,7 +580,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfMargin(string pdfMargin)
+    public UrlboxOptionsBuilder PdfMargin(UrlboxOptions.PdfMarginOption pdfMargin)
     {
         _options.PdfMargin = pdfMargin;
         return this;
@@ -621,7 +622,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfOrientation(string pdfOrientation)
+    public UrlboxOptionsBuilder PdfOrientation(UrlboxOptions.PdfOrientationOption pdfOrientation)
     {
         _options.PdfOrientation = pdfOrientation;
         return this;
@@ -639,7 +640,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder Media(string media)
+    public UrlboxOptionsBuilder Media(UrlboxOptions.MediaOption media)
     {
         _options.Media = media;
         return this;
@@ -738,6 +739,8 @@ public sealed class UrlboxOptionsBuilder
 
     public UrlboxOptionsBuilder Platform(string platform)
     {
+        // Edge case. Cannot serialise enums as needed so platform remains string with validation
+
         _options.Platform = platform;
         return this;
     }
@@ -982,7 +985,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder S3StorageClass(string s3StorageClass)
+    public UrlboxOptionsBuilder S3StorageClass(UrlboxOptions.S3StorageClassOptions s3StorageClass)
     {
         _options.S3StorageClass = s3StorageClass;
         return this;
