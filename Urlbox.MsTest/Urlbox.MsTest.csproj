@@ -20,6 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Urlbox/UrlboxSDK/Urlbox.csproj" />
+    <ProjectReference Include="../Urlbox/UrlboxSDK/UrlboxSDK.csproj" />
   </ItemGroup>
 </Project>
