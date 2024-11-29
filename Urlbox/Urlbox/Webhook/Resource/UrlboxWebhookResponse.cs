@@ -12,7 +12,7 @@ public sealed class UrlboxWebhookResponse
 
     [JsonConstructor]
     public UrlboxWebhookResponse(
-        string Event,
+        string @event,
         string renderId,
         Meta meta,
         SyncUrlboxResponse? result = null,
@@ -24,7 +24,7 @@ public sealed class UrlboxWebhookResponse
             throw new ArgumentException("The UrlboxWebhookResponse must have one of Error or Response, not both.");
         }
 
-        this.Event = Event;
+        Event = @event;
         RenderId = renderId;
         Meta = meta;
         if (result != null) Result = result;

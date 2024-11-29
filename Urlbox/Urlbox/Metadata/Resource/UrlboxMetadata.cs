@@ -51,28 +51,28 @@ public sealed class UrlboxMetadata
         string? twitterCreator = null
     )
     {
-        this.UrlRequested = urlRequested ?? throw new ArgumentNullException(nameof(urlRequested));
-        this.UrlResolved = urlResolved ?? throw new ArgumentNullException(nameof(urlResolved));
-        this.Url = url ?? throw new ArgumentNullException(nameof(url));
+        UrlRequested = urlRequested ?? throw new ArgumentNullException(nameof(urlRequested));
+        UrlResolved = urlResolved ?? throw new ArgumentNullException(nameof(urlResolved));
+        Url = url ?? throw new ArgumentNullException(nameof(url));
 
-        if (author != null) this.Author = author;
-        if (date != null) this.Date = date;
-        if (description != null) this.Description = description;
-        if (image != null) this.Image = image;
-        if (logo != null) this.Logo = logo;
-        if (publisher != null) this.Publisher = publisher;
-        if (title != null) this.Title = title;
-        if (ogTitle != null) this.OgTitle = ogTitle;
-        if (ogImage != null) this.OgImage = ogImage;
-        if (ogDescription != null) this.OgDescription = ogDescription;
-        if (ogUrl != null) this.OgUrl = ogUrl;
-        if (ogType != null) this.OgType = ogType;
-        if (ogSiteName != null) this.OgSiteName = ogSiteName;
-        if (twitterCard != null) this.TwitterCard = twitterCard;
-        if (twitterSite != null) this.TwitterSite = twitterSite;
-        if (twitterCreator != null) this.TwitterCreator = twitterCreator;
-        if (ogLocale != null) this.OgLocale = ogLocale;
-        if (charset != null) this.Charset = charset;
+        if (author != null) Author = author;
+        if (date != null) Date = date;
+        if (description != null) Description = description;
+        if (image != null) Image = image;
+        if (logo != null) Logo = logo;
+        if (publisher != null) Publisher = publisher;
+        if (title != null) Title = title;
+        if (ogTitle != null) OgTitle = ogTitle;
+        if (ogImage != null) OgImage = ogImage;
+        if (ogDescription != null) OgDescription = ogDescription;
+        if (ogUrl != null) OgUrl = ogUrl;
+        if (ogType != null) OgType = ogType;
+        if (ogSiteName != null) OgSiteName = ogSiteName;
+        if (twitterCard != null) TwitterCard = twitterCard;
+        if (twitterSite != null) TwitterSite = twitterSite;
+        if (twitterCreator != null) TwitterCreator = twitterCreator;
+        if (ogLocale != null) OgLocale = ogLocale;
+        if (charset != null) Charset = charset;
     }
 }
 
@@ -88,9 +88,9 @@ public sealed class OgImage
 
     public OgImage(string url, string width, string height, string? type = null)
     {
-        this.Url = url;
-        this.Width = width;
-        this.Height = height;
-        if (type != null) this.Type = type;
+        Url = url;
+        Width = width;
+        Height = height;
+        if (type != null) Type = type;
     }
 }

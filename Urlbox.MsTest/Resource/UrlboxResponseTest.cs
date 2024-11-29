@@ -200,7 +200,7 @@ public class UrlboxWebhookResponseTests
         Meta meta = new(startTime: "START", endTime: "END");
 
         UrlboxWebhookResponse webhookResponse = new(
-            Event: "render.succeeded",
+            @event: "render.succeeded",
             renderId: "renderId",
             result: response,
             meta: meta
@@ -220,7 +220,7 @@ public class UrlboxWebhookResponseTests
         Meta meta = new(startTime: "START", endTime: "END");
 
         UrlboxWebhookResponse webhookResponse = new(
-            Event: "render.succeeded",
+            @event: "render.succeeded",
             renderId: "renderId",
             error: error,
             meta: meta

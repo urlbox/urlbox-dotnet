@@ -15,7 +15,7 @@ public class UrlTests
         Selector = "test",
         Clip = "test",
         Gpu = true,
-        ResponseType = "test",
+        ResponseType = UrlboxOptions.ResponseTypeOption.json,
         BlockAds = true,
         HideCookieBanners = true,
         ClickAccept = true,
@@ -37,29 +37,29 @@ public class UrlTests
         Retina = true,
         ThumbWidth = 123,
         ThumbHeight = 123,
-        ImgFit = "test",
-        ImgPosition = "test",
+        ImgFit = UrlboxOptions.ImgFitOption.contain,
+        ImgPosition = UrlboxOptions.ImgPositionOption.northeast,
         ImgBg = "test",
         ImgPad = "12,10,10,10",
         Quality = 123,
         Transparent = true,
         MaxHeight = 123,
         Download = "test",
-        PdfPageSize = "test",
+        PdfPageSize = UrlboxOptions.PdfPageSizeOption.Tabloid,
         PdfPageRange = "test",
         PdfPageWidth = 123,
         PdfPageHeight = 123,
-        PdfMargin = "test",
+        PdfMargin = UrlboxOptions.PdfMarginOption.@default,
         PdfMarginTop = 123,
         PdfMarginRight = 123,
         PdfMarginBottom = 123,
         PdfMarginLeft = 123,
         PdfAutoCrop = true,
         PdfScale = 0.12,
-        PdfOrientation = "test",
+        PdfOrientation = UrlboxOptions.PdfOrientationOption.portrait,
         PdfBackground = true,
         DisableLigatures = true,
-        Media = "test",
+        Media = UrlboxOptions.MediaOption.print,
         PdfShowHeader = true,
         PdfHeader = "test",
         PdfShowFooter = true,
@@ -72,7 +72,7 @@ public class UrlTests
         Header = "test",
         Cookie = "test",
         UserAgent = "test",
-        Platform = "test",
+        Platform = "Linux x86_64",
         AcceptLang = "test",
         Authorization = "test",
         Tz = "test",
@@ -113,7 +113,7 @@ public class UrlTests
         S3Endpoint = "test",
         S3Region = "test",
         CdnHost = "test",
-        S3StorageClass = "STANDARD",
+        S3StorageClass = UrlboxOptions.S3StorageClassOptions.standard,
         WebhookUrl = "https://an-ngrok-endpoint"
     };
 
@@ -181,7 +181,7 @@ public class UrlTests
         var output = dummyUrlbox.GenerateRenderLink(urlboxAllOptions);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=test&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=test&img_pad=12%2C10%2C10%2C10&img_position=test&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=test&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=test&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=test&pdf_page_height=123&pdf_page_range=test&pdf_page_size=test&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=test&proxy=test&quality=123&readable=true&reduced_motion=true&response_type=test&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=STANDARD&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
+            "https://api.urlbox.com/v1/MY_API_KEY/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=test&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on4xx=true&fail_on5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=Tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=123&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
             output
         );
     }
@@ -286,7 +286,7 @@ public class UrlTests
         options.FullPage = false;
         options.ThumbWidth = 0;
         options.Delay = 0;
-        options.Format = "pdf";
+        options.Format = UrlboxOptions.FormatOption.pdf;
         options.Selector = "";
         options.WaitFor = "";
         options.BlockUrls = new string[] { };
@@ -330,7 +330,7 @@ public class UrlTests
     {
         var options = new UrlboxOptions(url: "https://urlbox.com")
         {
-            Format = "png",
+            Format = UrlboxOptions.FormatOption.png,
             FullPage = true
         };
         var output = urlGenerator.GenerateRenderLink(options);
@@ -353,13 +353,15 @@ public class UrlTests
     [TestMethod]
     public async Task RenderSync_SucceedsWithAllSideRenders()
     {
-        UrlboxOptions options = new(url: "https://urlbox.com");
-        options.ClickAccept = true;
-        options.SaveHtml = true;
-        options.Metadata = true;
-        options.SaveMetadata = true;
-        options.SaveMhtml = true;
-        options.SaveMarkdown = true;
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
+        .ClickAccept()
+        .SaveHtml()
+        .Metadata()
+        .SaveMetadata()
+        .SaveMhtml()
+        .SaveMarkdown()
+        .Build();
+
         var result = await urlbox.Render(options);
 
         Assert.IsInstanceOfType(result, typeof(SyncUrlboxResponse));
@@ -534,11 +536,10 @@ public class UrlTests
     [TestMethod]
     public async Task TakeMp4_Succeeds()
     {
-        UrlboxOptions options = new(url: "https://urlbox.com")
-        {
-            Height = 125,
-            Width = 125,
-        };
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
+        .Height(125)
+        .Width(125)
+        .Build();
 
         var result = await urlbox.TakeMp4(options);
         Assert.IsNotNull(result.RenderUrl);

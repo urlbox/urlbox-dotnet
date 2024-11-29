@@ -11,14 +11,14 @@ public class UrlboxOptionsBuilderTests
     public void BasicOptions_ShouldSetCorrectly()
     {
         var options = Urlbox.Options(url: "https://example.com")
-            .Format("png")
+            .Format(UrlboxOptions.FormatOption.png)
             .Width(1280)
             .Height(720)
             .FullPage()
             .Selector("#main")
             .Build();
 
-        Assert.AreEqual("png", options.Format);
+        Assert.AreEqual(UrlboxOptions.FormatOption.png, options.Format);
         Assert.AreEqual(1280, options.Width);
         Assert.AreEqual(720, options.Height);
         Assert.IsTrue(options.FullPage);
@@ -83,8 +83,8 @@ public class UrlboxOptionsBuilderTests
         var options = Urlbox.Options(url: "https://example.com")
             .ThumbWidth(200)
             .ThumbHeight(150)
-            .ImgFit("cover")
-            .ImgPosition("center")
+            .ImgFit(UrlboxOptions.ImgFitOption.cover)
+            .ImgPosition(UrlboxOptions.ImgPositionOption.center)
             .ImgBg("#FFFFFF")
             .ImgPad("10")
             .Quality(90)
@@ -95,8 +95,8 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual(200, options.ThumbWidth);
         Assert.AreEqual(150, options.ThumbHeight);
-        Assert.AreEqual("cover", options.ImgFit);
-        Assert.AreEqual("center", options.ImgPosition);
+        Assert.AreEqual(UrlboxOptions.ImgFitOption.cover, options.ImgFit);
+        Assert.AreEqual(UrlboxOptions.ImgPositionOption.center, options.ImgPosition);
         Assert.AreEqual("#FFFFFF", options.ImgBg);
         Assert.AreEqual("10", options.ImgPad);
         Assert.AreEqual(90, options.Quality);
@@ -109,44 +109,44 @@ public class UrlboxOptionsBuilderTests
     public void PdfOptions_ShouldSetCorrectly()
     {
         var options = Urlbox.Options(url: "https://example.com")
-            .Format("pdf")
-            .PdfPageSize("A4")
+            .Format(UrlboxOptions.FormatOption.pdf)
+            .PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
             .PdfPageRange("1-2")
             .PdfPageWidth(210)
             .PdfPageHeight(297)
-            .PdfMargin("default")
+            .PdfMargin(UrlboxOptions.PdfMarginOption.@default)
             .PdfMarginTop(10)
             .PdfMarginRight(10)
             .PdfMarginBottom(10)
             .PdfMarginLeft(10)
             .PdfAutoCrop()
             .PdfScale(1.0)
-            .PdfOrientation("portrait")
+            .PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
             .PdfBackground()
             .DisableLigatures()
-            .Media("print")
+            .Media(UrlboxOptions.MediaOption.print)
             .PdfShowHeader()
             .PdfHeader("Header content")
             .PdfShowFooter()
             .PdfFooter("Footer content")
             .Build();
 
-        Assert.AreEqual("pdf", options.Format);
-        Assert.AreEqual("A4", options.PdfPageSize);
+        Assert.AreEqual(UrlboxOptions.FormatOption.pdf, options.Format);
+        Assert.AreEqual(UrlboxOptions.PdfPageSizeOption.A4, options.PdfPageSize);
         Assert.AreEqual("1-2", options.PdfPageRange);
         Assert.AreEqual(210, options.PdfPageWidth);
         Assert.AreEqual(297, options.PdfPageHeight);
-        Assert.AreEqual("default", options.PdfMargin);
+        Assert.AreEqual(UrlboxOptions.PdfMarginOption.@default, options.PdfMargin);
         Assert.AreEqual(10, options.PdfMarginTop);
         Assert.AreEqual(10, options.PdfMarginRight);
         Assert.AreEqual(10, options.PdfMarginBottom);
         Assert.AreEqual(10, options.PdfMarginLeft);
         Assert.IsTrue(options.PdfAutoCrop);
         Assert.AreEqual(1.0, options.PdfScale);
-        Assert.AreEqual("portrait", options.PdfOrientation);
+        Assert.AreEqual(UrlboxOptions.PdfOrientationOption.portrait, options.PdfOrientation);
         Assert.IsTrue(options.PdfBackground);
         Assert.IsTrue(options.DisableLigatures);
-        Assert.AreEqual("print", options.Media);
+        Assert.AreEqual(UrlboxOptions.MediaOption.print, options.Media);
         Assert.IsTrue(options.PdfShowHeader);
         Assert.AreEqual("Header content", options.PdfHeader);
         Assert.IsTrue(options.PdfShowFooter);
@@ -229,14 +229,14 @@ public class UrlboxOptionsBuilderTests
                     url: "https://urlbox.com"
                 )
                 .WebhookUrl("https://example.com/webhook")
-                .Format("pdf")
+                .Format(UrlboxOptions.FormatOption.pdf)
                 .Width(1024)
                 .Height(768)
                 .FullPage()
                 .Selector("#content")
                 .Clip("0,0,400,400")
                 .Gpu()
-                .ResponseType("json")
+                .ResponseType(UrlboxOptions.ResponseTypeOption.json)
                 .BlockAds()
                 .HideCookieBanners()
                 .ClickAccept()
@@ -258,29 +258,29 @@ public class UrlboxOptionsBuilderTests
                 .Retina()
                 .ThumbWidth(150)
                 .ThumbHeight(150)
-                .ImgFit("cover")
-                .ImgPosition("center")
+                .ImgFit(UrlboxOptions.ImgFitOption.cover)
+                .ImgPosition(UrlboxOptions.ImgPositionOption.center)
                 .ImgBg("#FFFFFF")
                 .ImgPad("10")
                 .Quality(90)
                 .Transparent()
                 .MaxHeight(2000)
                 .Download("download.png")
-                .PdfPageSize("A4")
+                .PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
                 .PdfPageRange("1-2")
                 .PdfPageWidth(210)
                 .PdfPageHeight(297)
-                .PdfMargin("default")
+                .PdfMargin(UrlboxOptions.PdfMarginOption.@default)
                 .PdfMarginTop(10)
                 .PdfMarginRight(10)
                 .PdfMarginBottom(10)
                 .PdfMarginLeft(10)
                 .PdfAutoCrop()
                 .PdfScale(1.0)
-                .PdfOrientation("portrait")
+                .PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
                 .PdfBackground()
                 .DisableLigatures()
-                .Media("screen")
+                .Media(UrlboxOptions.MediaOption.screen)
                 .PdfShowHeader()
                 .PdfHeader("Header content")
                 .PdfShowFooter()
@@ -334,7 +334,7 @@ public class UrlboxOptionsBuilderTests
                 .S3Endpoint("https://s3.amazonaws.com")
                 .S3Region("us-west-1")
                 .CdnHost("https://cdn.example.com")
-                .S3StorageClass("STANDARD")
+                .S3StorageClass(UrlboxOptions.S3StorageClassOptions.standard)
                 .SaveHtml()
                 .SaveMhtml()
                 .SaveMarkdown()
@@ -353,7 +353,7 @@ public class UrlboxOptionsBuilderTests
         // FullPageMode should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
             .Build();
         });
@@ -361,7 +361,7 @@ public class UrlboxOptionsBuilderTests
         // ScrollIncrement should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .ScrollIncrement(100)
             .Build();
         });
@@ -369,7 +369,7 @@ public class UrlboxOptionsBuilderTests
         // ScrollDelay should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .ScrollDelay(500)
             .Build();
         });
@@ -377,7 +377,7 @@ public class UrlboxOptionsBuilderTests
         // DetectFullHeight should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .DetectFullHeight()
             .Build();
         });
@@ -385,7 +385,7 @@ public class UrlboxOptionsBuilderTests
         // MaxSectionHeight should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .MaxSectionHeight(2000)
             .Build();
         });
@@ -393,7 +393,7 @@ public class UrlboxOptionsBuilderTests
         // FullWidth should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .FullWidth()
             .Build();
         });
@@ -405,7 +405,7 @@ public class UrlboxOptionsBuilderTests
         // S3Path should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .S3Path("/path/to/object")
             .Build();
         });
@@ -413,7 +413,7 @@ public class UrlboxOptionsBuilderTests
         // S3Bucket should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .S3Bucket("my-s3-bucket")
             .Build();
         });
@@ -421,7 +421,7 @@ public class UrlboxOptionsBuilderTests
         // S3Endpoint should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .S3Endpoint("https://s3.amazonaws.com")
             .Build();
         });
@@ -429,7 +429,7 @@ public class UrlboxOptionsBuilderTests
         // S3Region should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .S3Region("us-west-2")
             .Build();
         });
@@ -437,7 +437,7 @@ public class UrlboxOptionsBuilderTests
         // CdnHost should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
             .CdnHost("https://cdn.myhost.com")
             .Build();
         });
@@ -445,8 +445,8 @@ public class UrlboxOptionsBuilderTests
         // S3StorageClass should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format("png")
-            .S3StorageClass("STANDARD")
+            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            .S3StorageClass(UrlboxOptions.S3StorageClassOptions.standard)
             .Build();
         });
     }
@@ -459,7 +459,7 @@ public class UrlboxOptionsBuilderTests
         // PdfPageSize should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfPageSize("A4")
+            Urlbox.Options(url: "https://urlbox.com").PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
             .Build();
         });
 
@@ -487,7 +487,7 @@ public class UrlboxOptionsBuilderTests
         // PdfMargin should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfMargin("10mm")
+            Urlbox.Options(url: "https://urlbox.com").PdfMargin(UrlboxOptions.PdfMarginOption.@default)
             .Build();
         });
 
@@ -536,7 +536,7 @@ public class UrlboxOptionsBuilderTests
         // PdfOrientation should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfOrientation("portrait")
+            Urlbox.Options(url: "https://urlbox.com").PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
             .Build();
         });
 
@@ -557,7 +557,7 @@ public class UrlboxOptionsBuilderTests
         // Media should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Media("print")
+            Urlbox.Options(url: "https://urlbox.com").Media(UrlboxOptions.MediaOption.print)
             .Build();
         });
 
@@ -603,7 +603,7 @@ public class UrlboxOptionsBuilderTests
         // No thumb width or height but includes img fit
         var noThumbButImgFit = Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").ImgFit("cover")
+            Urlbox.Options(url: "https://urlbox.com").ImgFit(UrlboxOptions.ImgFitOption.cover)
             .Build();
         });
 
@@ -616,27 +616,13 @@ public class UrlboxOptionsBuilderTests
         {
             Urlbox.Options(url: "https://urlbox.com")
                 .ThumbHeight(5)
-                .ImgPosition("north")
+                .ImgPosition(UrlboxOptions.ImgPositionOption.north)
                 .Build();
         });
 
         Assert.AreEqual(
             "Invalid Configuration: Image Position is included despite Image Fit not being set.",
             thumbAndPositionButNoFit.Message
-        );
-
-        var thumbAndPositionButFitWrong = Assert.ThrowsException<ArgumentException>(() =>
-        {
-            Urlbox.Options(url: "https://urlbox.com")
-                .ThumbHeight(5)
-                .ImgFit("notcoverorcontain")
-                .ImgPosition("north")
-                .Build();
-        });
-
-        Assert.AreEqual(
-            "Invalid Configuration: Image Position is included despite Image Fit not being set to 'cover' or 'contain'.",
-            thumbAndPositionButFitWrong.Message
         );
     }
 
@@ -646,13 +632,13 @@ public class UrlboxOptionsBuilderTests
         var heightAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit("cover")
+            .ImgFit(UrlboxOptions.ImgFitOption.cover)
             .Build();
 
         var widthAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit("cover")
+            .ImgFit(UrlboxOptions.ImgFitOption.cover)
             .Build();
 
         var justThumbHeight =
@@ -668,27 +654,27 @@ public class UrlboxOptionsBuilderTests
         var heightAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit("cover")
-            .ImgPosition("north")
+            .ImgFit(UrlboxOptions.ImgFitOption.cover)
+            .ImgPosition(UrlboxOptions.ImgPositionOption.north)
             .Build();
 
         var heightAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit("contain")
+            .ImgFit(UrlboxOptions.ImgFitOption.contain)
             .Build();
 
         var widthAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit("cover")
-            .ImgPosition("north")
+            .ImgFit(UrlboxOptions.ImgFitOption.cover)
+            .ImgPosition(UrlboxOptions.ImgPositionOption.north)
             .Build();
 
         var widthAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit("contain")
+            .ImgFit(UrlboxOptions.ImgFitOption.contain)
             .Build();
 
         Assert.IsInstanceOfType(justThumbHeight, typeof(UrlboxOptions));
