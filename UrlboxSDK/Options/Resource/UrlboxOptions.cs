@@ -1,0 +1,297 @@
+using System.Text.Json.Serialization;
+
+namespace UrlboxSDK.Options.Resource;
+
+/// <summary>
+/// Initializes a new instance of the UrlboxOptions. These are used as part of a Urlbox method which requires render options.
+/// </summary>
+/// <exception cref="ArgumentException">Thrown when the Url OR Html option isn't passed in on init.</exception>
+public sealed class UrlboxOptions
+{
+    public UrlboxOptions(string? url = null, string? html = null)
+    {
+        if (
+            (String.IsNullOrEmpty(url) && !String.IsNullOrEmpty(html)) ||
+            (!String.IsNullOrEmpty(url) && String.IsNullOrEmpty(html))
+        )
+        {
+            Url = url;
+            Html = html;
+        }
+        else
+        {
+            throw new ArgumentException("Either but not both options 'url' or 'html' must be provided.");
+        }
+    }
+
+    public string? Url { get; }
+    public string? WebhookUrl { get; set; }
+    public string? Html { get; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum FormatOption
+    {
+        png,
+        jpeg,
+        webp,
+        avif,
+        svg,
+        pdf,
+        html,
+        mp4,
+        webm,
+        md
+    }
+    public FormatOption? Format { get; set; }
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+    public bool FullPage { get; set; }
+    public string? Selector { get; set; }
+    public string? Clip { get; set; } // Formatted x,y,width,height EG "0,0,400,400"
+    public bool Gpu { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ResponseTypeOption { json, binary }
+    public ResponseTypeOption? ResponseType { get; set; }
+    public bool BlockAds { get; set; }
+    public bool HideCookieBanners { get; set; }
+    public bool ClickAccept { get; set; }
+    public string[]? BlockUrls { get; set; }
+    public bool BlockImages { get; set; }
+    public bool BlockFonts { get; set; }
+    public bool BlockMedias { get; set; }
+    public bool BlockStyles { get; set; }
+    public bool BlockScripts { get; set; }
+    public bool BlockFrames { get; set; }
+    public bool BlockFetch { get; set; }
+    public bool BlockXhr { get; set; }
+    public bool BlockSockets { get; set; }
+    public string? HideSelector { get; set; }
+    public string? Js { get; set; }
+    public string? Css { get; set; }
+    public bool DarkMode { get; set; }
+    public bool ReducedMotion { get; set; }
+    public bool Retina { get; set; }
+    public int? ThumbWidth { get; set; }
+    public int? ThumbHeight { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ImgFitOption
+    {
+        cover,
+        contain,
+        fill,
+        inside,
+        outside
+    }
+    public ImgFitOption? ImgFit { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ImgPositionOption
+    {
+        north,
+        northeast,
+        east,
+        southeast,
+        south,
+        southwest,
+        west,
+        northwest,
+        center,
+        centre
+    }
+    public ImgPositionOption? ImgPosition { get; set; }
+
+    public string? ImgBg { get; set; } // red #ccc rgb() rgba() or hsl()
+    public string? ImgPad { get; set; } // either 10 or 10,10,10,10
+    public int? Quality { get; set; }
+    public bool Transparent { get; set; }
+    public int? MaxHeight { get; set; }
+    public string? Download { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfPageSizeOption
+    {
+        A0,
+        A1,
+        A2,
+        A3,
+        A4,
+        A5,
+        A6,
+        Legal,
+        Letter,
+        Ledger,
+        Tabloid
+    }
+    public PdfPageSizeOption? PdfPageSize { get; set; }
+    public string? PdfPageRange { get; set; }
+    public int? PdfPageWidth { get; set; }
+    public int? PdfPageHeight { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfMarginOption
+    {
+        none,
+        @default,
+        minimum
+    }
+    public PdfMarginOption? PdfMargin { get; set; }
+    public int? PdfMarginTop { get; set; }
+    public int? PdfMarginRight { get; set; }
+    public int? PdfMarginBottom { get; set; }
+    public int? PdfMarginLeft { get; set; }
+    public bool PdfAutoCrop { get; set; }
+
+    public double PdfScale { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum PdfOrientationOption
+    {
+        portrait,
+        landscape
+    }
+    public PdfOrientationOption? PdfOrientation { get; set; }
+    public bool PdfBackground { get; set; }
+    public bool DisableLigatures { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum MediaOption { print, screen }
+    public MediaOption? Media { get; set; }
+    public bool PdfShowHeader { get; set; }
+    public string? PdfHeader { get; set; }
+    public bool PdfShowFooter { get; set; }
+    public string? PdfFooter { get; set; }
+    public bool Readable { get; set; }
+    public bool Force { get; set; }
+    public string? Unique { get; set; }
+    public int? Ttl { get; set; }
+    public string? Proxy { get; set; }
+
+    private object? _header;
+    private object? _cookie;
+
+    public object? Header
+    {
+        get { return _header; }
+        set { _header = ValidateStringOrArray(value, nameof(Header)); }
+    }
+
+    public object? Cookie
+    {
+        get { return _cookie; }
+        set { _cookie = ValidateStringOrArray(value, nameof(Cookie)); }
+    }
+
+    /// <summary>
+    /// Tightens a type to string or string[] for Urlbox options which allow singles+multiples
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    private static object ValidateStringOrArray(object? value, string propertyName)
+    {
+        if (value is string || value is string[])
+        {
+            return value;
+        }
+        else
+        {
+            throw new ArgumentException($"{propertyName} must be either a string or a string array.");
+        }
+    }
+
+    public string? UserAgent { get; set; }
+    private string? _platform;
+
+    public string? Platform
+    {
+        get => _platform;
+        set
+        {
+            if (value != "MacIntel" && value != "Linux x86_64" && value != "Linux armv81" && value != "Win32")
+            {
+                throw new ArgumentException("Platform must be one of: MacIntel, Linux x86_64, Linux armv81, or Win32.");
+            }
+            _platform = value;
+        }
+    }
+
+    public string? AcceptLang { get; set; }
+    public string? Authorization { get; set; }
+    public string? Tz { get; set; }
+    public string? EngineVersion { get; set; }
+    public int? Delay { get; set; }
+    public int? Timeout { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum WaitUntilOption
+    {
+        domloaded,
+        mostrequestsfinished,
+        requestsfinished,
+        loaded
+    }
+    public WaitUntilOption? WaitUntil { get; set; }
+    public string? WaitFor { get; set; }
+    public string? WaitToLeave { get; set; }
+    public int? WaitTimeout { get; set; }
+    public bool FailIfSelectorMissing { get; set; }
+    public bool FailIfSelectorPresent { get; set; }
+    public bool FailOn4xx { get; set; }
+    public bool FailOn5xx { get; set; }
+    public string? ScrollTo { get; set; }
+    public string? Click { get; set; }
+    public string? ClickAll { get; set; }
+    public string? Hover { get; set; }
+    public string? BgColor { get; set; }
+    public bool DisableJs { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum FullPageModeOption
+    {
+        stitch,
+        native
+    }
+    public FullPageModeOption? FullPageMode { get; set; }
+    public bool FullWidth { get; set; }
+    public bool AllowInfinite { get; set; }
+    public bool SkipScroll { get; set; }
+    public bool DetectFullHeight { get; set; }
+    public int? MaxSectionHeight { get; set; }
+    public int? ScrollIncrement { get; set; }
+    public int? ScrollDelay { get; set; }
+    public string? Highlight { get; set; }
+    public string? HighlightFg { get; set; }
+    public string? HighlightBg { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public int? Accuracy { get; set; }
+    public bool UseS3 { get; set; }
+    public string? S3Path { get; set; }
+    public string? S3Bucket { get; set; }
+    public string? S3Endpoint { get; set; }
+    public string? S3Region { get; set; }
+    public string? CdnHost { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum S3StorageClassOptions
+    {
+        standard,
+        standard_ia,
+        reduced_redundancy,
+        onezone_ia,
+        intelligent_tiering,
+        glacier,
+        deep_archive,
+        outposts
+    }
+    public S3StorageClassOptions? S3StorageClass { get; set; }
+
+    // Side line renders
+    public bool SaveHtml { get; set; }
+    public bool SaveMhtml { get; set; }
+    public bool SaveMarkdown { get; set; }
+    public bool SaveMetadata { get; set; }
+    public bool Metadata { get; set; }
+}
