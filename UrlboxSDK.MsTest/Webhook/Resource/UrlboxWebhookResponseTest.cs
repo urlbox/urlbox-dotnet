@@ -6,14 +6,6 @@ using UrlboxSDK.Webhook.Resource;
 public class UrlboxWebhookResponseTests
 {
     [TestMethod]
-    public void WebhookError_creates()
-    {
-        WebhookError error = new(message: "message");
-        Assert.IsInstanceOfType(error, typeof(WebhookError));
-        Assert.AreEqual("message", error.Message);
-    }
-
-    [TestMethod]
     public void WebhookMeta_creates()
     {
         Meta meta = new(startTime: "START", endTime: "END");
@@ -49,7 +41,7 @@ public class UrlboxWebhookResponseTests
     [TestMethod]
     public void UrlboxWebhookResponse_CreatesMinGettersWithError()
     {
-        WebhookError error = new(message: "message");
+        ErrorUrlboxResponse.UrlboxError error = new(message: "message", code: null, errors: null);
         Meta meta = new(startTime: "START", endTime: "END");
 
         UrlboxWebhookResponse webhookResponse = new(
