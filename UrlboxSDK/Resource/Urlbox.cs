@@ -9,8 +9,9 @@ using UrlboxSDK.Factory;
 using UrlboxSDK.Webhook.Resource;
 using UrlboxSDK.Webhook.Validator;
 using UrlboxSDK.Response.Resource;
+using UrlboxSDK;
 
-namespace UrlboxSDK.Resource;
+namespace UrlboxSDK;
 /// <summary>
 /// Initializes a new instance of the <see cref="Urlbox"/> class with the provided API key and secret.
 /// </summary>

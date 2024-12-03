@@ -7,7 +7,7 @@ public sealed class UrlboxWebhookResponse
 {
     public string Event { get; }
     public string RenderId { get; }
-    public WebhookError? Error { get; }
+    public ErrorUrlboxResponse.UrlboxError? Error { get; }
     public SyncUrlboxResponse? Result { get; }
     public Meta Meta { get; }
 
@@ -17,7 +17,7 @@ public sealed class UrlboxWebhookResponse
         string renderId,
         Meta meta,
         SyncUrlboxResponse? result = null,
-        WebhookError? error = null
+        ErrorUrlboxResponse.UrlboxError? error = null
     )
     {
         if (result != null && error != null)
@@ -30,29 +30,5 @@ public sealed class UrlboxWebhookResponse
         Meta = meta;
         if (result != null) Result = result;
         if (error != null) Error = error;
-    }
-}
-
-public sealed class WebhookError
-{
-    public string Message { get; }
-
-    [JsonConstructor]
-    public WebhookError(string message)
-    {
-        Message = message;
-    }
-}
-
-public sealed class Meta
-{
-    public string StartTime { get; }
-    public string EndTime { get; }
-
-    [JsonConstructor]
-    public Meta(string startTime, string endTime)
-    {
-        StartTime = startTime;
-        EndTime = endTime;
     }
 }

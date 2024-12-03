@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Policy;
-using UrlboxSDK.Resource;
 
 [TestClass]
 public class UrlboxOptionsTest
@@ -102,8 +101,8 @@ public class UrlboxOptionsTest
         if (expectation == null)
         {
             Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
-        .Platform(platform)
-        .Build());
+            .Platform(platform)
+            .Build());
         }
         else
         {
@@ -121,5 +120,49 @@ public class UrlboxOptionsTest
             string serialized = JsonSerializer.Serialize(options, serializeOptions);
             Assert.IsTrue(serialized.Contains(expectation));
         }
+    }
+
+    [TestMethod]
+    public void Quality_ShouldThrowException_WhenOutOfRange()
+    {
+        var options = new UrlboxOptions(url: "https://urlbox.com");
+
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => options.Quality = -1, "Quality must be between 0 and 100.");
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => options.Quality = 101, "Quality must be between 0 and 100.");
+    }
+
+    [TestMethod]
+    public void Quality_ShouldAcceptValidValues()
+    {
+        var options = new UrlboxOptions(url: "https://urlbox.com");
+
+        options.Quality = 0;
+        Assert.AreEqual(0, options.Quality);
+        options.Quality = 50;
+        Assert.AreEqual(50, options.Quality);
+        options.Quality = 100;
+        Assert.AreEqual(100, options.Quality);
+    }
+
+    [TestMethod]
+    public void PdfScale_ShouldThrowException_WhenOutOfRange()
+    {
+        var options = new UrlboxOptions(url: "https://urlbox.com");
+
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => options.PdfScale = 0.09, "PdfScale must be between 0 and 100.");
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => options.PdfScale = 2.01, "PdfScale must be between 0 and 100.");
+    }
+
+    [TestMethod]
+    public void PdfScale_ShouldAcceptValidValues()
+    {
+        var options = new UrlboxOptions(url: "https://urlbox.com");
+
+        options.PdfScale = 0.1;
+        Assert.AreEqual(0.1, options.PdfScale);
+        options.PdfScale = 1.2;
+        Assert.AreEqual(1.2, options.PdfScale);
+        options.PdfScale = 2.0;
+        Assert.AreEqual(2.0, options.PdfScale);
     }
 }

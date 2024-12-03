@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK;
 using UrlboxSDK.Options.Builder;
 using UrlboxSDK.Options.Resource;
-using UrlboxSDK.Resource;
+using UrlboxSDK;
 
 [TestClass]
 public class UrlboxOptionsBuilderTests
