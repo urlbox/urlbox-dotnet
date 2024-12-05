@@ -104,7 +104,37 @@ public sealed class UrlboxOptions
 
     public string? ImgBg { get; set; } // red #ccc rgb() rgba() or hsl()
     public string? ImgPad { get; set; } // either 10 or 10,10,10,10
-    public int? Quality { get; set; }
+
+    private int? _quality;
+
+    // From 0 to 100
+    public int? Quality
+    {
+        get => _quality;
+        set
+        {
+            _quality = ValidateRangeOfInt(nameof(Quality), value, 0, 100);
+        }
+    }
+
+    /// <summary>
+    /// A method to validate an option which must be within an integer range 
+    /// </summary>
+    /// <param name="option"></param>
+    /// <param name="value"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    private static int ValidateRangeOfInt(string option, int? value, int min, int max)
+    {
+        if (value == null || value < min || value > max)
+        {
+            throw new ArgumentOutOfRangeException(option, $"must be between {min} and {max}.");
+        }
+        return value.Value;
+    }
+
     public bool Transparent { get; set; }
     public int? MaxHeight { get; set; }
     public string? Download { get; set; }
@@ -143,7 +173,35 @@ public sealed class UrlboxOptions
     public int? PdfMarginLeft { get; set; }
     public bool PdfAutoCrop { get; set; }
 
-    public double PdfScale { get; set; }
+    private double? _pdfScale;
+
+    // 0.1 up to 2 
+    public double? PdfScale
+    {
+        get => _pdfScale;
+        set
+        {
+            _pdfScale = ValidateRangeOfDouble(nameof(PdfScale), value, 0.1, 2.0);
+        }
+    }
+    /// <summary>
+    /// A method to validate an option which must be within an integer range 
+    /// </summary>
+    /// <param name="option"></param>
+    /// <param name="value"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    private static double ValidateRangeOfDouble(string option, double? value, double min, double max)
+    {
+        if (value == null || value < min || value > max)
+        {
+            throw new ArgumentOutOfRangeException(option, $"must be between {min} and {max}.");
+        }
+        return value.Value;
+    }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PdfOrientationOption
     {

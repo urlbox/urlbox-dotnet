@@ -3,7 +3,7 @@ using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Response.Resource;
 using UrlboxSDK.Webhook.Resource;
 
-namespace UrlboxSDK.Resource;
+namespace UrlboxSDK;
 
 public interface IUrlbox
 {

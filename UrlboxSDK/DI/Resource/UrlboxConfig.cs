@@ -1,4 +1,4 @@
-using UrlboxSDK.Resource;
+using UrlboxSDK;
 
 namespace UrlboxSDK.DI.Resource;
 

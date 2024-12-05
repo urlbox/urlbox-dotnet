@@ -1,7 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK;
-using UrlboxSDK.Resource;
 using UrlboxSDK.Webhook.Resource;
 
 [TestClass]
