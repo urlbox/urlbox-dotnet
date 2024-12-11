@@ -9,7 +9,7 @@ public class SnakeCaseNamingPolicyTests
     [TestMethod]
     public void ConvertName_ShouldConvertPascalCaseToSnakeCase()
     {
-        var namingPolicy = new SnakeCaseNamingPolicy();
+        SnakeCaseNamingPolicy namingPolicy = new();
 
         Assert.AreEqual("fail_on_4xx", namingPolicy.ConvertName("FailOn4xx"));
         Assert.AreEqual("fail_on_400", namingPolicy.ConvertName("FailOn400"));
@@ -23,7 +23,7 @@ public class SnakeCaseNamingPolicyTests
     [TestMethod]
     public void ConvertName_ShouldHandleSingleWordInputs()
     {
-        var namingPolicy = new SnakeCaseNamingPolicy();
+        SnakeCaseNamingPolicy namingPolicy = new();
 
         Assert.AreEqual("example", namingPolicy.ConvertName("Example"));
         Assert.AreEqual("test", namingPolicy.ConvertName("Test"));
@@ -32,7 +32,7 @@ public class SnakeCaseNamingPolicyTests
     [TestMethod]
     public void ConvertName_ShouldPreserveAlreadySnakeCaseNames()
     {
-        var namingPolicy = new SnakeCaseNamingPolicy();
+        SnakeCaseNamingPolicy namingPolicy = new();
 
         Assert.AreEqual("already_snake_case", namingPolicy.ConvertName("already_snake_case"));
         Assert.AreEqual("test_4xx", namingPolicy.ConvertName("test_4xx"));

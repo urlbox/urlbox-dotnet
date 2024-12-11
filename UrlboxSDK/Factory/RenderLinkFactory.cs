@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Cryptography;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Options.Validation;
@@ -8,7 +9,6 @@ namespace UrlboxSDK.Factory;
 /// <summary>
 /// A class encompassing render link generation logic.
 /// </summary>
-/// 
 public sealed class RenderLinkFactory
 {
     private readonly string key;
@@ -28,19 +28,19 @@ public sealed class RenderLinkFactory
     private static string ToQueryString(UrlboxOptions options)
     {
         // Filter by reflection class' props
-        var properties = options.GetType().GetProperties();
-        var result = properties
+        PropertyInfo[] properties = options.GetType().GetProperties();
+        string[] result = properties
             .Where(prop =>
                 {
                     // Filter out falsy values
-                    var value = prop.GetValue(options, null);
+                    object? value = prop.GetValue(options, null);
                     return UrlboxOptionsValidation.IsNullOption(value);
                 })
             .OrderBy(prop => prop.Name)
             // Convert not null values to string representation
             .Select(prop =>
             {
-                var propValue = prop.GetValue(options) ??
+                object? propValue = prop.GetValue(options) ??
                     throw new ArgumentException($"Cannot convert options to a query string: trying to convert {prop.Name} which has a null value.");
                 string stringValue = ConvertToString(propValue);
                 return new KeyValuePair<string, string>(prop.Name, stringValue);
@@ -87,7 +87,7 @@ public sealed class RenderLinkFactory
             return string.Empty;
         }
 
-        var result = new StringBuilder();
+        StringBuilder result = new();
 
         for (int i = 0; i < input.Length; i++)
         {
@@ -175,7 +175,7 @@ public sealed class RenderLinkFactory
     /// <returns>The Urlbox Render Link</returns>
     public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = true)
     {
-        var queryString = ToQueryString(options);
+        string queryString = ToQueryString(options);
         if (sign)
         {
             return string.Format(

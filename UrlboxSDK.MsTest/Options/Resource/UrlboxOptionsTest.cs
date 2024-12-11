@@ -18,7 +18,7 @@ public class UrlboxOptionsTest
     [TestMethod]
     public void UrlboxOptions_BothHTMLandURL()
     {
-        var exception = Assert.ThrowsException<ArgumentException>(() => new UrlboxOptions(url: "urlbox.com", html: "<h1>test</h1>"));
+        ArgumentException exception = Assert.ThrowsException<ArgumentException>(() => new UrlboxOptions(url: "urlbox.com", html: "<h1>test</h1>"));
         Assert.AreEqual(exception.Message, "Either but not both options 'url' or 'html' must be provided.");
     }
 
@@ -26,7 +26,7 @@ public class UrlboxOptionsTest
     public void UrlboxOptions_CreatesSuccess_URL()
     {
         string url = "https://urlbox.com";
-        var urlboxOptions = new UrlboxOptions(url: url);
+        UrlboxOptions urlboxOptions = new(url: url);
 
         Assert.IsNotNull(urlboxOptions);
         Assert.IsInstanceOfType(urlboxOptions, typeof(UrlboxOptions));
@@ -38,7 +38,7 @@ public class UrlboxOptionsTest
     public void UrlboxOptions_CreatesSuccess_HTML()
     {
         string html = "<h1>test</h1>";
-        var urlboxOptions = new UrlboxOptions(html: html);
+        UrlboxOptions urlboxOptions = new(html: html);
 
         Assert.IsNotNull(urlboxOptions);
         Assert.IsInstanceOfType(urlboxOptions, typeof(UrlboxOptions));

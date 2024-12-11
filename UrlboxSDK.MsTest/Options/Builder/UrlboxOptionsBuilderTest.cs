@@ -12,7 +12,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void BasicOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Format(Format.Png)
             .Width(1280)
             .Height(720)
@@ -30,7 +30,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void BlockingOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .BlockAds()
             .HideCookieBanners()
             .ClickAccept()
@@ -67,7 +67,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void CustomizeOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Js("document.body.style.backgroundColor = 'lightblue';")
             .Css("body { font-size: 16px; }")
             .DarkMode()
@@ -86,7 +86,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void ScreenshotOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .ThumbWidth(200)
             .ThumbHeight(150)
             .ImgFit(ImgFit.Cover)
@@ -114,7 +114,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void PdfOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Format(Format.Pdf)
             .PdfPageSize(PdfPageSize.A4)
             .PdfPageRange("1-2")
@@ -162,7 +162,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void CacheOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Force()
             .Unique("unique-id")
             .Ttl(3600)
@@ -177,7 +177,7 @@ public class UrlboxOptionsBuilderTests
     public void RequestOptions_ShouldSetCorrectly()
     {
         string[] expectedHeaderValue = new[] { "value1", "value2" };
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Header(expectedHeaderValue)
             .Cookie("sessionid=abc123")
             .UserAgent("Mozilla/5.0")
@@ -203,7 +203,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void WaitOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(url: "https://example.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Delay(1000)
             .Timeout(30000)
             .WaitUntil(WaitUntil.Domloaded)
@@ -231,7 +231,7 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void AllOptions_ShouldSetCorrectly()
     {
-        var options = Urlbox.Options(
+        UrlboxOptions options = Urlbox.Options(
                     url: "https://urlbox.com"
                 )
                 .WebhookUrl("https://example.com/webhook")
@@ -606,7 +606,7 @@ public class UrlboxOptionsBuilderTests
     public void ValidateScreenshotOptions_throws()
     {
         // No thumb width or height but includes img fit
-        var noThumbButImgFit = Assert.ThrowsException<ArgumentException>(() =>
+        ArgumentException noThumbButImgFit = Assert.ThrowsException<ArgumentException>(() =>
         {
             Urlbox.Options(url: "https://urlbox.com").ImgFit(ImgFit.Cover)
             .Build();
@@ -617,7 +617,7 @@ public class UrlboxOptionsBuilderTests
             noThumbButImgFit.Message
         );
 
-        var thumbAndPositionButNoFit = Assert.ThrowsException<ArgumentException>(() =>
+        ArgumentException thumbAndPositionButNoFit = Assert.ThrowsException<ArgumentException>(() =>
         {
             Urlbox.Options(url: "https://urlbox.com")
                 .ThumbHeight(5)
@@ -634,49 +634,49 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void ValidateScreenshotOptions_succeeds()
     {
-        var heightAndImgFit =
+        UrlboxOptions heightAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
             .ImgFit(ImgFit.Cover)
             .Build();
 
-        var widthAndImgFit =
+        UrlboxOptions widthAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
             .ImgFit(ImgFit.Cover)
             .Build();
 
-        var justThumbHeight =
+        UrlboxOptions justThumbHeight =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
             .Build();
 
-        var justThumbWidth =
+        UrlboxOptions justThumbWidth =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
             .Build();
 
-        var heightAndImgFitCoverAndPosition =
+        UrlboxOptions heightAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
             .ImgFit(ImgFit.Cover)
             .ImgPosition(ImgPosition.North)
             .Build();
 
-        var heightAndImgFitContainAndPosition =
+        UrlboxOptions heightAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
             .ImgFit(ImgFit.Contain)
             .Build();
 
-        var widthAndImgFitCoverAndPosition =
+        UrlboxOptions widthAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
             .ImgFit(ImgFit.Cover)
             .ImgPosition(ImgPosition.North)
             .Build();
 
-        var widthAndImgFitContainAndPosition =
+        UrlboxOptions widthAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
             .ImgFit(ImgFit.Contain)
@@ -695,11 +695,11 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void UrlboxOptionsBuilder_Resets()
     {
-        var options = Urlbox.Options(url: "https://urlbox.com")
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
             .FullPage()
             .Build();
 
-        var otherOptions = Urlbox.Options(url: "https://someotherurl.com").Build();
+        UrlboxOptions otherOptions = Urlbox.Options(url: "https://someotherurl.com").Build();
 
         Assert.IsFalse(otherOptions.FullPage.HasValue);
         Assert.AreNotSame(options, otherOptions);

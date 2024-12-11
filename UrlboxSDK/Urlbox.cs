@@ -155,7 +155,7 @@ public sealed class Urlbox : IUrlbox
     {
         AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
         int pollingInterval = 2000; // 2 seconds
-        var startTime = DateTime.Now;
+        DateTime startTime = DateTime.Now;
 
         while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
         {
@@ -314,7 +314,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns>A Base64-encoded string of the screenshot.</returns>
     public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = true)
     {
-        var urlboxUrl = GenerateRenderLink(options, format, sign);
+        string urlboxUrl = GenerateRenderLink(options, format, sign);
         return await DownloadAsBase64(urlboxUrl);
     }
 
@@ -327,9 +327,9 @@ public sealed class Urlbox : IUrlbox
     {
         static async Task<string> onSuccess(HttpResponseMessage result)
         {
-            var bytes = await result.Content.ReadAsByteArrayAsync();
-            var contentType = result.Content.Headers.ToDictionary(l => l.Key, k => k.Value)["Content-Type"];
-            var base64 = contentType.First() + ";base64," + Convert.ToBase64String(bytes);
+            byte[] bytes = await result.Content.ReadAsByteArrayAsync();
+            IEnumerable<string> contentType = result.Content.Headers.ToDictionary(l => l.Key, k => k.Value)["Content-Type"];
+            string base64 = contentType.First() + ";base64," + Convert.ToBase64String(bytes);
             return base64;
         }
         return await Download(urlboxUrl, onSuccess);
@@ -365,7 +365,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns>The contents of the downloaded file as a string.</returns>
     public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png", bool sign = true)
     {
-        var urlboxUrl = GenerateRenderLink(options, format, sign);
+        string urlboxUrl = GenerateRenderLink(options, format, sign);
         return await DownloadToFile(urlboxUrl, filename);
     }
 
@@ -438,7 +438,7 @@ public sealed class Urlbox : IUrlbox
         {
             string responseData = await response.Content.ReadAsStringAsync();
 
-            var deserializerOptions = new JsonSerializerOptions
+            JsonSerializerOptions deserializerOptions = new()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true,
@@ -522,7 +522,7 @@ public sealed class Urlbox : IUrlbox
         };
 
         request.Headers.Add("Authorization", $"Bearer {secret}");
-        var deserializerOptions = new JsonSerializerOptions
+        JsonSerializerOptions deserializerOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true,

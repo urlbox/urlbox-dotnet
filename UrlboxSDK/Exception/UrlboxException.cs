@@ -21,7 +21,7 @@ public sealed class UrlboxException : System.Exception
         if (string.IsNullOrWhiteSpace(response))
             throw new ArgumentException("Response cannot be null or empty", nameof(response));
 
-        var root = JsonSerializer.Deserialize<ErrorUrlboxResponse>(response, deserializerOptions);
+        ErrorUrlboxResponse? root = JsonSerializer.Deserialize<ErrorUrlboxResponse>(response, deserializerOptions);
         if (root == null || root?.Error == null || string.IsNullOrWhiteSpace(root?.Error.Message) || string.IsNullOrWhiteSpace(root.RequestId))
         {
             throw new JsonException("Invalid JSON response structure");

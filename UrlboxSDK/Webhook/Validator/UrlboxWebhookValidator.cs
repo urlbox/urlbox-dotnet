@@ -55,11 +55,9 @@ public sealed class UrlboxWebhookValidator
         byte[] secretKeyBytes = Encoding.UTF8.GetBytes(this.webhookSecret);
         byte[] messageBytes = Encoding.UTF8.GetBytes(messageToHash);
 
-        using (var hmacsha256 = new HMACSHA256(secretKeyBytes))
-        {
-            byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();  // Convert hash to hex string
-        }
+        using HMACSHA256 hmacsha256 = new(secretKeyBytes);
+        byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();  // Convert hash to hex string
     }
 
     /// <summary>

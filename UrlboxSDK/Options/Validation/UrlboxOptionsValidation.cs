@@ -1,3 +1,4 @@
+using System.Reflection;
 using UrlboxSDK.Options.Resource;
 
 namespace UrlboxSDK.Options.Validation;
@@ -138,10 +139,10 @@ public sealed class UrlboxOptionsValidation
     /// <returns>The validated <see cref="UrlboxOptions"/> instance.</returns>
     private static UrlboxOptions ValidateScreenshotOptions(UrlboxOptions options)
     {
-        var thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
+        bool thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
         bool hasImgFit = options.ImgFit != null && Enum.IsDefined(typeof(ImgFit), options.ImgFit);
         bool hasImgPosition = options.ImgPosition != null && Enum.IsDefined(typeof(ImgPosition), options.ImgPosition);
-        var imgFitIsCoverOrContain = options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Cover || options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Contain;
+        bool imgFitIsCoverOrContain = options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Cover || options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Contain;
 
         if (!thumbSizes && hasImgFit)
         {
@@ -250,9 +251,9 @@ public sealed class UrlboxOptionsValidation
         return category
          .Any(propertyName =>
          {
-             var property = options.GetType().GetProperty(propertyName);
+             PropertyInfo? property = options.GetType().GetProperty(propertyName);
              if (property == null) return false;
-             var value = property.GetValue(options);
+             object? value = property.GetValue(options);
              return UrlboxOptionsValidation.IsNullOption(value);
          });
     }

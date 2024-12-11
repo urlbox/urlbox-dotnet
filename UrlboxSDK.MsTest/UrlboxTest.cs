@@ -139,7 +139,7 @@ public class UrlTests
     [TestMethod]
     public void FromCredentials_Success()
     {
-        var urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook");
+        Urlbox urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook");
         Assert.IsInstanceOfType(urlbox, typeof(Urlbox));
     }
 
@@ -152,7 +152,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_WithAllOptions()
     {
-        var output = urlbox.GenerateRenderLink(urlboxAllOptions);
+        string output = urlbox.GenerateRenderLink(urlboxAllOptions);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/e1e3a97a2ba637fe8423d2ad5162c6a0a0f92e46/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=latest&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on_4xx=true&fail_on_5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=100&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
@@ -163,7 +163,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_TestFormatKey_withFailOnKeys()
     {
-        var output = urlbox.GenerateRenderLink(
+        string output = urlbox.GenerateRenderLink(
             Urlbox.Options(url: "testUrl").FailOn4xx().FailOn5xx().Build()
         );
 
@@ -184,7 +184,7 @@ public class UrlTests
             "some=thirdCookie"
         }
         };
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/08447cc10b0739eb755de5c5590e4bf725722c62/png?cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie&url=https%3A%2F%2Furlbox.com",
@@ -200,7 +200,7 @@ public class UrlTests
             Cookie = "some=cookie"
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/d451c1b746547f68a8d2a996f2d19352711a5af6/png?cookie=some%3Dcookie&url=https%3A%2F%2Furlbox.com",
@@ -216,7 +216,7 @@ public class UrlTests
             BlockUrls = new string[] { "cdn.shopify.com", "otherDomain" }
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/66515f594cc06af0ee6db740ef4aee4ea8bc28b7/png?block_urls=cdn.shopify.com%2CotherDomain&url=https%3A%2F%2Fshopify.com",
@@ -232,7 +232,7 @@ public class UrlTests
             BlockUrls = new string[] { "cdn.shopify.com" }
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
             "https://api.urlbox.com/v1/MY_API_KEY/fb73b41789c34999db7a747f15fad71e9d2d6b35/png?block_urls=cdn.shopify.com&url=https%3A%2F%2Fshopify.com",
@@ -243,7 +243,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_WithUrlEncodedOptions()
     {
-        var options = new UrlboxOptions(url: "urlbox.com")
+        UrlboxOptions options = new(url: "urlbox.com")
         {
             Width = 1280,
             ThumbWidth = 500,
@@ -251,7 +251,7 @@ public class UrlTests
             UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/e7f3b402debceb373e8824ef05fc5bd11fd1c1ab/png?full_page=true&thumb_width=500&url=urlbox.com&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36&width=1280",
                         output);
     }
@@ -259,8 +259,8 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_UrlNeedsEncoding()
     {
-        var options = new UrlboxOptions(url: "https://www.hatchtank.io/markup/index.html?url2png=true&board=demo_1645_1430");
-        var output = urlbox.GenerateRenderLink(options);
+        UrlboxOptions options = new(url: "https://www.hatchtank.io/markup/index.html?url2png=true&board=demo_1645_1430");
+        string output = urlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/4b8ac501f3aaccbea2081a7105302593174ebc23/png?url=https%3A%2F%2Fwww.hatchtank.io%2Fmarkup%2Findex.html%3Furl2png%3Dtrue%26board%3Ddemo_1645_1430",
         output, "Not OK");
     }
@@ -268,19 +268,19 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_WithUserAgent()
     {
-        var options = new UrlboxOptions(url: "https://bbc.co.uk")
+        UrlboxOptions options = new(url: "https://bbc.co.uk")
         {
             UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/c2708392a4d881b4816e61b3ed4d89ae4f2c4a57/png?url=https%3A%2F%2Fbbc.co.uk&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_12_6%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F62.0.3202.94%20Safari%2F537.36", output);
     }
 
     [TestMethod]
     public void GenerateRenderLink_IgnoreEmptyValuesAndFormat()
     {
-        var options = new UrlboxOptions(url: "https://bbc.co.uk")
+        UrlboxOptions options = new(url: "https://bbc.co.uk")
         {
             FullPage = false,
             ThumbWidth = 0,
@@ -292,7 +292,7 @@ public class UrlTests
             Cookie = ""
         };
 
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
                         output);
     }
@@ -300,19 +300,19 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_FormatWorks()
     {
-        var options = new UrlboxOptions(url: "https://bbc.co.uk");
-        var output = urlbox.GenerateRenderLink(options, "jpeg");
+        UrlboxOptions options = new(url: "https://bbc.co.uk");
+        string output = urlbox.GenerateRenderLink(options, "jpeg");
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
     [TestMethod]
     public void GenerateRenderLink_WithHtml()
     {
-        var options = new UrlboxOptions(html: "<h1>test</h1>")
+        UrlboxOptions options = new(html: "<h1>test</h1>")
         {
             FullPage = true
         };
-        var output = urlbox.GenerateRenderLink(options);
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/931010e45a7936be4a6bc208e4ef0675fd216832/png?full_page=true&html=%3Ch1%3Etest%3C%2Fh1%3E", output);
     }
@@ -320,8 +320,8 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_WithSimpleURL()
     {
-        var options = new UrlboxOptions(url: "bbc.co.uk");
-        var output = urlbox.GenerateRenderLink(options);
+        UrlboxOptions options = new(url: "bbc.co.uk");
+        string output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/75c9016e7f98f90f5eabfd348f3091f7bf625153/png?url=bbc.co.uk",
                         output, "Not OK");
@@ -330,12 +330,12 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_ShouldRemoveFormatFromQueryString()
     {
-        var options = new UrlboxOptions(url: "https://urlbox.com")
+        UrlboxOptions options = new(url: "https://urlbox.com")
         {
             Format = Format.Png,
             FullPage = true
         };
-        var output = renderLinkFactory.GenerateRenderLink(Urlbox.BASE_URL, options);
+        string output = renderLinkFactory.GenerateRenderLink(Urlbox.BASE_URL, options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/855d8a6d2d3a1ec3879860fac320005feb3df0bc/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
     }
@@ -545,7 +545,7 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://fakesite.com");
 
-        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
+        UrlboxException exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
             async () => await urlbox.Render(options)
         );
 
@@ -581,7 +581,7 @@ public class UrlTests
             { "url", "https://fakesite.com" }
         };
 
-        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
+        UrlboxException exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
             async () => await urlbox.Render(options)
         );
 
@@ -614,7 +614,7 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://fakesite.com");
 
-        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
+        UrlboxException exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
             async () => await urlbox.RenderAsync(options)
         );
 
@@ -650,7 +650,7 @@ public class UrlTests
             { "url", "https://fakesite.com" }
         };
 
-        var exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
+        UrlboxException exception = await Assert.ThrowsExceptionAsync<UrlboxException>(
             async () => await urlbox.RenderAsync(options)
         );
 
@@ -767,7 +767,7 @@ public class UrlTests
             Width = 125,
         };
 
-        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 1200001));
+        TimeoutException result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 1200001));
         Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
     }
 
@@ -780,7 +780,7 @@ public class UrlTests
             Width = 125,
         };
 
-        var result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 4999));
+        TimeoutException result = await Assert.ThrowsExceptionAsync<TimeoutException>(() => urlbox.TakeScreenshot(options, 4999));
         Assert.AreEqual("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).", result.Message);
     }
 
@@ -881,7 +881,7 @@ public class UrlTests
             "" // No response body or error headers
         );
 
-        var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(
+        ArgumentException exception = await Assert.ThrowsExceptionAsync<ArgumentException>(
             async () => await urlbox.GetStatus(renderId)
         );
 
@@ -894,7 +894,7 @@ public class UrlTests
     [TestMethod]
     public async Task TestDownloadToFile_succeeds()
     {
-        var urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/5ee277f206869517d00cf1951f30d48ef9c64bfe/png?url=google.com";
+        string urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/5ee277f206869517d00cf1951f30d48ef9c64bfe/png?url=google.com";
 
         client.StubRequest(
             HttpMethod.Get,
@@ -903,7 +903,7 @@ public class UrlTests
             "somebuffer" // No response body or error headers
         );
 
-        var result = await urlbox.DownloadToFile(urlboxUrl, "result.png");
+        string result = await urlbox.DownloadToFile(urlboxUrl, "result.png");
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(String));
         Assert.IsTrue(result.Length >= 0);
@@ -924,7 +924,7 @@ public class UrlTests
             }
         );
 
-        var result = await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.DownloadToFile(urlboxUrl, "result.png"));
+        System.Exception result = await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.DownloadToFile(urlboxUrl, "result.png"));
 
         Assert.IsNotNull(result);
         Assert.AreEqual(result.Message, "Request failed: some error message from Urlbox API");
@@ -945,7 +945,6 @@ public class UrlTests
             HttpStatusCode.OK,
             mockContent
         );
-
 
         string base64result = await urlbox.DownloadAsBase64(urlboxUrl);
 
@@ -970,7 +969,7 @@ public class UrlTests
             }
         );
 
-        var exception = await Assert.ThrowsExceptionAsync<System.Exception>(
+        System.Exception exception = await Assert.ThrowsExceptionAsync<System.Exception>(
             async () => await urlbox.DownloadAsBase64(urlboxUrl)
         );
 
