@@ -2,10 +2,16 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Extensions.Configuration;
-using UrlboxSDK;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Response.Resource;
 using UrlboxSDK.Factory;
+using System.Net.Http;
+using System.Net;
+using System.Collections.Generic;
+using UrlboxSDK.Exception;
+using UrlboxSDK.MsTest.Utils;
+
+namespace UrlboxSDK.MsTest.Resource;
 
 [TestClass]
 public class UrlTests

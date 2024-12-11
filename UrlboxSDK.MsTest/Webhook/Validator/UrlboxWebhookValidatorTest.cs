@@ -1,7 +1,8 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
 using UrlboxSDK.Webhook.Resource;
+
+namespace UrlboxSDK.MsTest.Webhook.Validator;
 
 [TestClass]
 public class UrlboxWebhookValidatorTests
@@ -54,7 +55,7 @@ public class UrlboxWebhookValidatorTests
     {
         Urlbox urlbox = new("key", "secret", "webhook");
         // Shar of 'content' should not match 321, but method should run if 'webhook' passed.
-        var result = Assert.ThrowsException<Exception>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
+        var result = Assert.ThrowsException<System.Exception>(() => urlbox.VerifyWebhookSignature("t=123,sha256=321", "content"));
 
         Assert.AreEqual(
             "Cannot verify that this response came from Urlbox. Double check that you're webhook secret is correct.",

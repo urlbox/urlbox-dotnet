@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
-using UrlboxSDK;
+
+namespace UrlboxSDK.MsTest.Resource;
 
 [TestClass]
 public class UrlboxRegionTest

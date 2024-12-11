@@ -1,13 +1,15 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Metadata.Resource;
 
+namespace UrlboxSDK.MsTest.Metadata.Resource;
+
 [TestClass]
 public class OgImageTests
 {
     [TestMethod]
     public void OgImage_CreatesGetters()
     {
-        OgImage ogImage = new OgImage(
+        OgImage ogImage = new(
             url: "url",
             type: "type",
             width: "123",

@@ -1,6 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Policy;
 
+namespace UrlboxSDK.MsTest.Policy;
+
 [TestClass]
 public class SnakeCaseNamingPolicyTests
 {

@@ -9,7 +9,6 @@ using UrlboxSDK.Factory;
 using UrlboxSDK.Webhook.Resource;
 using UrlboxSDK.Webhook.Validator;
 using UrlboxSDK.Response.Resource;
-using UrlboxSDK;
 
 namespace UrlboxSDK;
 /// <summary>
@@ -56,8 +55,8 @@ public sealed class Urlbox : IUrlbox
         }
         this.secret = secret;
         this.baseUrl = baseUrl ?? BASE_URL;
-        renderLinkFactory = new RenderLinkFactory(key, secret);
         httpClient = new HttpClient();
+        renderLinkFactory = new RenderLinkFactory(key, secret);
         if (!String.IsNullOrEmpty(webhookSecret))
         {
             urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);

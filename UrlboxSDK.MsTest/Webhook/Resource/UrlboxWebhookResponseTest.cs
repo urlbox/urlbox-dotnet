@@ -2,6 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Response.Resource;
 using UrlboxSDK.Webhook.Resource;
 
+namespace UrlboxSDK.MsTest.Webhook.Resource;
+
 [TestClass]
 public class UrlboxWebhookResponseTests
 {
