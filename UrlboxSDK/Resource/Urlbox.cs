@@ -63,6 +63,23 @@ public sealed class Urlbox : IUrlbox
         }
     }
 
+    // Internal constructor (testable, allows injecting dependencies to mock http)
+    internal Urlbox(string key, string secret, RenderLinkFactory renderLinkFactory, HttpClient httpClient, string? webhookSecret = null, string? baseUrl = BASE_URL)
+    {
+        if (String.IsNullOrEmpty(key))
+        {
+            throw new ArgumentException("Please provide your Urlbox.com API Key");
+        }
+        if (String.IsNullOrEmpty(secret))
+        {
+            throw new ArgumentException("Please provide your Urlbox.com API Secret");
+        }
+        this.secret = secret;
+        this.baseUrl = baseUrl ?? BASE_URL;
+        this.renderLinkFactory = renderLinkFactory ?? throw new ArgumentNullException(nameof(renderLinkFactory));
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
     // STATIC
 
     /// <summary>
