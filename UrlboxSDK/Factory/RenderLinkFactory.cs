@@ -173,7 +173,7 @@ public sealed class RenderLinkFactory
     /// <param name="options"></param>
     /// <param name="format"></param>
     /// <returns>The Urlbox Render Link</returns>
-    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = false)
+    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = true)
     {
         var queryString = ToQueryString(options);
         if (sign)

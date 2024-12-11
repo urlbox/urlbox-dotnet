@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UrlboxSDK.Exception;
 using UrlboxSDK.MsTest.Utils;
 
-namespace UrlboxSDK.MsTest.Resource;
+namespace UrlboxSDK.MsTest;
 
 [TestClass]
 public class UrlTests
@@ -155,7 +155,7 @@ public class UrlTests
         var output = urlbox.GenerateRenderLink(urlboxAllOptions);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=latest&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on_4xx=true&fail_on_5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=100&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
+            "https://api.urlbox.com/v1/MY_API_KEY/e1e3a97a2ba637fe8423d2ad5162c6a0a0f92e46/png?accept_lang=test&accuracy=123&allow_infinite=true&authorization=test&bg_color=test&block_ads=true&block_fetch=true&block_fonts=true&block_frames=true&block_images=true&block_medias=true&block_scripts=true&block_sockets=true&block_styles=true&block_urls=test%2Ctest2&block_xhr=true&cdn_host=test&click=test&click_accept=true&click_all=test&clip=test&cookie=test&css=test&dark_mode=true&delay=123&detect_full_height=true&disable_js=true&disable_ligatures=true&download=test&engine_version=latest&fail_if_selector_missing=true&fail_if_selector_present=true&fail_on_4xx=true&fail_on_5xx=true&force=true&full_page=true&full_page_mode=stitch&full_width=true&gpu=true&header=test&height=123&hide_cookie_banners=true&hide_selector=test&highlight=test&highlight_bg=test&highlight_fg=test&hover=test&img_bg=test&img_fit=contain&img_pad=12%2C10%2C10%2C10&img_position=northeast&js=test&latitude=0.12&longitude=0.12&max_height=123&max_section_height=123&media=print&pdf_auto_crop=true&pdf_background=true&pdf_footer=test&pdf_header=test&pdf_margin=default&pdf_margin_bottom=123&pdf_margin_left=123&pdf_margin_right=123&pdf_margin_top=123&pdf_orientation=portrait&pdf_page_height=123&pdf_page_range=test&pdf_page_size=tabloid&pdf_page_width=123&pdf_scale=0.12&pdf_show_footer=true&pdf_show_header=true&platform=Linux%20x86_64&proxy=test&quality=100&readable=true&reduced_motion=true&response_type=json&retina=true&s3_bucket=test&s3_endpoint=test&s3_path=test&s3_region=test&s3_storage_class=standard&scroll_delay=123&scroll_increment=400&scroll_to=test&selector=test&skip_scroll=true&thumb_height=123&thumb_width=123&timeout=123&transparent=true&ttl=123&tz=test&unique=test&url=https%3A%2F%2Furlbox.com&user_agent=test&use_s3=true&wait_for=test&wait_timeout=123&wait_to_leave=test&wait_until=domloaded&webhook_url=https%3A%2F%2Fan-ngrok-endpoint&width=123",
             output
         );
     }
@@ -168,7 +168,7 @@ public class UrlTests
         );
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?fail_on_4xx=true&fail_on_5xx=true&url=testUrl",
+            "https://api.urlbox.com/v1/MY_API_KEY/cc8ed4457a46584b7c11d964032135d05821b9b8/png?fail_on_4xx=true&fail_on_5xx=true&url=testUrl",
             output
         );
     }
@@ -187,7 +187,7 @@ public class UrlTests
         var output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie&url=https%3A%2F%2Furlbox.com",
+            "https://api.urlbox.com/v1/MY_API_KEY/08447cc10b0739eb755de5c5590e4bf725722c62/png?cookie=some%3Dcookie%2Csome%3DotherCookie%2Csome%3DthirdCookie&url=https%3A%2F%2Furlbox.com",
             output
         );
     }
@@ -203,7 +203,7 @@ public class UrlTests
         var output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?cookie=some%3Dcookie&url=https%3A%2F%2Furlbox.com",
+            "https://api.urlbox.com/v1/MY_API_KEY/d451c1b746547f68a8d2a996f2d19352711a5af6/png?cookie=some%3Dcookie&url=https%3A%2F%2Furlbox.com",
             output
         );
     }
@@ -219,7 +219,7 @@ public class UrlTests
         var output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?block_urls=cdn.shopify.com%2CotherDomain&url=https%3A%2F%2Fshopify.com",
+            "https://api.urlbox.com/v1/MY_API_KEY/66515f594cc06af0ee6db740ef4aee4ea8bc28b7/png?block_urls=cdn.shopify.com%2CotherDomain&url=https%3A%2F%2Fshopify.com",
             output
         );
     }
@@ -235,7 +235,7 @@ public class UrlTests
         var output = urlbox.GenerateRenderLink(options);
 
         Assert.AreEqual(
-            "https://api.urlbox.com/v1/MY_API_KEY/png?block_urls=cdn.shopify.com&url=https%3A%2F%2Fshopify.com",
+            "https://api.urlbox.com/v1/MY_API_KEY/fb73b41789c34999db7a747f15fad71e9d2d6b35/png?block_urls=cdn.shopify.com&url=https%3A%2F%2Fshopify.com",
             output
         );
     }
@@ -252,7 +252,7 @@ public class UrlTests
         };
 
         var output = urlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&thumb_width=500&url=urlbox.com&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36&width=1280",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/e7f3b402debceb373e8824ef05fc5bd11fd1c1ab/png?full_page=true&thumb_width=500&url=urlbox.com&user_agent=Mozilla%2F5.0%20%28Windows%20NT%206.1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F41.0.2228.0%20Safari%2F537.36&width=1280",
                         output);
     }
 
@@ -261,7 +261,7 @@ public class UrlTests
     {
         var options = new UrlboxOptions(url: "https://www.hatchtank.io/markup/index.html?url2png=true&board=demo_1645_1430");
         var output = urlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Fwww.hatchtank.io%2Fmarkup%2Findex.html%3Furl2png%3Dtrue%26board%3Ddemo_1645_1430",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/4b8ac501f3aaccbea2081a7105302593174ebc23/png?url=https%3A%2F%2Fwww.hatchtank.io%2Fmarkup%2Findex.html%3Furl2png%3Dtrue%26board%3Ddemo_1645_1430",
         output, "Not OK");
     }
 
@@ -274,7 +274,7 @@ public class UrlTests
         };
 
         var output = urlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Fbbc.co.uk&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_12_6%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F62.0.3202.94%20Safari%2F537.36", output);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/c2708392a4d881b4816e61b3ed4d89ae4f2c4a57/png?url=https%3A%2F%2Fbbc.co.uk&user_agent=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_12_6%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F62.0.3202.94%20Safari%2F537.36", output);
     }
 
     [TestMethod]
@@ -293,7 +293,7 @@ public class UrlTests
         };
 
         var output = urlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Fbbc.co.uk",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
                         output);
     }
 
@@ -302,7 +302,7 @@ public class UrlTests
     {
         var options = new UrlboxOptions(url: "https://bbc.co.uk");
         var output = urlbox.GenerateRenderLink(options, "jpeg");
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
     [TestMethod]
@@ -314,7 +314,7 @@ public class UrlTests
         };
         var output = urlbox.GenerateRenderLink(options);
 
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&html=%3Ch1%3Etest%3C%2Fh1%3E", output);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/931010e45a7936be4a6bc208e4ef0675fd216832/png?full_page=true&html=%3Ch1%3Etest%3C%2Fh1%3E", output);
     }
 
     [TestMethod]
@@ -323,7 +323,7 @@ public class UrlTests
         var options = new UrlboxOptions(url: "bbc.co.uk");
         var output = urlbox.GenerateRenderLink(options);
 
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?url=bbc.co.uk",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/75c9016e7f98f90f5eabfd348f3091f7bf625153/png?url=bbc.co.uk",
                         output, "Not OK");
     }
 
@@ -337,7 +337,7 @@ public class UrlTests
         };
         var output = renderLinkFactory.GenerateRenderLink(Urlbox.BASE_URL, options);
 
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/855d8a6d2d3a1ec3879860fac320005feb3df0bc/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
     }
 
     [TestMethod]

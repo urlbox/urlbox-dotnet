@@ -312,7 +312,7 @@ public sealed class Urlbox : IUrlbox
     /// <param name="options">The options for the screenshot</param>
     /// <param name="format">The image format (e.g., "png", "jpg").</param>
     /// <returns>A Base64-encoded string of the screenshot.</returns>
-    public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = false)
+    public async Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = true)
     {
         var urlboxUrl = GenerateRenderLink(options, format, sign);
         return await DownloadAsBase64(urlboxUrl);
@@ -363,7 +363,7 @@ public sealed class Urlbox : IUrlbox
     /// <param name="filename">The file path where the screenshot will be saved.</param>
     /// <param name="format">The image format (e.g., "png", "jpg"). Default is "png".</param>
     /// <returns>The contents of the downloaded file as a string.</returns>
-    public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png", bool sign = false)
+    public async Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png", bool sign = true)
     {
         var urlboxUrl = GenerateRenderLink(options, format, sign);
         return await DownloadToFile(urlboxUrl, filename);
@@ -376,7 +376,7 @@ public sealed class Urlbox : IUrlbox
     /// </summary>
     /// <param name="options">The options for the screenshot.</param>
     /// <returns>A render link Url to render a PNG screenshot.</returns>
-    public string GeneratePNGUrl(UrlboxOptions options, bool sign = false)
+    public string GeneratePNGUrl(UrlboxOptions options, bool sign = true)
     {
         return GenerateRenderLink(options, "png", sign);
     }
@@ -386,7 +386,7 @@ public sealed class Urlbox : IUrlbox
     /// </summary>
     /// <param name="options">The options for the screenshot.</param>
     /// <returns>A render link Url to render a JPEG screenshot.</returns>
-    public string GenerateJPEGUrl(UrlboxOptions options, bool sign = false)
+    public string GenerateJPEGUrl(UrlboxOptions options, bool sign = true)
     {
         return GenerateRenderLink(options, "jpg", sign);
     }
@@ -396,7 +396,7 @@ public sealed class Urlbox : IUrlbox
     /// </summary>
     /// <param name="options">The options for generating the PDF.</param>
     /// <returns>A render link Url to render a PDF file.</returns>
-    public string GeneratePDFUrl(UrlboxOptions options, bool sign = false)
+    public string GeneratePDFUrl(UrlboxOptions options, bool sign = true)
     {
         return GenerateRenderLink(options, "pdf", sign);
     }
@@ -407,7 +407,7 @@ public sealed class Urlbox : IUrlbox
     /// <param name="options">The options for generating the screenshot or PDF.</param>
     /// <param name="format">The format of the output, e.g., "png", "jpg", "pdf".</param>
     /// <returns>A render link URL to render the content.</returns>
-    public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = false)
+    public string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = true)
     {
         return renderLinkFactory.GenerateRenderLink(baseUrl, options, format, sign);
     }
