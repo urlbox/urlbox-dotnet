@@ -1,183 +1,11 @@
 using UrlboxSDK.Options.Resource;
+using UrlboxSDK.Options.Validation;
 
 namespace UrlboxSDK.Options.Builder;
 
 public sealed class UrlboxOptionsBuilder
 {
     private readonly UrlboxOptions _options;
-
-    // ** Options that should not be applied if a given option is not set EG FullPage or UseS3 ** //
-
-    /// <summary>
-    /// A list of options that can only be used if full_page = true
-    /// </summary>
-    private static readonly string[] FullPageOptions =
-    {
-        nameof(UrlboxOptions.FullPageMode),
-        nameof(UrlboxOptions.ScrollIncrement),
-        nameof(UrlboxOptions.ScrollDelay),
-        nameof(UrlboxOptions.DetectFullHeight),
-        nameof(UrlboxOptions.MaxSectionHeight),
-        nameof(UrlboxOptions.FullWidth)
-    };
-
-    /// <summary>
-    /// A list of options that can only be used if use_s3 = true
-    /// </summary>
-    private static readonly string[] S3Options =
-    {
-        nameof(UrlboxOptions.S3Bucket),
-        nameof(UrlboxOptions.S3Path),
-        nameof(UrlboxOptions.S3Endpoint),
-        nameof(UrlboxOptions.S3Region),
-        nameof(UrlboxOptions.S3StorageClass),
-        nameof(UrlboxOptions.CdnHost),
-    };
-
-    /// <summary>
-    /// A list of options that are functional for the stable engine
-    /// </summary>
-    private static readonly string[] StableOptions =
-    {
-        nameof(UrlboxOptions.Url),
-        nameof(UrlboxOptions.WebhookUrl),
-        nameof(UrlboxOptions.Html),
-        nameof(UrlboxOptions.Format),
-        nameof(UrlboxOptions.Width),
-        nameof(UrlboxOptions.Height),
-        nameof(UrlboxOptions.FullPage),
-        nameof(UrlboxOptions.Selector),
-        nameof(UrlboxOptions.Clip),
-        nameof(UrlboxOptions.Gpu),
-        nameof(UrlboxOptions.ResponseType),
-        nameof(UrlboxOptions.BlockAds),
-        nameof(UrlboxOptions.HideCookieBanners),
-        nameof(UrlboxOptions.ClickAccept),
-        nameof(UrlboxOptions.BlockImages),
-        nameof(UrlboxOptions.BlockFonts),
-        nameof(UrlboxOptions.BlockMedias),
-        nameof(UrlboxOptions.BlockStyles),
-        nameof(UrlboxOptions.BlockScripts),
-        nameof(UrlboxOptions.BlockFrames),
-        nameof(UrlboxOptions.BlockFetch),
-        nameof(UrlboxOptions.BlockXhr),
-        nameof(UrlboxOptions.BlockSockets),
-        nameof(UrlboxOptions.HideSelector),
-        nameof(UrlboxOptions.Js),
-        nameof(UrlboxOptions.Css),
-        nameof(UrlboxOptions.DarkMode),
-        nameof(UrlboxOptions.ReducedMotion),
-        nameof(UrlboxOptions.Retina),
-        nameof(UrlboxOptions.ThumbWidth),
-        nameof(UrlboxOptions.ThumbHeight),
-        nameof(UrlboxOptions.ImgPosition),
-        nameof(UrlboxOptions.ImgBg),
-        nameof(UrlboxOptions.ImgPad),
-        nameof(UrlboxOptions.Quality),
-        nameof(UrlboxOptions.Transparent),
-        nameof(UrlboxOptions.MaxHeight),
-        nameof(UrlboxOptions.Download),
-        nameof(UrlboxOptions.PdfPageSize),
-        nameof(UrlboxOptions.PdfPageRange),
-        nameof(UrlboxOptions.PdfPageWidth),
-        nameof(UrlboxOptions.PdfPageHeight),
-        nameof(UrlboxOptions.PdfMargin),
-        nameof(UrlboxOptions.PdfMarginTop),
-        nameof(UrlboxOptions.PdfMarginRight),
-        nameof(UrlboxOptions.PdfMarginBottom),
-        nameof(UrlboxOptions.PdfMarginLeft),
-        nameof(UrlboxOptions.PdfAutoCrop),
-        nameof(UrlboxOptions.PdfScale),
-        nameof(UrlboxOptions.PdfOrientation),
-        nameof(UrlboxOptions.PdfBackground),
-        nameof(UrlboxOptions.DisableLigatures),
-        nameof(UrlboxOptions.Media),
-        nameof(UrlboxOptions.PdfShowHeader),
-        nameof(UrlboxOptions.PdfHeader),
-        nameof(UrlboxOptions.PdfShowFooter),
-        nameof(UrlboxOptions.PdfFooter),
-        nameof(UrlboxOptions.Readable),
-        nameof(UrlboxOptions.Force),
-        nameof(UrlboxOptions.Unique),
-        nameof(UrlboxOptions.Ttl),
-        nameof(UrlboxOptions.Proxy),
-        nameof(UrlboxOptions.Header),
-        nameof(UrlboxOptions.Cookie),
-        nameof(UrlboxOptions.UserAgent),
-        nameof(UrlboxOptions.Platform),
-        nameof(UrlboxOptions.AcceptLang),
-        nameof(UrlboxOptions.Authorization),
-        nameof(UrlboxOptions.Tz),
-        nameof(UrlboxOptions.EngineVersion),
-        nameof(UrlboxOptions.Delay),
-        nameof(UrlboxOptions.Timeout),
-        nameof(UrlboxOptions.WaitUntil),
-        nameof(UrlboxOptions.WaitFor),
-        nameof(UrlboxOptions.WaitToLeave),
-        nameof(UrlboxOptions.WaitTimeout),
-        nameof(UrlboxOptions.FailIfSelectorMissing),
-        nameof(UrlboxOptions.FailIfSelectorPresent),
-        nameof(UrlboxOptions.FailOn4xx),
-        nameof(UrlboxOptions.FailOn5xx),
-        nameof(UrlboxOptions.ScrollTo),
-        nameof(UrlboxOptions.Click),
-        nameof(UrlboxOptions.ClickAll),
-        nameof(UrlboxOptions.Hover),
-        nameof(UrlboxOptions.BgColor),
-        nameof(UrlboxOptions.DisableJs),
-        nameof(UrlboxOptions.FullPageMode),
-        nameof(UrlboxOptions.FullWidth),
-        nameof(UrlboxOptions.AllowInfinite),
-        nameof(UrlboxOptions.SkipScroll),
-        nameof(UrlboxOptions.DetectFullHeight),
-        nameof(UrlboxOptions.MaxSectionHeight),
-        nameof(UrlboxOptions.ScrollIncrement),
-        nameof(UrlboxOptions.ScrollDelay),
-        nameof(UrlboxOptions.Highlight),
-        nameof(UrlboxOptions.HighlightFg),
-        nameof(UrlboxOptions.HighlightBg),
-        nameof(UrlboxOptions.Accuracy),
-        nameof(UrlboxOptions.UseS3),
-        nameof(UrlboxOptions.S3Path),
-        nameof(UrlboxOptions.S3Bucket),
-        nameof(UrlboxOptions.S3Endpoint),
-        nameof(UrlboxOptions.S3Region),
-        nameof(UrlboxOptions.CdnHost),
-        nameof(UrlboxOptions.S3StorageClass),
-        nameof(UrlboxOptions.SaveHtml),
-        nameof(UrlboxOptions.SaveMhtml),
-        nameof(UrlboxOptions.SaveMarkdown),
-        nameof(UrlboxOptions.SaveMetadata),
-        nameof(UrlboxOptions.Metadata),
-        // Note - add options after each stable update
-        // nameof(UrlboxOptions.Latitude),
-        // nameof(UrlboxOptions.Longitude),
-    };
-
-    // Define PDF-specific options as a static readonly field
-    private static readonly string[] PdfOptions =
-    {
-        nameof(UrlboxOptions.PdfPageSize),
-        nameof(UrlboxOptions.PdfPageRange),
-        nameof(UrlboxOptions.PdfPageWidth),
-        nameof(UrlboxOptions.PdfPageHeight),
-        nameof(UrlboxOptions.PdfMargin),
-        nameof(UrlboxOptions.PdfMarginTop),
-        nameof(UrlboxOptions.PdfMarginRight),
-        nameof(UrlboxOptions.PdfMarginBottom),
-        nameof(UrlboxOptions.PdfMarginLeft),
-        nameof(UrlboxOptions.PdfAutoCrop),
-        nameof(UrlboxOptions.PdfScale),
-        nameof(UrlboxOptions.PdfOrientation),
-        nameof(UrlboxOptions.PdfBackground),
-        nameof(UrlboxOptions.DisableLigatures),
-        nameof(UrlboxOptions.Media),
-        nameof(UrlboxOptions.Readable),
-        nameof(UrlboxOptions.PdfShowHeader),
-        nameof(UrlboxOptions.PdfHeader),
-        nameof(UrlboxOptions.PdfShowFooter),
-        nameof(UrlboxOptions.PdfFooter)
-    };
 
     /// <summary>
     /// Constructor
@@ -198,136 +26,7 @@ public sealed class UrlboxOptionsBuilder
     /// <returns></returns>
     public UrlboxOptions Build()
     {
-        return Validate(_options);
-    }
-
-    private UrlboxOptions Validate(UrlboxOptions options)
-    {
-        ValidateEngineVersionOptions(options);
-        ValidateScreenshotOptions(options);
-        ValidatePdfOptions(options);
-        ValidateFullPageOptions(options);
-        ValidateS3Options(options);
-        return options;
-    }
-
-    /// <summary>
-    /// Validates the engine version options. Will throw if stable is chosen, but options not included in stable const are used
-    /// </summary>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    private UrlboxOptions ValidateEngineVersionOptions(UrlboxOptions options)
-    {
-        if (options.EngineVersion == "stable")
-        {
-            // Find options that are set but not in the StableOptions list
-            var invalidOptions = options.GetType()
-                .GetProperties()
-                .Where(p =>
-                {
-                    var optionValue = p.GetValue(options);
-                    return IsNonDefaultValue(optionValue);
-                })
-                .Select(p => p.Name)
-                .Except(StableOptions); // Exclude properties that are allowed in StableOptions
-
-            if (invalidOptions.Any())
-            {
-                throw new ArgumentException(
-                    $"The following options are not yet implemented in the stable engine version, but : {string.Join(", ", invalidOptions)}"
-                );
-            }
-        }
-
-        return options;
-    }
-
-    private static UrlboxOptions ValidateScreenshotOptions(UrlboxOptions options)
-    {
-        var thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
-        bool hasImgFit = options.ImgFit != null && Enum.IsDefined(typeof(UrlboxOptions.ImgFitOption), options.ImgFit);
-        bool hasImgPosition = options.ImgPosition != null && Enum.IsDefined(typeof(UrlboxOptions.ImgPositionOption), options.ImgPosition);
-
-        var imgFitIsCoverOrContain = options.ImgFit == UrlboxOptions.ImgFitOption.cover || options.ImgFit == UrlboxOptions.ImgFitOption.contain;
-
-        if (!thumbSizes && hasImgFit)
-        {
-            throw new ArgumentException("Invalid Configuration: Image Fit is included despite ThumbWidth nor ThumbHeight being set.");
-        }
-
-        if (!hasImgFit && hasImgPosition)
-        {
-            throw new ArgumentException("Invalid Configuration: Image Position is included despite Image Fit not being set.");
-        }
-
-        if (hasImgFit && hasImgPosition && !imgFitIsCoverOrContain)
-        {
-            throw new ArgumentException("Invalid Configuration: Image Position is included despite Image Fit not being set to 'cover' or 'contain'.");
-        }
-
-        return options;
-    }
-
-    private UrlboxOptions ValidateFullPageOptions(UrlboxOptions options)
-    {
-        if (!options.FullPage && HasOptionsInCategory(FullPageOptions, options))
-        {
-            throw new ArgumentException("Invalid configuration: Full-page options are included despite 'FullPage' being set to false.");
-        }
-        return options;
-    }
-
-    private UrlboxOptions ValidateS3Options(UrlboxOptions options)
-    {
-        if (!options.UseS3 && HasOptionsInCategory(S3Options, options))
-        {
-            throw new ArgumentException("Invalid configuration: S3 options are included despite 'UseS3' being set to false.");
-        }
-        return options;
-    }
-
-    private UrlboxOptions ValidatePdfOptions(UrlboxOptions options)
-    {
-        if (options.Format != UrlboxOptions.FormatOption.pdf && HasOptionsInCategory(PdfOptions, options))
-        {
-            throw new ArgumentException("One or more PDF-specific options are only valid for the PDF format.");
-        }
-
-        return options;
-    }
-
-    /// <summary>
-    /// Determines if any properties in the specified category are set in the given options.
-    /// </summary>
-    /// <param name="category">Array of property names to check within the options.</param>
-    /// <param name="options">The options object to inspect.</param>
-    /// <returns>True if any property in the category is set; otherwise, false.</returns>
-    private bool HasOptionsInCategory(string[] category, UrlboxOptions options)
-    {
-        return category
-         .Any(propertyName =>
-         {
-             var property = options.GetType().GetProperty(propertyName);
-
-             if (property == null) return false;
-
-             var value = property.GetValue(options);
-
-             return IsNonDefaultValue(value);
-         });
-    }
-
-    private static bool IsNonDefaultValue(object? value)
-    {
-        return value switch
-        {
-            null => false,                       // Reference types are null if unset
-            int intValue => intValue != 0,       // Integers are 0 if unset
-            double doubleValue => doubleValue != 0.0, // Doubles are 0.0 if unset
-            bool boolValue => boolValue,         // Booleans are false if unset
-            _ => true                            // Any other type has non-null value
-        };
+        return UrlboxOptionsValidation.Validate(_options);
     }
 
     public UrlboxOptionsBuilder WebhookUrl(string webhookUrl)
@@ -336,7 +35,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder Format(UrlboxOptions.FormatOption format)
+    public UrlboxOptionsBuilder Format(Format format)
     {
         _options.Format = format;
         return this;
@@ -378,7 +77,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder ResponseType(UrlboxOptions.ResponseTypeOption responseType)
+    public UrlboxOptionsBuilder ResponseType(ResponseType responseType)
     {
         _options.ResponseType = responseType;
         return this;
@@ -510,13 +209,13 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder ImgFit(UrlboxOptions.ImgFitOption imgFit)
+    public UrlboxOptionsBuilder ImgFit(ImgFit imgFit)
     {
         _options.ImgFit = imgFit;
         return this;
     }
 
-    public UrlboxOptionsBuilder ImgPosition(UrlboxOptions.ImgPositionOption imgPosition)
+    public UrlboxOptionsBuilder ImgPosition(ImgPosition imgPosition)
     {
         _options.ImgPosition = imgPosition;
         return this;
@@ -558,7 +257,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfPageSize(UrlboxOptions.PdfPageSizeOption pdfPageSize)
+    public UrlboxOptionsBuilder PdfPageSize(PdfPageSize pdfPageSize)
     {
         _options.PdfPageSize = pdfPageSize;
         return this;
@@ -582,7 +281,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfMargin(UrlboxOptions.PdfMarginOption pdfMargin)
+    public UrlboxOptionsBuilder PdfMargin(PdfMargin pdfMargin)
     {
         _options.PdfMargin = pdfMargin;
         return this;
@@ -624,7 +323,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder PdfOrientation(UrlboxOptions.PdfOrientationOption pdfOrientation)
+    public UrlboxOptionsBuilder PdfOrientation(PdfOrientation pdfOrientation)
     {
         _options.PdfOrientation = pdfOrientation;
         return this;
@@ -642,7 +341,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder Media(UrlboxOptions.MediaOption media)
+    public UrlboxOptionsBuilder Media(Media media)
     {
         _options.Media = media;
         return this;
@@ -709,16 +408,15 @@ public sealed class UrlboxOptionsBuilder
     /// <param name="propertyName"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    private static object ValidateStringOrArray(object value, string propertyName)
+    private static SingleToArraySplit ValidateStringOrArray(object value, string propertyName)
     {
-        if (value is string || value is string[])
+        SingleToArraySplit splitValue = new();
+        return value switch
         {
-            return value;
-        }
-        else
-        {
-            throw new ArgumentException($"{propertyName} must be either a string or a string array.");
-        }
+            string stringValue => splitValue.String = stringValue,
+            string[] stringArrayValue => splitValue.StringArray = stringArrayValue,
+            _ => throw new ArgumentException($"{propertyName} must be either a string or a string array.")
+        };
     }
 
     public UrlboxOptionsBuilder Header(object header)
@@ -741,7 +439,6 @@ public sealed class UrlboxOptionsBuilder
 
     public UrlboxOptionsBuilder Platform(string platform)
     {
-        // Cannot serialise as enums because platforms use spaces, so remains string with validation
         _options.Platform = platform;
         return this;
     }
@@ -764,7 +461,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder EngineVersion(string engineVersion)
+    public UrlboxOptionsBuilder EngineVersion(EngineVersion engineVersion)
     {
         _options.EngineVersion = engineVersion;
         return this;
@@ -782,7 +479,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder WaitUntil(UrlboxOptions.WaitUntilOption waitUntil)
+    public UrlboxOptionsBuilder WaitUntil(WaitUntil waitUntil)
     {
         _options.WaitUntil = waitUntil;
         return this;
@@ -820,13 +517,13 @@ public sealed class UrlboxOptionsBuilder
 
     public UrlboxOptionsBuilder FailOn4xx()
     {
-        _options.FailOn4xx = true;
+        _options.FailOn4Xx = true;
         return this;
     }
 
     public UrlboxOptionsBuilder FailOn5xx()
     {
-        _options.FailOn5xx = true;
+        _options.FailOn5Xx = true;
         return this;
     }
 
@@ -866,7 +563,7 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder FullPageMode(UrlboxOptions.FullPageModeOption fullPageMode)
+    public UrlboxOptionsBuilder FullPageMode(FullPageMode fullPageMode)
     {
         _options.FullPageMode = fullPageMode;
         return this;
@@ -920,27 +617,35 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder HighlightFg(string highlightFg)
+    public UrlboxOptionsBuilder Highlightfg(string Highlightfg)
     {
-        _options.HighlightFg = highlightFg;
+        _options.Highlightfg = Highlightfg;
         return this;
     }
 
-    public UrlboxOptionsBuilder HighlightBg(string highlightBg)
+    public UrlboxOptionsBuilder Highlightbg(string Highlightbg)
     {
-        _options.HighlightBg = highlightBg;
+        _options.Highlightbg = Highlightbg;
         return this;
     }
 
     public UrlboxOptionsBuilder Latitude(double latitude)
     {
-        _options.Latitude = latitude;
+        StrLike latitudeStrLike = new()
+        {
+            Double = latitude
+        };
+        _options.Latitude = latitudeStrLike;
         return this;
     }
 
     public UrlboxOptionsBuilder Longitude(double longitude)
     {
-        _options.Longitude = longitude;
+        StrLike longitudeStrLike = new()
+        {
+            Double = longitude
+        };
+        _options.Longitude = longitudeStrLike;
         return this;
     }
 
@@ -986,9 +691,9 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder S3StorageClass(UrlboxOptions.S3StorageClassOptions s3StorageClass)
+    public UrlboxOptionsBuilder S3Storageclass(S3Storageclass s3Storageclass)
     {
-        _options.S3StorageClass = s3StorageClass;
+        _options.S3Storageclass = s3Storageclass;
         return this;
     }
 

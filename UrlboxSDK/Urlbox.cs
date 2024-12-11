@@ -45,11 +45,11 @@ public sealed class Urlbox : IUrlbox
 
     public Urlbox(string key, string secret, string? webhookSecret = null, string? baseUrl = BASE_URL)
     {
-        if (String.IsNullOrEmpty(key))
+        if (string.IsNullOrEmpty(key))
         {
             throw new ArgumentException("Please provide your Urlbox.com API Key");
         }
-        if (String.IsNullOrEmpty(secret))
+        if (string.IsNullOrEmpty(secret))
         {
             throw new ArgumentException("Please provide your Urlbox.com API Secret");
         }
@@ -57,7 +57,7 @@ public sealed class Urlbox : IUrlbox
         this.baseUrl = baseUrl ?? BASE_URL;
         httpClient = new HttpClient();
         renderLinkFactory = new RenderLinkFactory(key, secret);
-        if (!String.IsNullOrEmpty(webhookSecret))
+        if (!string.IsNullOrEmpty(webhookSecret))
         {
             urlboxWebhookValidator = new UrlboxWebhookValidator(webhookSecret);
         }
@@ -66,11 +66,11 @@ public sealed class Urlbox : IUrlbox
     // Internal constructor (testable, allows injecting dependencies to mock http)
     internal Urlbox(string key, string secret, RenderLinkFactory renderLinkFactory, HttpClient httpClient, string? webhookSecret = null, string? baseUrl = BASE_URL)
     {
-        if (String.IsNullOrEmpty(key))
+        if (string.IsNullOrEmpty(key))
         {
             throw new ArgumentException("Please provide your Urlbox.com API Key");
         }
-        if (String.IsNullOrEmpty(secret))
+        if (string.IsNullOrEmpty(secret))
         {
             throw new ArgumentException("Please provide your Urlbox.com API Secret");
         }
@@ -178,7 +178,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
     public async Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options)
     {
-        options.Format = UrlboxOptions.FormatOption.pdf;
+        options.Format = Format.Pdf;
         return await TakeScreenshot(options);
     }
 
@@ -189,7 +189,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
     public async Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options)
     {
-        options.Format = UrlboxOptions.FormatOption.mp4;
+        options.Format = Format.Mp4;
         return await TakeScreenshot(options);
     }
 

@@ -43,5 +43,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UrlboxSDK.MsTest</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
+
+
 </Project>
