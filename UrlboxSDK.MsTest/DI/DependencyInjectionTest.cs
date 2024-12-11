@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
+
+namespace UrlboxSDK.MsTest.DI;
 
 [TestClass]
 public class DependencyInjectionTests

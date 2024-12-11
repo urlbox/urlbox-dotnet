@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.DI.Extension;
 using UrlboxSDK.DI.Resource;
-using UrlboxSDK;
 
 namespace UrlboxSDK.MsTest.DI.Extension
 {

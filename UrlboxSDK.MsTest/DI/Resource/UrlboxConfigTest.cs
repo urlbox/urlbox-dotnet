@@ -1,7 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.DI.Resource;
-using UrlboxSDK;
 
 namespace UrlboxSDK.MsTest.DI.Resource
 {
