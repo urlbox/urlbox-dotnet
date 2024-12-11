@@ -23,6 +23,19 @@ public sealed class UrlboxOptionsValidation
             string valueString => !string.IsNullOrEmpty(valueString), // Include only if not empty
             string[] valueArray => valueArray.Length > 0, // Include only if array has elements
                                                           // Filter out falsey custom value types
+            SingleToArraySplit singleToArraySplit =>
+                !string.IsNullOrEmpty(singleToArraySplit.String) && singleToArraySplit.String != "" ||
+                (singleToArraySplit.StringArray != null && singleToArraySplit.StringArray.Length > 0),
+            BooleanLike booleanLike =>
+                booleanLike.Bool.HasValue && booleanLike.Bool != false ||
+                booleanLike.Double.HasValue && booleanLike.Double != 0 ||
+                !string.IsNullOrEmpty(booleanLike.String) && booleanLike.String != "false",
+            NumLike numLike =>
+                numLike.Integer.HasValue && numLike.Integer != 0 ||
+                !string.IsNullOrEmpty(numLike.String) && numLike.String != "0",
+            StrLike strLike =>
+                strLike.Double.HasValue && strLike.Double != 0 ||
+                !string.IsNullOrEmpty(strLike.String),
             _ => true // Include all other non-handled types
         };
     }

@@ -13,17 +13,17 @@ public class UrlboxOptionsBuilderTests
     public void BasicOptions_ShouldSetCorrectly()
     {
         var options = Urlbox.Options(url: "https://example.com")
-            .Format(UrlboxOptions.FormatOption.png)
+            .Format(Format.Png)
             .Width(1280)
             .Height(720)
             .FullPage()
             .Selector("#main")
             .Build();
 
-        Assert.AreEqual(UrlboxOptions.FormatOption.png, options.Format);
+        Assert.AreEqual(Format.Png, options.Format);
         Assert.AreEqual(1280, options.Width);
         Assert.AreEqual(720, options.Height);
-        Assert.IsTrue(options.FullPage);
+        Assert.IsTrue(options.FullPage.HasValue && options.FullPage.Value.Bool == true);
         Assert.AreEqual("#main", options.Selector);
     }
 
@@ -46,19 +46,22 @@ public class UrlboxOptionsBuilderTests
             .BlockSockets()
             .Build();
 
-        Assert.IsTrue(options.BlockAds);
-        Assert.IsTrue(options.HideCookieBanners);
-        Assert.IsTrue(options.ClickAccept);
-        CollectionAssert.AreEqual(new[] { "https://ads.example.com", "https://trackers.example.com" }, options.BlockUrls);
-        Assert.IsTrue(options.BlockImages);
-        Assert.IsTrue(options.BlockFonts);
-        Assert.IsTrue(options.BlockMedias);
-        Assert.IsTrue(options.BlockStyles);
-        Assert.IsTrue(options.BlockScripts);
-        Assert.IsTrue(options.BlockFrames);
-        Assert.IsTrue(options.BlockFetch);
-        Assert.IsTrue(options.BlockXhr);
-        Assert.IsTrue(options.BlockSockets);
+        Assert.IsTrue(options.BlockAds.HasValue && options.BlockAds.Value.Bool == true);
+        Assert.IsTrue(options.HideCookieBanners.HasValue && options.HideCookieBanners.Value.Bool == true);
+        Assert.IsTrue(options.ClickAccept.HasValue && options.ClickAccept.Value.Bool == true);
+        if (options.BlockUrls.HasValue)
+        {
+            CollectionAssert.AreEqual(new[] { "https://ads.example.com", "https://trackers.example.com" }, options.BlockUrls.Value.StringArray);
+        }
+        Assert.IsTrue(options.BlockImages.HasValue && options.BlockImages.Value.Bool == true);
+        Assert.IsTrue(options.BlockFonts.HasValue && options.BlockFonts.Value.Bool == true);
+        Assert.IsTrue(options.BlockMedias.HasValue && options.BlockMedias.Value.Bool == true);
+        Assert.IsTrue(options.BlockStyles.HasValue && options.BlockStyles.Value.Bool == true);
+        Assert.IsTrue(options.BlockScripts.HasValue && options.BlockScripts.Value.Bool == true);
+        Assert.IsTrue(options.BlockFrames.HasValue && options.BlockFrames.Value.Bool == true);
+        Assert.IsTrue(options.BlockFetch.HasValue && options.BlockFetch.Value.Bool == true);
+        Assert.IsTrue(options.BlockXhr.HasValue && options.BlockXhr.Value.Bool == true);
+        Assert.IsTrue(options.BlockSockets.HasValue && options.BlockSockets.Value.Bool == true);
     }
 
     [TestMethod]
@@ -74,9 +77,10 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual("document.body.style.backgroundColor = 'lightblue';", options.Js);
         Assert.AreEqual("body { font-size: 16px; }", options.Css);
-        Assert.IsTrue(options.DarkMode);
-        Assert.IsTrue(options.ReducedMotion);
-        Assert.IsTrue(options.Retina);
+        Assert.IsTrue(options.DarkMode.HasValue && options.DarkMode.Value.Bool == true);
+        Assert.IsTrue(options.ReducedMotion.HasValue && options.ReducedMotion.Value.Bool == true);
+        Assert.IsTrue(options.Retina.HasValue && options.Retina.Value.Bool == true);
+
     }
 
     [TestMethod]
@@ -85,8 +89,8 @@ public class UrlboxOptionsBuilderTests
         var options = Urlbox.Options(url: "https://example.com")
             .ThumbWidth(200)
             .ThumbHeight(150)
-            .ImgFit(UrlboxOptions.ImgFitOption.cover)
-            .ImgPosition(UrlboxOptions.ImgPositionOption.center)
+            .ImgFit(ImgFit.Cover)
+            .ImgPosition(ImgPosition.Center)
             .ImgBg("#FFFFFF")
             .ImgPad("10")
             .Quality(90)
@@ -97,12 +101,12 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual(200, options.ThumbWidth);
         Assert.AreEqual(150, options.ThumbHeight);
-        Assert.AreEqual(UrlboxOptions.ImgFitOption.cover, options.ImgFit);
-        Assert.AreEqual(UrlboxOptions.ImgPositionOption.center, options.ImgPosition);
+        Assert.AreEqual(ImgFit.Cover, options.ImgFit);
+        Assert.AreEqual(ImgPosition.Center, options.ImgPosition);
         Assert.AreEqual("#FFFFFF", options.ImgBg);
         Assert.AreEqual("10", options.ImgPad);
         Assert.AreEqual(90, options.Quality);
-        Assert.IsTrue(options.Transparent);
+        Assert.IsTrue(options.Transparent.HasValue && options.Transparent.Value.Bool == true);
         Assert.AreEqual(2000, options.MaxHeight);
         Assert.AreEqual("screenshot.png", options.Download);
     }
@@ -111,47 +115,47 @@ public class UrlboxOptionsBuilderTests
     public void PdfOptions_ShouldSetCorrectly()
     {
         var options = Urlbox.Options(url: "https://example.com")
-            .Format(UrlboxOptions.FormatOption.pdf)
-            .PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
+            .Format(Format.Pdf)
+            .PdfPageSize(PdfPageSize.A4)
             .PdfPageRange("1-2")
             .PdfPageWidth(210)
             .PdfPageHeight(297)
-            .PdfMargin(UrlboxOptions.PdfMarginOption.@default)
+            .PdfMargin(PdfMargin.Default)
             .PdfMarginTop(10)
             .PdfMarginRight(10)
             .PdfMarginBottom(10)
             .PdfMarginLeft(10)
             .PdfAutoCrop()
             .PdfScale(1.0)
-            .PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
+            .PdfOrientation(PdfOrientation.Portrait)
             .PdfBackground()
             .DisableLigatures()
-            .Media(UrlboxOptions.MediaOption.print)
+            .Media(Media.Print)
             .PdfShowHeader()
             .PdfHeader("Header content")
             .PdfShowFooter()
             .PdfFooter("Footer content")
             .Build();
 
-        Assert.AreEqual(UrlboxOptions.FormatOption.pdf, options.Format);
-        Assert.AreEqual(UrlboxOptions.PdfPageSizeOption.A4, options.PdfPageSize);
+        Assert.AreEqual(Format.Pdf, options.Format);
+        Assert.AreEqual(PdfPageSize.A4, options.PdfPageSize);
         Assert.AreEqual("1-2", options.PdfPageRange);
         Assert.AreEqual(210, options.PdfPageWidth);
         Assert.AreEqual(297, options.PdfPageHeight);
-        Assert.AreEqual(UrlboxOptions.PdfMarginOption.@default, options.PdfMargin);
+        Assert.AreEqual(PdfMargin.Default, options.PdfMargin);
         Assert.AreEqual(10, options.PdfMarginTop);
         Assert.AreEqual(10, options.PdfMarginRight);
         Assert.AreEqual(10, options.PdfMarginBottom);
         Assert.AreEqual(10, options.PdfMarginLeft);
-        Assert.IsTrue(options.PdfAutoCrop);
+        Assert.IsTrue(options.PdfAutoCrop.HasValue && options.PdfAutoCrop.Value.Bool == true);
         Assert.AreEqual(1.0, options.PdfScale);
-        Assert.AreEqual(UrlboxOptions.PdfOrientationOption.portrait, options.PdfOrientation);
-        Assert.IsTrue(options.PdfBackground);
-        Assert.IsTrue(options.DisableLigatures);
-        Assert.AreEqual(UrlboxOptions.MediaOption.print, options.Media);
-        Assert.IsTrue(options.PdfShowHeader);
+        Assert.AreEqual(PdfOrientation.Portrait, options.PdfOrientation);
+        Assert.IsTrue(options.PdfBackground.HasValue && options.PdfBackground.Value.Bool == true);
+        Assert.IsTrue(options.DisableLigatures.HasValue && options.DisableLigatures.Value.Bool == true);
+        Assert.AreEqual(Media.Print, options.Media);
+        Assert.IsTrue(options.PdfShowHeader.HasValue && options.PdfShowHeader.Value.Bool == true);
         Assert.AreEqual("Header content", options.PdfHeader);
-        Assert.IsTrue(options.PdfShowFooter);
+        Assert.IsTrue(options.PdfShowFooter.HasValue && options.PdfShowFooter.Value.Bool == true);
         Assert.AreEqual("Footer content", options.PdfFooter);
     }
 
@@ -164,7 +168,7 @@ public class UrlboxOptionsBuilderTests
             .Ttl(3600)
             .Build();
 
-        Assert.IsTrue(options.Force);
+        Assert.IsTrue(options.Force.HasValue && options.Force.Value.Bool == true);
         Assert.AreEqual("unique-id", options.Unique);
         Assert.AreEqual(3600, options.Ttl);
     }
@@ -172,19 +176,20 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void RequestOptions_ShouldSetCorrectly()
     {
+        string[] expectedHeaderValue = new[] { "value1", "value2" };
         var options = Urlbox.Options(url: "https://example.com")
-            .Header(new string[] { "Authorization: Bearer token" })
+            .Header(expectedHeaderValue)
             .Cookie("sessionid=abc123")
             .UserAgent("Mozilla/5.0")
             .Platform("Win32")
             .AcceptLang("en-US")
             .Authorization("Bearer token")
             .Tz("UTC")
-            .EngineVersion("1.0.0")
+            .EngineVersion(EngineVersion.Latest)
             .Build();
 
-        Assert.IsInstanceOfType(options.Header, typeof(string[]), "Header should be a string array.");
-        CollectionAssert.AreEqual(new[] { "Authorization: Bearer token" }, (string[])options.Header);
+        Assert.IsInstanceOfType(options.Header, typeof(SingleToArraySplit), "Header should be a SingleToArraySplit.");
+        CollectionAssert.AreEqual(expectedHeaderValue, options.Header.Value.StringArray);
 
         Assert.AreEqual("sessionid=abc123", options.Cookie);
         Assert.AreEqual("Mozilla/5.0", options.UserAgent);
@@ -192,7 +197,7 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual("en-US", options.AcceptLang);
         Assert.AreEqual("Bearer token", options.Authorization);
         Assert.AreEqual("UTC", options.Tz);
-        Assert.AreEqual("1.0.0", options.EngineVersion);
+        Assert.AreEqual(EngineVersion.Latest, options.EngineVersion);
     }
 
     [TestMethod]
@@ -201,7 +206,7 @@ public class UrlboxOptionsBuilderTests
         var options = Urlbox.Options(url: "https://example.com")
             .Delay(1000)
             .Timeout(30000)
-            .WaitUntil(UrlboxOptions.WaitUntilOption.domloaded)
+            .WaitUntil(WaitUntil.Domloaded)
             .WaitFor("#content")
             .WaitToLeave(".loading")
             .WaitTimeout(5000)
@@ -213,16 +218,15 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual(1000, options.Delay);
         Assert.AreEqual(30000, options.Timeout);
-        Assert.AreEqual(UrlboxOptions.WaitUntilOption.domloaded, options.WaitUntil);
+        Assert.AreEqual(WaitUntil.Domloaded, options.WaitUntil);
         Assert.AreEqual("#content", options.WaitFor);
         Assert.AreEqual(".loading", options.WaitToLeave);
         Assert.AreEqual(5000, options.WaitTimeout);
-        Assert.IsTrue(options.FailIfSelectorMissing);
-        Assert.IsTrue(options.FailIfSelectorPresent);
-        Assert.IsTrue(options.FailOn4xx);
-        Assert.IsTrue(options.FailOn5xx);
+        Assert.IsTrue(options.FailIfSelectorMissing.HasValue && options.FailIfSelectorMissing.Value.Bool == true);
+        Assert.IsTrue(options.FailIfSelectorPresent.HasValue && options.FailIfSelectorPresent.Value.Bool == true);
+        Assert.IsTrue(options.FailOn4Xx.HasValue && options.FailOn4Xx.Value.Bool == true);
+        Assert.IsTrue(options.FailOn5Xx.HasValue && options.FailOn4Xx.Value.Bool == true);
     }
-
 
     [TestMethod]
     public void AllOptions_ShouldSetCorrectly()
@@ -231,14 +235,14 @@ public class UrlboxOptionsBuilderTests
                     url: "https://urlbox.com"
                 )
                 .WebhookUrl("https://example.com/webhook")
-                .Format(UrlboxOptions.FormatOption.pdf)
+                .Format(Format.Pdf)
                 .Width(1024)
                 .Height(768)
                 .FullPage()
                 .Selector("#content")
                 .Clip("0,0,400,400")
                 .Gpu()
-                .ResponseType(UrlboxOptions.ResponseTypeOption.json)
+                .ResponseType(ResponseType.Json)
                 .BlockAds()
                 .HideCookieBanners()
                 .ClickAccept()
@@ -260,29 +264,29 @@ public class UrlboxOptionsBuilderTests
                 .Retina()
                 .ThumbWidth(150)
                 .ThumbHeight(150)
-                .ImgFit(UrlboxOptions.ImgFitOption.cover)
-                .ImgPosition(UrlboxOptions.ImgPositionOption.center)
+                .ImgFit(ImgFit.Cover)
+                .ImgPosition(ImgPosition.Center)
                 .ImgBg("#FFFFFF")
                 .ImgPad("10")
                 .Quality(90)
                 .Transparent()
                 .MaxHeight(2000)
                 .Download("download.png")
-                .PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
+                .PdfPageSize(PdfPageSize.A4)
                 .PdfPageRange("1-2")
                 .PdfPageWidth(210)
                 .PdfPageHeight(297)
-                .PdfMargin(UrlboxOptions.PdfMarginOption.@default)
+                .PdfMargin(PdfMargin.Default)
                 .PdfMarginTop(10)
                 .PdfMarginRight(10)
                 .PdfMarginBottom(10)
                 .PdfMarginLeft(10)
                 .PdfAutoCrop()
                 .PdfScale(1.0)
-                .PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
+                .PdfOrientation(PdfOrientation.Portrait)
                 .PdfBackground()
                 .DisableLigatures()
-                .Media(UrlboxOptions.MediaOption.screen)
+                .Media(Media.Screen)
                 .PdfShowHeader()
                 .PdfHeader("Header content")
                 .PdfShowFooter()
@@ -299,10 +303,10 @@ public class UrlboxOptionsBuilderTests
                 .AcceptLang("en-US")
                 .Authorization("Bearer token")
                 .Tz("UTC")
-                .EngineVersion("1.0.0")
+                .EngineVersion(EngineVersion.Latest)
                 .Delay(1000)
                 .Timeout(30000)
-                .WaitUntil(UrlboxOptions.WaitUntilOption.domloaded)
+                .WaitUntil(WaitUntil.Domloaded)
                 .WaitFor("#content")
                 .WaitToLeave(".loading")
                 .WaitTimeout(5000)
@@ -316,7 +320,7 @@ public class UrlboxOptionsBuilderTests
                 .Hover(".hover-element")
                 .BgColor("#FAFAFA")
                 .DisableJs()
-                .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
+                .FullPageMode(FullPageMode.Stitch)
                 .FullWidth()
                 .AllowInfinite()
                 .SkipScroll()
@@ -325,8 +329,8 @@ public class UrlboxOptionsBuilderTests
                 .ScrollIncrement(200)
                 .ScrollDelay(100)
                 .Highlight("#highlight")
-                .HighlightFg("#FF0000")
-                .HighlightBg("#FFFF00")
+                .Highlightfg("#FF0000")
+                .Highlightbg("#FFFF00")
                 .Latitude(37.7749)
                 .Longitude(-122.4194)
                 .Accuracy(10)
@@ -336,7 +340,7 @@ public class UrlboxOptionsBuilderTests
                 .S3Endpoint("https://s3.amazonaws.com")
                 .S3Region("us-west-1")
                 .CdnHost("https://cdn.example.com")
-                .S3StorageClass(UrlboxOptions.S3StorageClassOptions.standard)
+                .S3Storageclass(S3Storageclass.Standard)
                 .SaveHtml()
                 .SaveMhtml()
                 .SaveMarkdown()
@@ -348,22 +352,21 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual("https://urlbox.com", options.Url);
     }
 
-
     [TestMethod]
     public void ValidateFullPageOptions_throws()
     {
         // FullPageMode should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
-            .FullPageMode(UrlboxOptions.FullPageModeOption.stitch)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
+            .FullPageMode(FullPageMode.Stitch)
             .Build();
         });
 
         // ScrollIncrement should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .ScrollIncrement(100)
             .Build();
         });
@@ -371,7 +374,7 @@ public class UrlboxOptionsBuilderTests
         // ScrollDelay should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .ScrollDelay(500)
             .Build();
         });
@@ -379,7 +382,7 @@ public class UrlboxOptionsBuilderTests
         // DetectFullHeight should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .DetectFullHeight()
             .Build();
         });
@@ -387,7 +390,7 @@ public class UrlboxOptionsBuilderTests
         // MaxSectionHeight should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .MaxSectionHeight(2000)
             .Build();
         });
@@ -395,7 +398,7 @@ public class UrlboxOptionsBuilderTests
         // FullWidth should throw an exception
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .FullWidth()
             .Build();
         });
@@ -407,7 +410,7 @@ public class UrlboxOptionsBuilderTests
         // S3Path should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .S3Path("/path/to/object")
             .Build();
         });
@@ -415,7 +418,7 @@ public class UrlboxOptionsBuilderTests
         // S3Bucket should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .S3Bucket("my-s3-bucket")
             .Build();
         });
@@ -423,7 +426,7 @@ public class UrlboxOptionsBuilderTests
         // S3Endpoint should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .S3Endpoint("https://s3.amazonaws.com")
             .Build();
         });
@@ -431,7 +434,7 @@ public class UrlboxOptionsBuilderTests
         // S3Region should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .S3Region("us-west-2")
             .Build();
         });
@@ -439,7 +442,7 @@ public class UrlboxOptionsBuilderTests
         // CdnHost should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
             .CdnHost("https://cdn.myhost.com")
             .Build();
         });
@@ -447,8 +450,8 @@ public class UrlboxOptionsBuilderTests
         // S3StorageClass should throw an exception if use_s3 is not enabled
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Format(UrlboxOptions.FormatOption.png)
-            .S3StorageClass(UrlboxOptions.S3StorageClassOptions.standard)
+            Urlbox.Options(url: "https://urlbox.com").Format(Format.Png)
+            .S3Storageclass(S3Storageclass.Standard)
             .Build();
         });
     }
@@ -461,7 +464,7 @@ public class UrlboxOptionsBuilderTests
         // PdfPageSize should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfPageSize(UrlboxOptions.PdfPageSizeOption.A4)
+            Urlbox.Options(url: "https://urlbox.com").PdfPageSize(PdfPageSize.A4)
             .Build();
         });
 
@@ -489,7 +492,7 @@ public class UrlboxOptionsBuilderTests
         // PdfMargin should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfMargin(UrlboxOptions.PdfMarginOption.@default)
+            Urlbox.Options(url: "https://urlbox.com").PdfMargin(PdfMargin.Default)
             .Build();
         });
 
@@ -538,7 +541,7 @@ public class UrlboxOptionsBuilderTests
         // PdfOrientation should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").PdfOrientation(UrlboxOptions.PdfOrientationOption.portrait)
+            Urlbox.Options(url: "https://urlbox.com").PdfOrientation(PdfOrientation.Portrait)
             .Build();
         });
 
@@ -559,7 +562,7 @@ public class UrlboxOptionsBuilderTests
         // Media should throw an exception if format is not "pdf"
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").Media(UrlboxOptions.MediaOption.print)
+            Urlbox.Options(url: "https://urlbox.com").Media(Media.Print)
             .Build();
         });
 
@@ -605,7 +608,7 @@ public class UrlboxOptionsBuilderTests
         // No thumb width or height but includes img fit
         var noThumbButImgFit = Assert.ThrowsException<ArgumentException>(() =>
         {
-            Urlbox.Options(url: "https://urlbox.com").ImgFit(UrlboxOptions.ImgFitOption.cover)
+            Urlbox.Options(url: "https://urlbox.com").ImgFit(ImgFit.Cover)
             .Build();
         });
 
@@ -618,7 +621,7 @@ public class UrlboxOptionsBuilderTests
         {
             Urlbox.Options(url: "https://urlbox.com")
                 .ThumbHeight(5)
-                .ImgPosition(UrlboxOptions.ImgPositionOption.north)
+                .ImgPosition(ImgPosition.North)
                 .Build();
         });
 
@@ -634,13 +637,13 @@ public class UrlboxOptionsBuilderTests
         var heightAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.cover)
+            .ImgFit(ImgFit.Cover)
             .Build();
 
         var widthAndImgFit =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.cover)
+            .ImgFit(ImgFit.Cover)
             .Build();
 
         var justThumbHeight =
@@ -656,27 +659,27 @@ public class UrlboxOptionsBuilderTests
         var heightAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.cover)
-            .ImgPosition(UrlboxOptions.ImgPositionOption.north)
+            .ImgFit(ImgFit.Cover)
+            .ImgPosition(ImgPosition.North)
             .Build();
 
         var heightAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbHeight(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.contain)
+            .ImgFit(ImgFit.Contain)
             .Build();
 
         var widthAndImgFitCoverAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.cover)
-            .ImgPosition(UrlboxOptions.ImgPositionOption.north)
+            .ImgFit(ImgFit.Cover)
+            .ImgPosition(ImgPosition.North)
             .Build();
 
         var widthAndImgFitContainAndPosition =
         Urlbox.Options(url: "https://urlbox.com")
             .ThumbWidth(5)
-            .ImgFit(UrlboxOptions.ImgFitOption.contain)
+            .ImgFit(ImgFit.Contain)
             .Build();
 
         Assert.IsInstanceOfType(justThumbHeight, typeof(UrlboxOptions));
@@ -690,33 +693,15 @@ public class UrlboxOptionsBuilderTests
     }
 
     [TestMethod]
-    public void ValidateEngineVersionOptions_throws()
-    {
-        Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
-            .EngineVersion("stable")
-            .Latitude(0.01)
-            .Build()
-        );
-
-
-        Assert.ThrowsException<ArgumentException>(() => Urlbox.Options(url: "https://urlbox.com")
-            .EngineVersion("stable")
-            .Longitude(0.01)
-            .Build()
-        );
-    }
-
-    [TestMethod]
     public void UrlboxOptionsBuilder_Resets()
     {
         var options = Urlbox.Options(url: "https://urlbox.com")
             .FullPage()
             .Build();
 
-
         var otherOptions = Urlbox.Options(url: "https://someotherurl.com").Build();
 
-        Assert.IsFalse(otherOptions.FullPage);
+        Assert.IsFalse(otherOptions.FullPage.HasValue);
         Assert.AreNotSame(options, otherOptions);
     }
 }

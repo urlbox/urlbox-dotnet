@@ -178,7 +178,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
     public async Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options)
     {
-        options.Format = UrlboxOptions.FormatOption.pdf;
+        options.Format = Format.Pdf;
         return await TakeScreenshot(options);
     }
 
@@ -189,7 +189,7 @@ public sealed class Urlbox : IUrlbox
     /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
     public async Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options)
     {
-        options.Format = UrlboxOptions.FormatOption.mp4;
+        options.Format = Format.Mp4;
         return await TakeScreenshot(options);
     }
 
