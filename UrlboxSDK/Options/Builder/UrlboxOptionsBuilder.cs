@@ -401,33 +401,15 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    /// <summary>
-    /// Tightens a type to string or string[] for Urlbox options which allow singles+multiples
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="propertyName"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    private static SingleToArraySplit ValidateStringOrArray(object value, string propertyName)
+    public UrlboxOptionsBuilder Header(params string[] header)
     {
-        SingleToArraySplit splitValue = new();
-        return value switch
-        {
-            string stringValue => splitValue.String = stringValue,
-            string[] stringArrayValue => splitValue.StringArray = stringArrayValue,
-            _ => throw new ArgumentException($"{propertyName} must be either a string or a string array.")
-        };
-    }
-
-    public UrlboxOptionsBuilder Header(object header)
-    {
-        _options.Header = ValidateStringOrArray(header, nameof(Header));
+        _options.Header = header;
         return this;
     }
 
-    public UrlboxOptionsBuilder Cookie(object cookie)
+    public UrlboxOptionsBuilder Cookie(params string[] cookie)
     {
-        _options.Cookie = ValidateStringOrArray(cookie, nameof(Cookie));
+        _options.Cookie = cookie;
         return this;
     }
 
@@ -533,19 +515,19 @@ public sealed class UrlboxOptionsBuilder
         return this;
     }
 
-    public UrlboxOptionsBuilder Click(string click)
+    public UrlboxOptionsBuilder Click(params string[] click)
     {
         _options.Click = click;
         return this;
     }
 
-    public UrlboxOptionsBuilder ClickAll(string clickAll)
+    public UrlboxOptionsBuilder ClickAll(params string[] clickAll)
     {
         _options.ClickAll = clickAll;
         return this;
     }
 
-    public UrlboxOptionsBuilder Hover(string hover)
+    public UrlboxOptionsBuilder Hover(params string[] hover)
     {
         _options.Hover = hover;
         return this;
@@ -631,21 +613,13 @@ public sealed class UrlboxOptionsBuilder
 
     public UrlboxOptionsBuilder Latitude(double latitude)
     {
-        StrLike latitudeStrLike = new()
-        {
-            Double = latitude
-        };
-        _options.Latitude = latitudeStrLike;
+        _options.Latitude = latitude;
         return this;
     }
 
     public UrlboxOptionsBuilder Longitude(double longitude)
     {
-        StrLike longitudeStrLike = new()
-        {
-            Double = longitude
-        };
-        _options.Longitude = longitudeStrLike;
+        _options.Longitude = longitude;
         return this;
     }
 

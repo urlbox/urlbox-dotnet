@@ -161,8 +161,8 @@ namespace UrlboxSDK.MsTest.DI.Extension
             Assert.AreEqual(ServiceLifetime.Transient, descriptor.Lifetime, "The registered lifetime is not transient.");
 
 
-            var instance1 = serviceProvider.GetRequiredService<IUrlbox>();
-            var instance2 = serviceProvider.GetRequiredService<IUrlbox>();
+            IUrlbox instance1 = serviceProvider.GetRequiredService<IUrlbox>();
+            IUrlbox instance2 = serviceProvider.GetRequiredService<IUrlbox>();
             Assert.AreNotSame(instance1, instance2); // Transient instances should always differ
         }
     }

@@ -17,7 +17,7 @@ public sealed class UrlboxWebhookValidator
     {
         if (String.IsNullOrEmpty(secret))
         {
-            throw new ArgumentException("Unable to verify signature as Webhook Secret is not set. You can find your webhook secret inside your project\'s settings - https://www.urlbox.io/dashboard/projects");
+            throw new ArgumentException("Unable to verify signature as Webhook Secret is not set. You can find your webhook secret inside your project\'s settings - https://www.urlbox.com/dashboard/projects");
         }
         this.webhookSecret = secret;
     }
@@ -55,11 +55,9 @@ public sealed class UrlboxWebhookValidator
         byte[] secretKeyBytes = Encoding.UTF8.GetBytes(this.webhookSecret);
         byte[] messageBytes = Encoding.UTF8.GetBytes(messageToHash);
 
-        using (var hmacsha256 = new HMACSHA256(secretKeyBytes))
-        {
-            byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();  // Convert hash to hex string
-        }
+        using HMACSHA256 hmacsha256 = new(secretKeyBytes);
+        byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
+        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();  // Convert hash to hex string
     }
 
     /// <summary>

@@ -23,7 +23,7 @@ namespace UrlboxSDK.Options.Resource
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("accept_cookies")]
-        public BooleanLike? AcceptCookies { get; set; }
+        public bool? AcceptCookies { get; set; }
 
         /// <summary>
         /// Sets an `Accept-Language` header on requests to the target URL
@@ -37,11 +37,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("accuracy")]
-        public StrLike? Accuracy { get; set; }
+        public double? Accuracy { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("allow_coin")]
-        public BooleanLike? AllowCoin { get; set; }
+        public bool? AllowCoin { get; set; }
 
         /// <summary>
         /// By default, when Urlbox detects an infinite scrolling page, it does not attempt to
@@ -50,7 +50,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("allow_infinite")]
-        public BooleanLike? AllowInfinite { get; set; }
+        public bool? AllowInfinite { get; set; }
 
         /// <summary>
         /// Sets an `Authorization` header on requests to the target URL. Can be used to pass an auth
@@ -62,7 +62,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("auto_crop")]
-        public BooleanLike? AutoCrop { get; set; }
+        public bool? AutoCrop { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("auto_crop_bg")]
@@ -70,7 +70,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("auto_crop_threshold")]
-        public NumLike? AutoCropThreshold { get; set; }
+        public long? AutoCropThreshold { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("base_url")]
@@ -96,75 +96,75 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_ads")]
-        public BooleanLike? BlockAds { get; set; }
+        public bool? BlockAds { get; set; }
 
         /// <summary>
         /// Block fetch requests from the target URL.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_fetch")]
-        public BooleanLike? BlockFetch { get; set; }
+        public bool? BlockFetch { get; set; }
 
         /// <summary>
         /// Blocks font requests
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_fonts")]
-        public BooleanLike? BlockFonts { get; set; }
+        public bool? BlockFonts { get; set; }
 
         /// <summary>
         /// Block frames.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_frames")]
-        public BooleanLike? BlockFrames { get; set; }
+        public bool? BlockFrames { get; set; }
 
         /// <summary>
         /// Blocks image requests
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_images")]
-        public BooleanLike? BlockImages { get; set; }
+        public bool? BlockImages { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_manifests")]
-        public BooleanLike? BlockManifests { get; set; }
+        public bool? BlockManifests { get; set; }
 
         /// <summary>
         /// Block video and audio requests
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_medias")]
-        public BooleanLike? BlockMedias { get; set; }
+        public bool? BlockMedias { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_other")]
-        public BooleanLike? BlockOther { get; set; }
+        public bool? BlockOther { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_pings")]
-        public BooleanLike? BlockPings { get; set; }
+        public bool? BlockPings { get; set; }
 
         /// <summary>
         /// Prevent requests for javascript scripts from loading
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_scripts")]
-        public BooleanLike? BlockScripts { get; set; }
+        public bool? BlockScripts { get; set; }
 
         /// <summary>
         /// Block websocket requests.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_sockets")]
-        public BooleanLike? BlockSockets { get; set; }
+        public bool? BlockSockets { get; set; }
 
         /// <summary>
         /// Prevent stylesheet requests from loading
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_styles")]
-        public BooleanLike? BlockStyles { get; set; }
+        public bool? BlockStyles { get; set; }
 
         /// <summary>
         /// Block requests from specific domains from loading. You can use wildcard characters such
@@ -172,14 +172,14 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_urls")]
-        public SingleToArraySplit? BlockUrls { get; set; }
+        public string[] BlockUrls { get; set; }
 
         /// <summary>
         /// Block XHR requests from the target URL.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("block_xhr")]
-        public BooleanLike? BlockXhr { get; set; }
+        public bool? BlockXhr { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("browser")]
@@ -200,7 +200,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("click")]
-        public SingleToArraySplit? Click { get; set; }
+        public string[] Click { get; set; }
 
         /// <summary>
         /// Similar to the [`hide_cookie_banners`](#hide_cookie_banners) option, but instead of
@@ -209,7 +209,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("click_accept")]
-        public BooleanLike? ClickAccept { get; set; }
+        public bool? ClickAccept { get; set; }
 
         /// <summary>
         /// Specifies an element selector to click before generating a screenshot or PDF Example:
@@ -219,15 +219,15 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("click_all")]
-        public SingleToArraySplit? ClickAll { get; set; }
+        public string[] ClickAll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("click_all_x")]
-        public SingleToArraySplit? ClickAllX { get; set; }
+        public string[] ClickAllX { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("click_x")]
-        public SingleToArraySplit? ClickX { get; set; }
+        public string[] ClickX { get; set; }
 
         /// <summary>
         /// Clip the screenshot to the bounding box specified by `x,y,width,height`.
@@ -242,7 +242,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("continue_on_nav_error")]
-        public BooleanLike? ContinueOnNavError { get; set; }
+        public bool? ContinueOnNavError { get; set; }
 
         /// <summary>
         /// Sets a cookie on the request when loading the URL. Example: To set the cookie with key
@@ -256,15 +256,15 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("cookie")]
-        public SingleToArraySplit? Cookie { get; set; }
+        public string[] Cookie { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("cookies")]
-        public SingleToArraySplit? Cookies { get; set; }
+        public string[] Cookies { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("crop_width")]
-        public NumLike? CropWidth { get; set; }
+        public long? CropWidth { get; set; }
 
         /// <summary>
         /// Inject custom CSS into the page
@@ -282,11 +282,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("dark_mode")]
-        public BooleanLike? DarkMode { get; set; }
+        public bool? DarkMode { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("debug")]
-        public BooleanLike? Debug { get; set; }
+        public bool? Debug { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("debug_url")]
@@ -294,14 +294,14 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("debug_video")]
-        public BooleanLike? DebugVideo { get; set; }
+        public bool? DebugVideo { get; set; }
 
         /// <summary>
         /// The amount of time to wait before Urlbox captures a render in milliseconds.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("delay")]
-        public NumLike? Delay { get; set; }
+        public long? Delay { get; set; }
 
         /// <summary>
         /// Some pages have full-height backgrounds whose heights are set to 100% of the viewport.
@@ -310,11 +310,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("detect_full_height")]
-        public BooleanLike? DetectFullHeight { get; set; }
+        public bool? DetectFullHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("disable_animations")]
-        public BooleanLike? DisableAnimations { get; set; }
+        public bool? DisableAnimations { get; set; }
 
         /// <summary>
         /// Turns off javascript on the target URL.  ~> Enabling this option will prevent
@@ -323,7 +323,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("disable_js")]
-        public BooleanLike? DisableJs { get; set; }
+        public bool? DisableJs { get; set; }
 
         /// <summary>
         /// Prevents ligatures from being used. Useful when rendering a PDF, and you want to extract
@@ -331,15 +331,15 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("disable_ligatures")]
-        public BooleanLike? DisableLigatures { get; set; }
+        public bool? DisableLigatures { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("disable_web_security")]
-        public BooleanLike? DisableWebSecurity { get; set; }
+        public bool? DisableWebSecurity { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("display_p3")]
-        public BooleanLike? DisplayP3 { get; set; }
+        public bool? DisplayP3 { get; set; }
 
         /// <summary>
         /// Pass in a filename which sets the content-disposition header on the response. E.g.
@@ -352,7 +352,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("dpr")]
-        public StrLike? Dpr { get; set; }
+        public double? Dpr { get; set; }
 
         /// <summary>
         /// Sets the version of the urlbox rendering engine to use when rendering the page. This can
@@ -365,11 +365,11 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_if_captcha")]
-        public BooleanLike? FailIfCaptcha { get; set; }
+        public bool? FailIfCaptcha { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_if_cf_turnstile")]
-        public BooleanLike? FailIfCfTurnstile { get; set; }
+        public bool? FailIfCfTurnstile { get; set; }
 
         /// <summary>
         /// Fails the request if the elements specified by `selector` or `wait_for` options are not
@@ -377,7 +377,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_if_selector_missing")]
-        public BooleanLike? FailIfSelectorMissing { get; set; }
+        public bool? FailIfSelectorMissing { get; set; }
 
         /// <summary>
         /// Fails the request if the element specified by `wait_to_leave` option is found on the page
@@ -385,7 +385,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_if_selector_present")]
-        public BooleanLike? FailIfSelectorPresent { get; set; }
+        public bool? FailIfSelectorPresent { get; set; }
 
         /// <summary>
         /// If `fail_on_4xx=true` and the requested URL returns a status code between 400 and 499,
@@ -394,7 +394,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_on_4xx")]
-        public BooleanLike? FailOn4Xx { get; set; }
+        public bool? FailOn4Xx { get; set; }
 
         /// <summary>
         /// If `fail_on_5xx=true` and the requested URL returns a status code between 500 and 599,
@@ -403,30 +403,30 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_on_5xx")]
-        public BooleanLike? FailOn5Xx { get; set; }
+        public bool? FailOn5Xx { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fail_on_metadata_error")]
-        public BooleanLike? FailOnMetadataError { get; set; }
+        public bool? FailOnMetadataError { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("finalRetry")]
-        public BooleanLike? FinalRetry { get; set; }
+        public bool? FinalRetry { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fix_full_height")]
-        public BooleanLike? FixFullHeight { get; set; }
+        public bool? FixFullHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("flash")]
-        public BooleanLike? Flash { get; set; }
+        public bool? Flash { get; set; }
 
         /// <summary>
         /// Generate a fresh screenshot or PDF, instead of getting a cached version.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("force")]
-        public BooleanLike? Force { get; set; }
+        public bool? Force { get; set; }
 
         /// <summary>
         /// The output format of the resulting render.
@@ -437,19 +437,19 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("fragment")]
-        public BooleanLike? Fragment { get; set; }
+        public bool? Fragment { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("freeze_fixed")]
-        public BooleanLike? FreezeFixed { get; set; }
+        public bool? FreezeFixed { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("from_html")]
-        public BooleanLike? FromHtml { get; set; }
+        public bool? FromHtml { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("full_html")]
-        public BooleanLike? FullHtml { get; set; }
+        public bool? FullHtml { get; set; }
 
         /// <summary>
         /// Specify whether to capture the full scrollable area of the website. For PDFs, `full_page`
@@ -457,7 +457,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("full_page")]
-        public BooleanLike? FullPage { get; set; }
+        public bool? FullPage { get; set; }
 
         /// <summary>
         /// Whether to use scroll and stitch algorithm (the default) to render a full page
@@ -474,7 +474,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("full_width")]
-        public BooleanLike? FullWidth { get; set; }
+        public bool? FullWidth { get; set; }
 
         /// <summary>
         /// Enable GPU acceleration to render 3D scenes and heavy WebGL content. This is a beta
@@ -483,11 +483,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("gpu")]
-        public BooleanLike? Gpu { get; set; }
+        public bool? Gpu { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("hdr10")]
-        public BooleanLike? Hdr10 { get; set; }
+        public bool? Hdr10 { get; set; }
 
         /// <summary>
         /// Set a header on the request when loading the URL Example: To set the header with key
@@ -500,22 +500,22 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("header")]
-        public SingleToArraySplit? Header { get; set; }
+        public string[] Header { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("headers")]
-        public SingleToArraySplit? Headers { get; set; }
+        public string[] Headers { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("headless")]
-        public BooleanLike? Headless { get; set; }
+        public bool? Headless { get; set; }
 
         /// <summary>
         /// The viewport height of the browser, in pixels.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("height")]
-        public NumLike? Height { get; set; }
+        public long? Height { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("height_from")]
@@ -527,11 +527,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("hide_cookie_banners")]
-        public BooleanLike? HideCookieBanners { get; set; }
+        public bool? HideCookieBanners { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("hide_headless")]
-        public BooleanLike? HideHeadless { get; set; }
+        public bool? HideHeadless { get; set; }
 
         /// <summary>
         /// Comma-delimited string of CSS element selectors that are hidden by setting their style to
@@ -573,11 +573,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("hover")]
-        public SingleToArraySplit? Hover { get; set; }
+        public string[] Hover { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("hover_x")]
-        public SingleToArraySplit? HoverX { get; set; }
+        public string[] HoverX { get; set; }
 
         /// <summary>
         /// The HTML you want to render.
@@ -608,7 +608,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("img_pad")]
-        public StrLike? ImgPad { get; set; }
+        public string ImgPad { get; set; }
 
         /// <summary>
         /// How the image should be positioned when using an [`img_fit`](#img_fit) of `cover` or
@@ -630,7 +630,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("json")]
-        public BooleanLike? Json { get; set; }
+        public bool? Json { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("jsx")]
@@ -638,29 +638,29 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("kill_popups")]
-        public BooleanLike? KillPopups { get; set; }
+        public bool? KillPopups { get; set; }
 
         /// <summary>
         /// Sets the latitude used to emulate the Geolocation API.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("latitude")]
-        public StrLike? Latitude { get; set; }
+        public double? Latitude { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("lazyload")]
-        public BooleanLike? Lazyload { get; set; }
+        public bool? Lazyload { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("lightweight")]
-        public BooleanLike? Lightweight { get; set; }
+        public bool? Lightweight { get; set; }
 
         /// <summary>
         /// Sets the longitude used to emulate the Geolocation API.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("longitude")]
-        public StrLike? Longitude { get; set; }
+        public double? Longitude { get; set; }
 
         /// <summary>
         /// For extremely lengthy websites, it may be preferable to limit the screenshot to a maximum
@@ -669,11 +669,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_height")]
-        public NumLike? MaxHeight { get; set; }
+        public long? MaxHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_scroll_page_time")]
-        public NumLike? MaxScrollPageTime { get; set; }
+        public long? MaxScrollPageTime { get; set; }
 
         /// <summary>
         /// When Urlbox takes a `full_page` screenshot, the maximum height of each image section is
@@ -683,23 +683,23 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_section_height")]
-        public NumLike? MaxSectionHeight { get; set; }
+        public long? MaxSectionHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_section_width")]
-        public NumLike? MaxSectionWidth { get; set; }
+        public long? MaxSectionWidth { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_sections")]
-        public NumLike? MaxSections { get; set; }
+        public long? MaxSections { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_width")]
-        public NumLike? MaxWidth { get; set; }
+        public long? MaxWidth { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("max_xsections")]
-        public NumLike? MaxXsections { get; set; }
+        public long? MaxXsections { get; set; }
 
         /// <summary>
         /// By default, when generating a PDF, the `print` CSS media query is used. To generate a PDF
@@ -711,15 +711,15 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("metadata")]
-        public BooleanLike? Metadata { get; set; }
+        public bool? Metadata { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("minidelay")]
-        public NumLike? Minidelay { get; set; }
+        public long? Minidelay { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("no_upload")]
-        public BooleanLike? NoUpload { get; set; }
+        public bool? NoUpload { get; set; }
 
         /// <summary>
         /// Automatically remove white space from PDF. Occasionally a PDF will have a lot of trailing
@@ -728,22 +728,22 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_auto_crop")]
-        public BooleanLike? PdfAutoCrop { get; set; }
+        public bool? PdfAutoCrop { get; set; }
 
         /// <summary>
         /// Sets whether to print background images in the PDF
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_background")]
-        public BooleanLike? PdfBackground { get; set; }
+        public bool? PdfBackground { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_dpi")]
-        public StrLike? PdfDpi { get; set; }
+        public double? PdfDpi { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_fit_to_page")]
-        public BooleanLike? PdfFitToPage { get; set; }
+        public bool? PdfFitToPage { get; set; }
 
         /// <summary>
         /// Change the default pdf footer that is shown on each page of the pdf when
@@ -808,28 +808,28 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_margin_bottom")]
-        public StrLike? PdfMarginBottom { get; set; }
+        public double? PdfMarginBottom { get; set; }
 
         /// <summary>
         /// Set a custom left margin on the PDF.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_margin_left")]
-        public StrLike? PdfMarginLeft { get; set; }
+        public double? PdfMarginLeft { get; set; }
 
         /// <summary>
         /// Sets a custom right margin on the PDF.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_margin_right")]
-        public StrLike? PdfMarginRight { get; set; }
+        public double? PdfMarginRight { get; set; }
 
         /// <summary>
         /// Sets a custom top margin on the PDF.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_margin_top")]
-        public StrLike? PdfMarginTop { get; set; }
+        public double? PdfMarginTop { get; set; }
 
         /// <summary>
         /// Sets the orientation of the PDF.
@@ -843,7 +843,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_page_height")]
-        public StrLike? PdfPageHeight { get; set; }
+        public double? PdfPageHeight { get; set; }
 
         /// <summary>
         /// Sets the PDF page range to return.  By default, the page is split into a multi page
@@ -851,7 +851,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_page_range")]
-        public StrLike? PdfPageRange { get; set; }
+        public string PdfPageRange { get; set; }
 
         /// <summary>
         /// Sets the PDF page size.  Setting this option will take precedence over `pdf_page_width`
@@ -866,7 +866,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_page_width")]
-        public StrLike? PdfPageWidth { get; set; }
+        public double? PdfPageWidth { get; set; }
 
         /// <summary>
         /// Sets the scale factor of the website content in the PDF. Valid values are numbers between
@@ -874,7 +874,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_scale")]
-        public StrLike? PdfScale { get; set; }
+        public double? PdfScale { get; set; }
 
         /// <summary>
         /// Whether to show the default pdf footer on each page of the pdf. The template of the
@@ -882,7 +882,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_show_footer")]
-        public BooleanLike? PdfShowFooter { get; set; }
+        public bool? PdfShowFooter { get; set; }
 
         /// <summary>
         /// Whether to show the default pdf header on each page of the pdf. The template of the
@@ -890,7 +890,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("pdf_show_header")]
-        public BooleanLike? PdfShowHeader { get; set; }
+        public bool? PdfShowHeader { get; set; }
 
         /// <summary>
         /// Sets the `navigator.platform` that the browser will report for the request. Useful for
@@ -902,7 +902,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("press_escape")]
-        public BooleanLike? PressEscape { get; set; }
+        public bool? PressEscape { get; set; }
 
         /// <summary>
         /// Pass in a proxy server address to make screenshot requests via that server in the format
@@ -918,7 +918,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("quality")]
-        public NumLike? Quality { get; set; }
+        public long? Quality { get; set; }
 
         /// <summary>
         /// Make the pdf into a readable document by removing unnecessary elements such as navigation
@@ -926,38 +926,38 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("readable")]
-        public BooleanLike? Readable { get; set; }
+        public bool? Readable { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("rec2020")]
-        public BooleanLike? Rec2020 { get; set; }
+        public bool? Rec2020 { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("redirect_after")]
-        public NumLike? RedirectAfter { get; set; }
+        public long? RedirectAfter { get; set; }
 
         /// <summary>
         /// Prefer less animations on websites by setting `prefers-reduced-motion: reduced`
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("reduced_motion")]
-        public BooleanLike? ReducedMotion { get; set; }
+        public bool? ReducedMotion { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("refresh")]
-        public BooleanLike? Refresh { get; set; }
+        public bool? Refresh { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("refresh_after_scroll")]
-        public BooleanLike? RefreshAfterScroll { get; set; }
+        public bool? RefreshAfterScroll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("reload")]
-        public BooleanLike? Reload { get; set; }
+        public bool? Reload { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("reload_after_scroll")]
-        public BooleanLike? ReloadAfterScroll { get; set; }
+        public bool? ReloadAfterScroll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("render_queue")]
@@ -978,19 +978,19 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("retina")]
-        public BooleanLike? Retina { get; set; }
+        public bool? Retina { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("retry_on_nav_error")]
-        public BooleanLike? RetryOnNavError { get; set; }
+        public bool? RetryOnNavError { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("revisit")]
-        public BooleanLike? Revisit { get; set; }
+        public bool? Revisit { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("revisit_after_scroll")]
-        public BooleanLike? RevisitAfterScroll { get; set; }
+        public bool? RevisitAfterScroll { get; set; }
 
         /// <summary>
         /// Overrides the configured bucket to use when saving the render.
@@ -1009,7 +1009,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("s3_force_path_style")]
-        public BooleanLike? S3ForcePathStyle { get; set; }
+        public bool? S3ForcePathStyle { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("s3_key")]
@@ -1021,7 +1021,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("s3_part_size")]
-        public NumLike? S3PartSize { get; set; }
+        public long? S3PartSize { get; set; }
 
         /// <summary>
         /// Sets the S3 path, including subdirectories and the filename, to use when saving the
@@ -1054,7 +1054,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("s3_private_bucket")]
-        public BooleanLike? S3PrivateBucket { get; set; }
+        public bool? S3PrivateBucket { get; set; }
 
         /// <summary>
         /// Override the configured S3 region when saving the render.
@@ -1076,23 +1076,23 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("save_html")]
-        public BooleanLike? SaveHtml { get; set; }
+        public bool? SaveHtml { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("save_markdown")]
-        public BooleanLike? SaveMarkdown { get; set; }
+        public bool? SaveMarkdown { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("save_metadata")]
-        public BooleanLike? SaveMetadata { get; set; }
+        public bool? SaveMetadata { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("save_mhtml")]
-        public BooleanLike? SaveMhtml { get; set; }
+        public bool? SaveMhtml { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scrgb_linear")]
-        public BooleanLike? ScrgbLinear { get; set; }
+        public bool? ScrgbLinear { get; set; }
 
         /// <summary>
         /// When Urlbox decides to split a screenshot into multiple sections, the scroll delay is the
@@ -1103,11 +1103,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scroll_delay")]
-        public NumLike? ScrollDelay { get; set; }
+        public long? ScrollDelay { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scroll_height")]
-        public NumLike? ScrollHeight { get; set; }
+        public long? ScrollHeight { get; set; }
 
         /// <summary>
         /// Sets how many pixels to scroll when scrolling the page to trigger lazy loading elements.
@@ -1117,22 +1117,22 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scroll_increment")]
-        public NumLike? ScrollIncrement { get; set; }
+        public long? ScrollIncrement { get; set; }
 
         /// <summary>
         /// Scroll, to either an element or to a pixel offset from the top, before taking a screenshot
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scroll_to")]
-        public StrLike? ScrollTo { get; set; }
+        public string ScrollTo { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("scroll_to_x")]
-        public StrLike? ScrollToX { get; set; }
+        public string ScrollToX { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("secure_mode")]
-        public BooleanLike? SecureMode { get; set; }
+        public bool? SecureMode { get; set; }
 
         /// <summary>
         /// Take a screenshot of the element that matches this selector. By default, if the selector
@@ -1145,19 +1145,19 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("sharp_stitch")]
-        public BooleanLike? SharpStitch { get; set; }
+        public bool? SharpStitch { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("show_seams")]
-        public BooleanLike? ShowSeams { get; set; }
+        public bool? ShowSeams { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("show_sections")]
-        public BooleanLike? ShowSections { get; set; }
+        public bool? ShowSections { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("skip_final_delay")]
-        public BooleanLike? SkipFinalDelay { get; set; }
+        public bool? SkipFinalDelay { get; set; }
 
         /// <summary>
         /// Enabling `skip_scroll` will speed up renders by skipping an initial scroll through the
@@ -1165,33 +1165,33 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("skip_scroll")]
-        public BooleanLike? SkipScroll { get; set; }
+        public bool? SkipScroll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("skip_webhooks")]
-        public BooleanLike? SkipWebhooks { get; set; }
+        public bool? SkipWebhooks { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("solve_captchas")]
-        public BooleanLike? SolveCaptchas { get; set; }
+        public bool? SolveCaptchas { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("solve_cf_turnstile")]
-        public BooleanLike? SolveCfTurnstile { get; set; }
+        public bool? SolveCfTurnstile { get; set; }
 
         /// <summary>
         /// The height of the generated thumbnail, in pixels. Omit for a full-size screenshot.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("thumb_height")]
-        public NumLike? ThumbHeight { get; set; }
+        public long? ThumbHeight { get; set; }
 
         /// <summary>
         /// The width of the generated thumbnail, in pixels. Omit for a full-size screenshot.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("thumb_width")]
-        public NumLike? ThumbWidth { get; set; }
+        public long? ThumbWidth { get; set; }
 
         /// <summary>
         /// The amount of time to wait for the requested URL to load, in milliseconds. The timeout
@@ -1200,7 +1200,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("timeout")]
-        public NumLike? Timeout { get; set; }
+        public long? Timeout { get; set; }
 
         /// <summary>
         /// If a website has no background color set, the image will have a transparent background
@@ -1208,7 +1208,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("transparent")]
-        public BooleanLike? Transparent { get; set; }
+        public bool? Transparent { get; set; }
 
         /// <summary>
         /// The duration to keep a screenshot or PDF in the cache, in seconds. ttl stands for 'time
@@ -1216,11 +1216,11 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("ttl")]
-        public NumLike? Ttl { get; set; }
+        public long? Ttl { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("turbo")]
-        public BooleanLike? Turbo { get; set; }
+        public bool? Turbo { get; set; }
 
         /// <summary>
         /// Emulate the timezone to use when rendering pages. Example: `tz=Europe/London`. A list of
@@ -1249,26 +1249,26 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_chrome")]
-        public BooleanLike? UseChrome { get; set; }
+        public bool? UseChrome { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_chromium")]
-        public BooleanLike? UseChromium { get; set; }
+        public bool? UseChromium { get; set; }
 
         /// <summary>
         /// Save the render directly to the S3 (or S3-Compatible) bucket configured on your account.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_s3")]
-        public BooleanLike? UseS3 { get; set; }
+        public bool? UseS3 { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_stealth")]
-        public BooleanLike? UseStealth { get; set; }
+        public bool? UseStealth { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_tailwind")]
-        public BooleanLike? UseTailwind { get; set; }
+        public bool? UseTailwind { get; set; }
 
         /// <summary>
         /// Sets the `User-Agent` string for the request The presets are:  * `random` - Uses a random
@@ -1286,19 +1286,19 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_aspect")]
-        public NumLike? VideoAspect { get; set; }
+        public long? VideoAspect { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_bitrate")]
-        public NumLike? VideoBitrate { get; set; }
+        public long? VideoBitrate { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_bits_per_second")]
-        public NumLike? VideoBitsPerSecond { get; set; }
+        public long? VideoBitsPerSecond { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_chrome_height")]
-        public NumLike? VideoChromeHeight { get; set; }
+        public long? VideoChromeHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_codec")]
@@ -1306,11 +1306,11 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_crop_w")]
-        public NumLike? VideoCropW { get; set; }
+        public long? VideoCropW { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_dont_scroll_back")]
-        public BooleanLike? VideoDontScrollBack { get; set; }
+        public bool? VideoDontScrollBack { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_ease")]
@@ -1322,19 +1322,19 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_ffmpeg")]
-        public SingleToArraySplit? VideoFfmpeg { get; set; }
+        public string[] VideoFfmpeg { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_fps")]
-        public NumLike? VideoFps { get; set; }
+        public long? VideoFps { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_height")]
-        public NumLike? VideoHeight { get; set; }
+        public long? VideoHeight { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_jitter")]
-        public StrLike? VideoJitter { get; set; }
+        public double? VideoJitter { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_method")]
@@ -1342,11 +1342,11 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_postscroll_duration")]
-        public NumLike? VideoPostscrollDuration { get; set; }
+        public long? VideoPostscrollDuration { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_prescroll_duration")]
-        public NumLike? VideoPrescrollDuration { get; set; }
+        public long? VideoPrescrollDuration { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_preset")]
@@ -1354,47 +1354,47 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_quality")]
-        public NumLike? VideoQuality { get; set; }
+        public long? VideoQuality { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_refs")]
-        public NumLike? VideoRefs { get; set; }
+        public long? VideoRefs { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_rest_duration")]
-        public NumLike? VideoRestDuration { get; set; }
+        public long? VideoRestDuration { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_scroll")]
-        public BooleanLike? VideoScroll { get; set; }
+        public bool? VideoScroll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_scroll_back_duration")]
-        public NumLike? VideoScrollBackDuration { get; set; }
+        public long? VideoScrollBackDuration { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_scroll_distance")]
-        public NumLike? VideoScrollDistance { get; set; }
+        public long? VideoScrollDistance { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_scroll_duration")]
-        public NumLike? VideoScrollDuration { get; set; }
+        public long? VideoScrollDuration { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_seek")]
-        public StrLike? VideoSeek { get; set; }
+        public double? VideoSeek { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_time")]
-        public NumLike? VideoTime { get; set; }
+        public long? VideoTime { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_use_iscroll")]
-        public BooleanLike? VideoUseIscroll { get; set; }
+        public bool? VideoUseIscroll { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("video_width")]
-        public NumLike? VideoWidth { get; set; }
+        public long? VideoWidth { get; set; }
 
         /// <summary>
         /// Waits for the element specified by this selector to be present in the DOM before taking a
@@ -1418,7 +1418,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("wait_timeout")]
-        public NumLike? WaitTimeout { get; set; }
+        public long? WaitTimeout { get; set; }
 
         /// <summary>
         /// Waits for the element specified by this selector to be absent from the DOM before taking
@@ -1450,7 +1450,7 @@ namespace UrlboxSDK.Options.Resource
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("watermark")]
-        public BooleanLike? Watermark { get; set; }
+        public bool? Watermark { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("webhook_url")]
@@ -1461,7 +1461,7 @@ namespace UrlboxSDK.Options.Resource
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("width")]
-        public NumLike? Width { get; set; }
+        public long? Width { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("width_from")]
@@ -1555,261 +1555,6 @@ namespace UrlboxSDK.Options.Resource
     /// </summary>
     public enum WaitUntil { Domloaded, Loaded, Mostrequestsfinished, Requestsfinished };
 
-    /// <summary>
-    /// Values accepted as strings or integers, but coerced to bools.
-    ///
-    /// By default, when Urlbox detects an infinite scrolling page, it does not attempt to
-    /// continue scrolling to the bottom, as this could result in infinite scrolling! If you want
-    /// to override this behaviour, pass `true` for this option.
-    ///
-    /// Blocks requests from popular advertising networks from loading.
-    ///
-    /// Block fetch requests from the target URL.
-    ///
-    /// Blocks font requests
-    ///
-    /// Block frames.
-    ///
-    /// Blocks image requests
-    ///
-    /// Block video and audio requests
-    ///
-    /// Prevent requests for javascript scripts from loading
-    ///
-    /// Block websocket requests.
-    ///
-    /// Prevent stylesheet requests from loading
-    ///
-    /// Block XHR requests from the target URL.
-    ///
-    /// Similar to the [`hide_cookie_banners`](#hide_cookie_banners) option, but instead of
-    /// hiding the banners, this option attempts to click on the 'Accept' button, in order to
-    /// accept cookies.
-    ///
-    /// Emulate dark mode on websites by setting `prefers-color-scheme: dark`
-    ///
-    /// Some pages have full-height backgrounds whose heights are set to 100% of the viewport.
-    /// This can cause the backgrounds to get stretched when making a full page screenshot. If
-    /// you are seeing this behaviour in your full page screenshots, pass `true` for this
-    /// option.
-    ///
-    /// Turns off javascript on the target URL.  ~> Enabling this option will prevent
-    /// `full_page=true` and many other options, because having javascript disabled prevents
-    /// Urlbox from evaluating code inside the page's context.
-    ///
-    /// Prevents ligatures from being used. Useful when rendering a PDF, and you want to extract
-    /// text which contains ligatures.
-    ///
-    /// Fails the request if the elements specified by `selector` or `wait_for` options are not
-    /// found on the page after waiting for `wait_timeout`.
-    ///
-    /// Fails the request if the element specified by `wait_to_leave` option is found on the page
-    /// after waiting for `wait_timeout`.
-    ///
-    /// If `fail_on_4xx=true` and the requested URL returns a status code between 400 and 499,
-    /// Urlbox will fail the request with error code 400 and the message: `Failed to render.
-    /// Requested URL returned a 4xx error code and fail_on_4xx was true`
-    ///
-    /// If `fail_on_5xx=true` and the requested URL returns a status code between 500 and 599,
-    /// Urlbox will fail the request with error code 400 and message: `Failed to render.
-    /// Requested URL returned a 5xx error code and fail_on_5xx was true`
-    ///
-    /// Generate a fresh screenshot or PDF, instead of getting a cached version.
-    ///
-    /// Specify whether to capture the full scrollable area of the website. For PDFs, `full_page`
-    /// mode will attempt to capture the whole website onto one single page PDF document.
-    ///
-    /// When full_page=true, specify whether to capture the full width of the website, for
-    /// example if the site is horizontally scrolling.
-    ///
-    /// Enable GPU acceleration to render 3D scenes and heavy WebGL content. This is a beta
-    /// feature and requires pre-approval. Please contact support@urlbox.com to enable this
-    /// feature on your account.
-    ///
-    /// Automatically hides cookie banners from most websites, by setting their style to
-    /// `display: none !important;`
-    ///
-    /// Automatically remove white space from PDF. Occasionally a PDF will have a lot of trailing
-    /// white space at the bottom of the page. This option will attempt to automatically crop the
-    /// PDF to remove this white space.
-    ///
-    /// Sets whether to print background images in the PDF
-    ///
-    /// Whether to show the default pdf footer on each page of the pdf. The template of the
-    /// footer can be changed by setting the [`pdf_footer`](#pdf_footer) option.
-    ///
-    /// Whether to show the default pdf header on each page of the pdf. The template of the
-    /// header can be changed by setting the [`pdf_header`](#pdf_header) option.
-    ///
-    /// Make the pdf into a readable document by removing unnecessary elements such as navigation
-    /// bars, ads, etc.
-    ///
-    /// Prefer less animations on websites by setting `prefers-reduced-motion: reduced`
-    ///
-    /// Take a 'retina' or high-definition screenshot, equivalent to setting a device pixel ratio
-    /// of 2.0 or @2x. Please note that retina screenshots will be double the normal dimensions
-    /// and will normally take slightly longer to process due to the much bigger image size.
-    ///
-    /// Enabling `skip_scroll` will speed up renders by skipping an initial scroll through the
-    /// page, which is used to trigger any lazy loading elements.
-    ///
-    /// If a website has no background color set, the image will have a transparent background
-    /// (PNG/WebP only)
-    ///
-    /// Save the render directly to the S3 (or S3-Compatible) bucket configured on your account.
-    /// </summary>
-    public partial struct BooleanLike
-    {
-        public bool? Bool;
-        public double? Double;
-        public string String;
-
-        public static implicit operator BooleanLike(bool Bool) => new BooleanLike { Bool = Bool };
-        public static implicit operator BooleanLike(double Double) => new BooleanLike { Double = Double };
-        public static implicit operator BooleanLike(string String) => new BooleanLike { String = String };
-    }
-
-    /// <summary>
-    /// Sets the accurate of the Geolocation API in metres.
-    ///
-    /// Sets the latitude used to emulate the Geolocation API.
-    ///
-    /// Sets the longitude used to emulate the Geolocation API.
-    ///
-    /// Sets a custom bottom margin on the PDF.
-    ///
-    /// Set a custom left margin on the PDF.
-    ///
-    /// Sets a custom right margin on the PDF.
-    ///
-    /// Sets a custom top margin on the PDF.
-    ///
-    /// Sets the PDF page height, in pixels.
-    ///
-    /// Sets the PDF page width, in pixels.
-    ///
-    /// Sets the scale factor of the website content in the PDF. Valid values are numbers between
-    /// 0.1 and 2.
-    ///
-    /// Pad the screenshot, giving it a border. Can either be a single pixel value that gets
-    /// added to each side, or a comma delimited string of `top,right,bottom,left` pixel values.
-    ///
-    /// Values accepted as strings or integers, but coerced to strings.
-    ///
-    /// Sets the PDF page range to return.  By default, the page is split into a multi page
-    /// document and returns all page. Use this option to restrict which pages should be
-    /// returned.
-    ///
-    /// Scroll, to either an element or to a pixel offset from the top, before taking a screenshot
-    /// </summary>
-    public partial struct StrLike
-    {
-        public double? Double;
-        public string String;
-
-        public static implicit operator StrLike(double Double) => new StrLike { Double = Double };
-        public static implicit operator StrLike(string String) => new StrLike { String = String };
-    }
-
-    /// <summary>
-    /// The image quality of the resulting screenshot (JPEG/WebP only)
-    ///
-    /// Values accepted as strings or integers, but coerced to integers.
-    ///
-    /// The amount of time to wait before Urlbox captures a render in milliseconds.
-    ///
-    /// The viewport height of the browser, in pixels.
-    ///
-    /// For extremely lengthy websites, it may be preferable to limit the screenshot to a maximum
-    /// height to prevent Urlbox from spending time scrolling and generating an enormous
-    /// screenshot.
-    ///
-    /// When Urlbox takes a `full_page` screenshot, the maximum height of each image section is
-    /// set to 4096 pixels. If a sites height is greater than this value, Urlbox will start
-    /// splitting the screenshot into sections. Sometimes it is worthwhile experimenting with
-    /// this number.
-    ///
-    /// When Urlbox decides to split a screenshot into multiple sections, the scroll delay is the
-    /// time to wait between taking the screenshots of each individual section, in milliseconds.
-    /// While Urlbox does detect animations, and attempts to wait for them before taking a
-    /// screenshot, this option could be used to force Urlbox to wait for a certain amount of
-    /// time after scrolling to the next section, to wait for things like animations to finish.
-    ///
-    /// Sets how many pixels to scroll when scrolling the page to trigger lazy loading elements.
-    /// By default, the scroll increment is set to the browser viewport height. Some pages' lazy
-    /// loading elements only trigger when the scroll increment is smaller than this, however,
-    /// e.g. 400px.
-    ///
-    /// The height of the generated thumbnail, in pixels. Omit for a full-size screenshot.
-    ///
-    /// The width of the generated thumbnail, in pixels. Omit for a full-size screenshot.
-    ///
-    /// The amount of time to wait for the requested URL to load, in milliseconds. The timeout
-    /// value needs to be between 5,000 and 100,000 milliseconds. The default is 30000 or 30
-    /// seconds.
-    ///
-    /// The duration to keep a screenshot or PDF in the cache, in seconds. ttl stands for 'time
-    /// to live'. The default value is also the maximum value: `2592000` seconds (30 days).
-    ///
-    /// The amount of time to wait for the [`wait_for`](#wait_for) element to appear, or the
-    /// [`wait_to_leave`](#wait_to_leave) element to leave before continuing, in milliseconds.
-    ///
-    /// The viewport width of the browser, in pixels.
-    /// </summary>
-    public partial struct NumLike
-    {
-        public long? Integer;
-        public string String;
-
-        public static implicit operator NumLike(long Integer) => new NumLike { Integer = Integer };
-        public static implicit operator NumLike(string String) => new NumLike { String = String };
-    }
-
-    /// <summary>
-    /// Block requests from specific domains from loading. You can use wildcard characters such
-    /// as `*` to match subdomains.
-    ///
-    /// Takes a string or string[]. If a string, split to string[]
-    ///
-    /// Specifies an element selector to click before generating a screenshot or PDF Example:
-    /// `#clickme` would click an element with `id="clickme"`.  Can be used multiple times to
-    /// simulate multiple sequential click events. If the selector matches multiple elements,
-    /// only the first element will be clicked.
-    ///
-    /// Specifies an element selector to click before generating a screenshot or PDF Example:
-    /// `.clickme` would click all elements with `class="clickme"`.  Can be used multiple times
-    /// to simulate multiple sequential click events. If the selector matches multiple elements,
-    /// all elements will be clicked.
-    ///
-    /// Specifies an element selector to hover over before generating a screenshot or PDF
-    /// Example: `#hoverme` would hover over the element with `id="hoverme"`
-    ///
-    /// Sets a cookie on the request when loading the URL. Example: To set the cookie with key
-    /// `Opt-In` to the value `yes`, you would set the value of this option to `Opt-In=yes`.
-    /// Cookies can be passed as an array, to allow setting multiple cookies -
-    /// e.g.`["Opt-In=yes","Session-Id=DMTIzNDU"]`. To achieve multiple cookies with render
-    /// links, just set the cookie option multiple times, like
-    /// `cookie=Opt-In%3Dyes&cookie=Session-Id%3DDMTIzNDU`. To set a specific domain on a cookie,
-    /// you can do the following: `OptIn=yes;Domain=.mydomain.com`. You can set other attributes
-    /// for the cookie such as `Path`, `HttpOnly` and `SameSite`
-    ///
-    /// Set a header on the request when loading the URL Example: To set the header with key
-    /// `X-My-Header` to the value `SomeValue`, you would pass `header=X-My-Header%3DSomeValue`.
-    /// This can be set multiple times, to set more than one header - e.g.
-    /// `header=X-My-Header%3DSomeValue&header=X-My-Other-Header%3DSomeOtherValue`. As with all
-    /// options passed via the query string, the header value must be URL encoded - so
-    /// `X-My-Header=SomeValue` becomes `X-My-Header%3DSomeValue` in order to be interpreted
-    /// correctly by Urlbox.
-    /// </summary>
-    public partial struct SingleToArraySplit
-    {
-        public string String;
-        public string[] StringArray;
-
-        public static implicit operator SingleToArraySplit(string String) => new SingleToArraySplit { String = String };
-        public static implicit operator SingleToArraySplit(string[] StringArray) => new SingleToArraySplit { StringArray = StringArray };
-    }
-
     public partial class UrlboxOptions
     {
         public static UrlboxOptions FromJson(string json) => JsonSerializer.Deserialize<UrlboxOptions>(json, UrlboxSDK.Options.Resource.Converter.Settings);
@@ -1826,10 +1571,6 @@ namespace UrlboxSDK.Options.Resource
         {
             Converters =
             {
-                BooleanLikeConverter.Singleton,
-                StrLikeConverter.Singleton,
-                NumLikeConverter.Singleton,
-                SingleToArraySplitConverter.Singleton,
                 ColorProfileConverter.Singleton,
                 EngineVersionConverter.Singleton,
                 FormatConverter.Singleton,
@@ -1852,159 +1593,6 @@ namespace UrlboxSDK.Options.Resource
                 IsoDateTimeOffsetConverter.Singleton
             },
         };
-    }
-
-    internal class BooleanLikeConverter : JsonConverter<BooleanLike>
-    {
-        public override bool CanConvert(Type t) => t == typeof(BooleanLike);
-
-        public override BooleanLike Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.Number:
-                    var doubleValue = reader.GetDouble();
-                    return new BooleanLike { Double = doubleValue };
-                case JsonTokenType.True:
-                case JsonTokenType.False:
-                    var boolValue = reader.GetBoolean();
-                    return new BooleanLike { Bool = boolValue };
-                case JsonTokenType.String:
-                    var stringValue = reader.GetString();
-                    return new BooleanLike { String = stringValue };
-            }
-            throw new Exception("Cannot unmarshal type BooleanLike");
-        }
-
-        public override void Write(Utf8JsonWriter writer, BooleanLike value, JsonSerializerOptions options)
-        {
-            if (value.Double != null)
-            {
-                JsonSerializer.Serialize(writer, value.Double.Value, options);
-                return;
-            }
-            if (value.Bool != null)
-            {
-                JsonSerializer.Serialize(writer, value.Bool.Value, options);
-                return;
-            }
-            if (value.String != null)
-            {
-                JsonSerializer.Serialize(writer, value.String, options);
-                return;
-            }
-            throw new Exception("Cannot marshal type BooleanLike");
-        }
-
-        public static readonly BooleanLikeConverter Singleton = new BooleanLikeConverter();
-    }
-
-    internal class StrLikeConverter : JsonConverter<StrLike>
-    {
-        public override bool CanConvert(Type t) => t == typeof(StrLike);
-
-        public override StrLike Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.Number:
-                    var doubleValue = reader.GetDouble();
-                    return new StrLike { Double = doubleValue };
-                case JsonTokenType.String:
-                    var stringValue = reader.GetString();
-                    return new StrLike { String = stringValue };
-            }
-            throw new Exception("Cannot unmarshal type StrLike");
-        }
-
-        public override void Write(Utf8JsonWriter writer, StrLike value, JsonSerializerOptions options)
-        {
-            if (value.Double != null)
-            {
-                JsonSerializer.Serialize(writer, value.Double.Value, options);
-                return;
-            }
-            if (value.String != null)
-            {
-                JsonSerializer.Serialize(writer, value.String, options);
-                return;
-            }
-            throw new Exception("Cannot marshal type StrLike");
-        }
-
-        public static readonly StrLikeConverter Singleton = new StrLikeConverter();
-    }
-
-    internal class NumLikeConverter : JsonConverter<NumLike>
-    {
-        public override bool CanConvert(Type t) => t == typeof(NumLike);
-
-        public override NumLike Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.Number:
-                    var integerValue = reader.GetInt64();
-                    return new NumLike { Integer = integerValue };
-                case JsonTokenType.String:
-                    var stringValue = reader.GetString();
-                    return new NumLike { String = stringValue };
-            }
-            throw new Exception("Cannot unmarshal type NumLike");
-        }
-
-        public override void Write(Utf8JsonWriter writer, NumLike value, JsonSerializerOptions options)
-        {
-            if (value.Integer != null)
-            {
-                JsonSerializer.Serialize(writer, value.Integer.Value, options);
-                return;
-            }
-            if (value.String != null)
-            {
-                JsonSerializer.Serialize(writer, value.String, options);
-                return;
-            }
-            throw new Exception("Cannot marshal type NumLike");
-        }
-
-        public static readonly NumLikeConverter Singleton = new NumLikeConverter();
-    }
-
-    internal class SingleToArraySplitConverter : JsonConverter<SingleToArraySplit>
-    {
-        public override bool CanConvert(Type t) => t == typeof(SingleToArraySplit);
-
-        public override SingleToArraySplit Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            switch (reader.TokenType)
-            {
-                case JsonTokenType.String:
-                    var stringValue = reader.GetString();
-                    return new SingleToArraySplit { String = stringValue };
-                case JsonTokenType.StartArray:
-                    var arrayValue = JsonSerializer.Deserialize<string[]>(ref reader, options);
-                    return new SingleToArraySplit { StringArray = arrayValue };
-            }
-            throw new Exception("Cannot unmarshal type SingleToArraySplit");
-        }
-
-        public override void Write(Utf8JsonWriter writer, SingleToArraySplit value, JsonSerializerOptions options)
-        {
-            if (value.String != null)
-            {
-                JsonSerializer.Serialize(writer, value.String, options);
-                return;
-            }
-            if (value.StringArray != null)
-            {
-                JsonSerializer.Serialize(writer, value.StringArray, options);
-                return;
-            }
-            throw new Exception("Cannot marshal type SingleToArraySplit");
-        }
-
-        public static readonly SingleToArraySplitConverter Singleton = new SingleToArraySplitConverter();
     }
 
     internal class ColorProfileConverter : JsonConverter<ColorProfile>
@@ -3159,7 +2747,7 @@ namespace UrlboxSDK.Options.Resource
 
         public static readonly WaitUntilConverter Singleton = new WaitUntilConverter();
     }
-
+    
     public class DateOnlyConverter : JsonConverter<DateOnly>
     {
         private readonly string serializationFormat;
@@ -3167,13 +2755,13 @@ namespace UrlboxSDK.Options.Resource
 
         public DateOnlyConverter(string? serializationFormat)
         {
-            this.serializationFormat = serializationFormat ?? "yyyy-MM-dd";
+                this.serializationFormat = serializationFormat ?? "yyyy-MM-dd";
         }
 
         public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var value = reader.GetString();
-            return DateOnly.Parse(value!);
+                var value = reader.GetString();
+                return DateOnly.Parse(value!);
         }
 
         public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
@@ -3188,13 +2776,13 @@ namespace UrlboxSDK.Options.Resource
 
         public TimeOnlyConverter(string? serializationFormat)
         {
-            this.serializationFormat = serializationFormat ?? "HH:mm:ss.fff";
+                this.serializationFormat = serializationFormat ?? "HH:mm:ss.fff";
         }
 
         public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var value = reader.GetString();
-            return TimeOnly.Parse(value!);
+                var value = reader.GetString();
+                return TimeOnly.Parse(value!);
         }
 
         public override void Write(Utf8JsonWriter writer, TimeOnly value, JsonSerializerOptions options)
@@ -3213,57 +2801,57 @@ namespace UrlboxSDK.Options.Resource
 
         public DateTimeStyles DateTimeStyles
         {
-            get => _dateTimeStyles;
-            set => _dateTimeStyles = value;
+                get => _dateTimeStyles;
+                set => _dateTimeStyles = value;
         }
 
         public string? DateTimeFormat
         {
-            get => _dateTimeFormat ?? string.Empty;
-            set => _dateTimeFormat = (string.IsNullOrEmpty(value)) ? null : value;
+                get => _dateTimeFormat ?? string.Empty;
+                set => _dateTimeFormat = (string.IsNullOrEmpty(value)) ? null : value;
         }
 
         public CultureInfo Culture
         {
-            get => _culture ?? CultureInfo.CurrentCulture;
-            set => _culture = value;
+                get => _culture ?? CultureInfo.CurrentCulture;
+                set => _culture = value;
         }
 
         public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
         {
-            string text;
+                string text;
 
 
-            if ((_dateTimeStyles & DateTimeStyles.AdjustToUniversal) == DateTimeStyles.AdjustToUniversal
-                    || (_dateTimeStyles & DateTimeStyles.AssumeUniversal) == DateTimeStyles.AssumeUniversal)
-            {
-                value = value.ToUniversalTime();
-            }
+                if ((_dateTimeStyles & DateTimeStyles.AdjustToUniversal) == DateTimeStyles.AdjustToUniversal
+                        || (_dateTimeStyles & DateTimeStyles.AssumeUniversal) == DateTimeStyles.AssumeUniversal)
+                {
+                        value = value.ToUniversalTime();
+                }
 
-            text = value.ToString(_dateTimeFormat ?? DefaultDateTimeFormat, Culture);
+                text = value.ToString(_dateTimeFormat ?? DefaultDateTimeFormat, Culture);
 
-            writer.WriteStringValue(text);
+                writer.WriteStringValue(text);
         }
 
         public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string? dateText = reader.GetString();
+                string? dateText = reader.GetString();
 
-            if (string.IsNullOrEmpty(dateText) == false)
-            {
-                if (!string.IsNullOrEmpty(_dateTimeFormat))
+                if (string.IsNullOrEmpty(dateText) == false)
                 {
-                    return DateTimeOffset.ParseExact(dateText, _dateTimeFormat, Culture, _dateTimeStyles);
+                        if (!string.IsNullOrEmpty(_dateTimeFormat))
+                        {
+                                return DateTimeOffset.ParseExact(dateText, _dateTimeFormat, Culture, _dateTimeStyles);
+                        }
+                        else
+                        {
+                                return DateTimeOffset.Parse(dateText, Culture, _dateTimeStyles);
+                        }
                 }
                 else
                 {
-                    return DateTimeOffset.Parse(dateText, Culture, _dateTimeStyles);
+                        return default(DateTimeOffset);
                 }
-            }
-            else
-            {
-                return default(DateTimeOffset);
-            }
         }
 
 

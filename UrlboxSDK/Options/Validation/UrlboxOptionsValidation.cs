@@ -1,3 +1,4 @@
+using System.Reflection;
 using UrlboxSDK.Options.Resource;
 
 namespace UrlboxSDK.Options.Validation;
@@ -59,7 +60,6 @@ public sealed class UrlboxOptionsValidation
 
     /// <summary>
     /// Determines if a value is considered "truthy" based on its type, 
-    /// including custom Urlbox-specific types.
     /// 
     /// Evaluates as truthy if:
     /// - <see langword="null"/>: Always falsy.
@@ -68,40 +68,20 @@ public sealed class UrlboxOptionsValidation
     /// - <see cref="string"/>: True if not empty.
     /// - <see cref="string[]"/>: True if contains elements.
     /// 
-    /// Custom types:
-    /// - <see cref="SingleToArraySplit"/>: True if String is not empty 
-    ///   or StringArray has elements.
-    /// - <see cref="BooleanLike"/>: True if any value indicates "true".
-    /// - <see cref="NumLike"/>: True if number is non-zero or string not "0".
-    /// - <see cref="StrLike"/>: True if not empty or non-zero.
-    /// 
     /// Unhandled types are considered truthy.
     /// </summary>
     public static bool IsNullOption(object? value)
     {
         return value switch
         {
-            // Filter out non-custom falsy values
+            // Filter out falsy values
             null => false,
             bool valueBool => valueBool, // Include only if true
             int valueInt => valueInt != 0, // Include only if non-zero
+            long valueLong => valueLong != 0, // Include only if non-zero
             double valueDouble => Math.Abs(valueDouble) >= double.Epsilon, // Include only if non-zero
             string valueString => !string.IsNullOrEmpty(valueString), // Include only if not empty
-            string[] valueArray => valueArray.Length > 0, // Include only if array has elements
-                                                          // Filter out falsey custom value types
-            SingleToArraySplit singleToArraySplit =>
-                !string.IsNullOrEmpty(singleToArraySplit.String) && singleToArraySplit.String != "" ||
-                (singleToArraySplit.StringArray != null && singleToArraySplit.StringArray.Length > 0),
-            BooleanLike booleanLike =>
-                booleanLike.Bool.HasValue && booleanLike.Bool != false ||
-                booleanLike.Double.HasValue && booleanLike.Double != 0 ||
-                !string.IsNullOrEmpty(booleanLike.String) && booleanLike.String != "false",
-            NumLike numLike =>
-                numLike.Integer.HasValue && numLike.Integer != 0 ||
-                !string.IsNullOrEmpty(numLike.String) && numLike.String != "0",
-            StrLike strLike =>
-                strLike.Double.HasValue && strLike.Double != 0 ||
-                !string.IsNullOrEmpty(strLike.String),
+            string[] valueArray => valueArray.Length > 0 && !(valueArray[0] == ""), // Include only if array has elements
             _ => true // Include all other non-handled types
         };
     }
@@ -138,10 +118,10 @@ public sealed class UrlboxOptionsValidation
     /// <returns>The validated <see cref="UrlboxOptions"/> instance.</returns>
     private static UrlboxOptions ValidateScreenshotOptions(UrlboxOptions options)
     {
-        var thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
+        bool thumbSizes = options.ThumbWidth != null || options.ThumbHeight != null;
         bool hasImgFit = options.ImgFit != null && Enum.IsDefined(typeof(ImgFit), options.ImgFit);
         bool hasImgPosition = options.ImgPosition != null && Enum.IsDefined(typeof(ImgPosition), options.ImgPosition);
-        var imgFitIsCoverOrContain = options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Cover || options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Contain;
+        bool imgFitIsCoverOrContain = options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Cover || options.ImgFit == UrlboxSDK.Options.Resource.ImgFit.Contain;
 
         if (!thumbSizes && hasImgFit)
         {
@@ -177,7 +157,7 @@ public sealed class UrlboxOptionsValidation
     /// <returns>The validated <see cref="UrlboxOptions"/> instance.</returns>
     private static UrlboxOptions ValidateFullPageOptions(UrlboxOptions options)
     {
-        bool isNotFullPage = !options.FullPage.HasValue || (options.FullPage.HasValue && options.FullPage.Value.Bool != true);
+        bool isNotFullPage = !options.FullPage.HasValue || (options.FullPage.HasValue && options.FullPage != true);
         bool hasFullPageOptions = HasOptionsInCategory(FullPageOptions, options);
         if (
             isNotFullPage && hasFullPageOptions
@@ -204,7 +184,7 @@ public sealed class UrlboxOptionsValidation
     /// <returns>The validated <see cref="UrlboxOptions"/> instance.</returns>
     private static UrlboxOptions ValidateS3Options(UrlboxOptions options)
     {
-        bool isNotUsingS3 = !options.UseS3.HasValue || (options.UseS3.HasValue && options.UseS3.Value.Bool != true);
+        bool isNotUsingS3 = !options.UseS3.HasValue || (options.UseS3.HasValue && options.UseS3 != true);
         bool hasS3Options = HasOptionsInCategory(S3Options, options);
         if (isNotUsingS3 && hasS3Options)
         {
@@ -250,9 +230,9 @@ public sealed class UrlboxOptionsValidation
         return category
          .Any(propertyName =>
          {
-             var property = options.GetType().GetProperty(propertyName);
+             PropertyInfo? property = options.GetType().GetProperty(propertyName);
              if (property == null) return false;
-             var value = property.GetValue(options);
+             object? value = property.GetValue(options);
              return UrlboxOptionsValidation.IsNullOption(value);
          });
     }

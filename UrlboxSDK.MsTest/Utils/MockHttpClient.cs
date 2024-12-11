@@ -38,7 +38,7 @@ public class MockHttpClientFixture
     /// </param>
     public void StubRequest(HttpMethod method, string url, HttpStatusCode status, string responseContent, Dictionary<string, string>? headers = null)
     {
-        var response = new HttpResponseMessage(status)
+        HttpResponseMessage response = new(status)
         {
             Content = new StringContent(responseContent)
         };
@@ -46,7 +46,7 @@ public class MockHttpClientFixture
         // Add headers if provided
         if (headers != null)
         {
-            foreach (var header in headers)
+            foreach (KeyValuePair<string, string> header in headers)
             {
                 response.Headers.Add(header.Key, header.Value);
             }

@@ -36,7 +36,9 @@
     </None>
     <None Update="README.md">
       <Pack>true</Pack>
-      <PackagePath>./</PackagePath>
+      <!-- Unfortunately you can't access above root for this, and GH readmes need to be in root. -->
+      <!-- So we need a duplicate if we want to keep readmes simple... -->
+      <PackagePath>./README.md</PackagePath>
     </None>
   </ItemGroup>
 

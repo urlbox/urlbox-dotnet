@@ -16,7 +16,7 @@ public class UrlboxExceptionTests
     [TestMethod]
     public void FromResponse_ValidResponse_ParsesSuccessfully()
     {
-        var jsonResponse = @"
+        string jsonResponse = @"
         {
             ""error"": {
                 ""message"": ""Invalid options, please check errors - {\""url\"":[\""error resolving URL - ENOTFOUND ffffffffffftest-site.urlbox.com\""]}"",
@@ -26,7 +26,7 @@ public class UrlboxExceptionTests
             ""requestId"": ""5490b293-29b7-43e6-b9f0-7ea23c6a1259""
         }";
 
-        var exception = Assert.ThrowsException<UrlboxException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
+        UrlboxException exception = Assert.ThrowsException<UrlboxException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
 
         Assert.AreEqual("Invalid options, please check errors - {\"url\":[\"error resolving URL - ENOTFOUND ffffffffffftest-site.urlbox.com\"]}", exception.Message);
         Assert.AreEqual("InvalidOptions", exception.Code);
@@ -37,7 +37,7 @@ public class UrlboxExceptionTests
     [TestMethod]
     public void FromResponse_ResponseWithMissingCodeAndErrors_ParsesSuccessfully()
     {
-        var jsonResponse = @"
+        string jsonResponse = @"
         {
             ""error"": {
                 ""message"": ""Invalid options, please check errors"",
@@ -47,7 +47,7 @@ public class UrlboxExceptionTests
             ""requestId"": ""5490b293-29b7-43e6-b9f0-7ea23c6a1259""
         }";
 
-        var exception = Assert.ThrowsException<UrlboxException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
+        UrlboxException exception = Assert.ThrowsException<UrlboxException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
 
         Assert.AreEqual("Invalid options, please check errors", exception.Message);
         Assert.IsNull(exception.Code);
@@ -58,9 +58,9 @@ public class UrlboxExceptionTests
     [TestMethod]
     public void FromResponse_InvalidJson_ThrowsException()
     {
-        var invalidJson = @"{ ""invalid"": ""json"" }";
+        string invalidJson = @"{ ""invalid"": ""json"" }";
 
-        var exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(invalidJson, _serializerOptions));
+        JsonException exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(invalidJson, _serializerOptions));
 
         Assert.AreEqual("Invalid JSON response structure", exception.Message);
         Assert.IsInstanceOfType(exception, typeof(JsonException));
@@ -76,7 +76,7 @@ public class UrlboxExceptionTests
     [TestMethod]
     public void FromResponse_ResponseWithMissingRequestId_ThrowsJsonException()
     {
-        var jsonResponse = @"
+        string jsonResponse = @"
         {
             ""error"": {
                 ""message"": ""Invalid options, please check errors"",
@@ -85,7 +85,7 @@ public class UrlboxExceptionTests
             }
         }";
 
-        var exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
+        JsonException exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
 
         Assert.AreEqual("Invalid JSON response structure", exception.Message);
     }
@@ -93,12 +93,12 @@ public class UrlboxExceptionTests
     [TestMethod]
     public void FromResponse_ResponseWithMissingError_ThrowsJsonException()
     {
-        var jsonResponse = @"
+        string jsonResponse = @"
         {
             ""requestId"": ""5490b293-29b7-43e6-b9f0-7ea23c6a1259""
         }";
 
-        var exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
+        JsonException exception = Assert.ThrowsException<JsonException>(() => UrlboxException.FromResponse(jsonResponse, _serializerOptions));
 
         Assert.AreEqual("Invalid JSON response structure", exception.Message);
     }

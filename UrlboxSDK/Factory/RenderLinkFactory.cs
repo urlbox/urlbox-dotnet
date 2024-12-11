@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Cryptography;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Options.Validation;
@@ -8,8 +9,7 @@ namespace UrlboxSDK.Factory;
 /// <summary>
 /// A class encompassing render link generation logic.
 /// </summary>
-/// 
-public sealed class RenderLinkFactory
+sealed class RenderLinkFactory
 {
     private readonly string key;
     private readonly string secret;
@@ -28,19 +28,19 @@ public sealed class RenderLinkFactory
     private static string ToQueryString(UrlboxOptions options)
     {
         // Filter by reflection class' props
-        var properties = options.GetType().GetProperties();
-        var result = properties
+        PropertyInfo[] properties = options.GetType().GetProperties();
+        string[] result = properties
             .Where(prop =>
                 {
                     // Filter out falsy values
-                    var value = prop.GetValue(options, null);
+                    object? value = prop.GetValue(options, null);
                     return UrlboxOptionsValidation.IsNullOption(value);
                 })
             .OrderBy(prop => prop.Name)
             // Convert not null values to string representation
             .Select(prop =>
             {
-                var propValue = prop.GetValue(options) ??
+                object? propValue = prop.GetValue(options) ??
                     throw new ArgumentException($"Cannot convert options to a query string: trying to convert {prop.Name} which has a null value.");
                 string stringValue = ConvertToString(propValue);
                 return new KeyValuePair<string, string>(prop.Name, stringValue);
@@ -87,7 +87,7 @@ public sealed class RenderLinkFactory
             return string.Empty;
         }
 
-        var result = new StringBuilder();
+        StringBuilder result = new();
 
         for (int i = 0; i < input.Length; i++)
         {
@@ -129,38 +129,8 @@ public sealed class RenderLinkFactory
         return value switch
         {
             string[] stringArray => string.Join(",", stringArray),
-
             Enum enumValue => enumValue.ToString().ToLower(),
-
-            // Handle StrLike:
-            // - Return its string property if present
-            // - Otherwise, return its double value as a string
-            StrLike strlike => strlike.String ?? strlike.Double?.ToString()
-                ?? throw new System.Exception("StrLike contains no value."),
-
-            // Handle SingleToArraySplit:
-            // - Return its string property if present
-            // - Otherwise, join its string array into a single comma-separated string
-            SingleToArraySplit singleToArraySplit => singleToArraySplit.String
-                ?? string.Join(",", singleToArraySplit.StringArray ?? Array.Empty<string>())
-                ?? throw new System.Exception("SingleToArraySplit contains no value."),
-
-            // Handle BooleanLike:
-            // - Return its boolean property as a lowercase string if present
-            // - Return its (1/0) value as a string if present
-            // - Return its string property if present
-            BooleanLike booleanLike => booleanLike.Bool?.ToString().ToLower()
-                ?? booleanLike.Double?.ToString()
-                ?? booleanLike.String
-                ?? throw new System.Exception("BooleanLike contains no value."),
-
-            // Handle NumLike:
-            // - Return its integer value as a string if present
-            // - Otherwise, return its string property
-            NumLike numLike => numLike.Integer?.ToString()
-                ?? numLike.String
-                ?? throw new System.Exception("NumLike contains no value."),
-
+            bool boolValue => boolValue.ToString().ToLower(),
             // Default case: Convert all other types using Convert.ToString
             _ => Convert.ToString(value)
                 ?? throw new System.Exception("Could not convert value to string.")
@@ -173,9 +143,9 @@ public sealed class RenderLinkFactory
     /// <param name="options"></param>
     /// <param name="format"></param>
     /// <returns>The Urlbox Render Link</returns>
-    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = false)
+    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = true)
     {
-        var queryString = ToQueryString(options);
+        string queryString = ToQueryString(options);
         if (sign)
         {
             return string.Format(
