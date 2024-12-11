@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using UrlboxSDK.Options.Resource;
+using UrlboxSDK.Options.Validation;
 
 namespace UrlboxSDK.Factory;
 

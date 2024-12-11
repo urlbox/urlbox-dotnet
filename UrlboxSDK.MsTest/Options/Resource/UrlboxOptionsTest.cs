@@ -1,11 +1,10 @@
 #nullable enable
 
 using System;
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
 using UrlboxSDK.Options.Resource;
-using UrlboxSDK.Policy;
+
+namespace UrlboxSDK.MsTest.Options.Resource;
 
 [TestClass]
 public class UrlboxOptionsTest

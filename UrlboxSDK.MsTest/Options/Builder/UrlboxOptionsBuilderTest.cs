@@ -1,9 +1,9 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UrlboxSDK;
 using UrlboxSDK.Options.Builder;
 using UrlboxSDK.Options.Resource;
-using UrlboxSDK;
+
+namespace UrlboxSDK.MsTest.Options.Builder;
 
 [TestClass]
 public class UrlboxOptionsBuilderTests

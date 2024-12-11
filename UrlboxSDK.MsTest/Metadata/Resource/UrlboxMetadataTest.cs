@@ -1,6 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Metadata.Resource;
 
+namespace UrlboxSDK.MsTest.Metadata.Resource;
+
 [TestClass]
 public class UrlboxMetadataTests
 {
@@ -11,7 +13,7 @@ public class UrlboxMetadataTests
         string urlRequested = "urlRequested";
         string urlResolved = "urlResolved";
 
-        UrlboxMetadata urlboxMetadata = new UrlboxMetadata(
+        UrlboxMetadata urlboxMetadata = new(
             url: url,
             urlRequested: urlRequested,
             urlResolved: urlResolved
@@ -46,7 +48,7 @@ public class UrlboxMetadataTests
     [TestMethod]
     public void UrlboxMetadata_CreatesGettersAll()
     {
-        OgImage ogImage = new OgImage(
+        OgImage ogImage = new(
             url: "url",
             type: "type",
             width: "123",
@@ -75,7 +77,7 @@ public class UrlboxMetadataTests
         string twitterSite = "twitterSite";
         string twitterCreator = "twitterCreator";
 
-        UrlboxMetadata urlboxMetadata = new UrlboxMetadata(
+        UrlboxMetadata urlboxMetadata = new(
             author: author,
             date: date,
             description: description,

@@ -3,10 +3,12 @@ using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Exception;
 
+namespace UrlboxSDK.MsTest.Exception;
+
 [TestClass]
 public class UrlboxExceptionTests
 {
-    private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
+    private readonly JsonSerializerOptions _serializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };

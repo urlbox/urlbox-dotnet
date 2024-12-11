@@ -2,18 +2,18 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Metadata.Resource;
 using UrlboxSDK.Response.Resource;
-using UrlboxSDK.Webhook.Resource;
+
+namespace UrlboxSDK.MsTest.Resource;
 
 [TestClass]
 public class SyncUrlboxResponseTests
 {
-    // Test SyncUrlboxResponse
     [TestMethod]
     public void SyncUrlboxResponse_SuccessGetters()
     {
         string renderUrl = "renderurl";
         int size = 123;
-        SyncUrlboxResponse response = new SyncUrlboxResponse(renderUrl, size);
+        SyncUrlboxResponse response = new(renderUrl, size);
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.AreEqual(renderUrl, response.RenderUrl);
         Assert.AreEqual(size, response.Size);
@@ -22,7 +22,7 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithHtmlGetters()
     {
-        SyncUrlboxResponse response = new SyncUrlboxResponse("renderurl", 123, htmlUrl: "url.html");
+        SyncUrlboxResponse response = new("renderurl", 123, htmlUrl: "url.html");
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(response.HtmlUrl);
     }
@@ -36,7 +36,7 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithMhtml()
     {
-        SyncUrlboxResponse response = new SyncUrlboxResponse("renderurl", 123, mhtmlUrl: "url.mhtml");
+        SyncUrlboxResponse response = new("renderurl", 123, mhtmlUrl: "url.mhtml");
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(response.MhtmlUrl);
     }
@@ -50,7 +50,7 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithMarkdown()
     {
-        SyncUrlboxResponse response = new SyncUrlboxResponse("renderurl", 123, markdownUrl: "url.md");
+        SyncUrlboxResponse response = new("renderurl", 123, markdownUrl: "url.md");
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(response.MarkdownUrl);
     }
@@ -64,7 +64,7 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithMetadataUrl()
     {
-        SyncUrlboxResponse response = new SyncUrlboxResponse("renderurl", 123, metadataUrl: "url.json");
+        SyncUrlboxResponse response = new("renderurl", 123, metadataUrl: "url.json");
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(response.MetadataUrl);
     }
@@ -78,14 +78,14 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithMetadata()
     {
-        OgImage ogImage = new OgImage(
+        OgImage ogImage = new(
             url: "url",
             type: "type",
             width: "123",
             height: "123"
         );
         OgImage[] ogImages = new OgImage[] { ogImage, ogImage };
-        UrlboxMetadata urlboxMetadata = new UrlboxMetadata(
+        UrlboxMetadata urlboxMetadata = new(
             author: "author",
             date: "date",
             description: "description",
@@ -101,7 +101,7 @@ public class SyncUrlboxResponseTests
             urlRequested: "urlRequested",
             urlResolved: "urlResolved"
         );
-        SyncUrlboxResponse response = new SyncUrlboxResponse("renderurl", 123, metadata: urlboxMetadata);
+        SyncUrlboxResponse response = new("renderurl", 123, metadata: urlboxMetadata);
 
         Assert.IsInstanceOfType(response, typeof(SyncUrlboxResponse));
         Assert.IsNotNull(response.Metadata);
@@ -110,8 +110,8 @@ public class SyncUrlboxResponseTests
     [TestMethod]
     public void SyncUrlboxResponse_SuccessWithAll()
     {
-        OgImage ogImage = new OgImage(url: "url", type: "type", width: "123", height: "123");
-        UrlboxMetadata urlboxMetadata = new UrlboxMetadata(
+        OgImage ogImage = new(url: "url", type: "type", width: "123", height: "123");
+        UrlboxMetadata urlboxMetadata = new(
             author: "author",
             date: "date",
             description: "description",
@@ -128,7 +128,7 @@ public class SyncUrlboxResponseTests
             urlResolved: "urlResolved"
         );
 
-        SyncUrlboxResponse response = new SyncUrlboxResponse(
+        SyncUrlboxResponse response = new(
             "renderurl",
              123,
              metadataUrl: "url.json",
@@ -157,7 +157,7 @@ public class AsyncUrlboxResponseTests
     [TestMethod]
     public void AsyncUrlboxResponse_CreatesMinGetters()
     {
-        AsyncUrlboxResponse response = new AsyncUrlboxResponse(renderId: "renderId", statusUrl: "statusUrl", status: "succeeded");
+        AsyncUrlboxResponse response = new(renderId: "renderId", statusUrl: "statusUrl", status: "succeeded");
         Assert.IsInstanceOfType(response, typeof(AsyncUrlboxResponse));
         Assert.AreEqual("succeeded", response.Status);
         Assert.AreEqual("statusUrl", response.StatusUrl);
