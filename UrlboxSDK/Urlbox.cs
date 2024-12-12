@@ -9,6 +9,7 @@ using UrlboxSDK.Factory;
 using UrlboxSDK.Webhook.Resource;
 using UrlboxSDK.Webhook.Validator;
 using UrlboxSDK.Response.Resource;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UrlboxSDK;
 /// <summary>
@@ -64,6 +65,7 @@ public sealed class Urlbox : IUrlbox
     }
 
     // Internal constructor (testable, allows injecting dependencies to mock http)
+    [ExcludeFromCodeCoverage]
     internal Urlbox(string key, string secret, RenderLinkFactory renderLinkFactory, HttpClient httpClient, string? webhookSecret = null, string? baseUrl = BASE_URL)
     {
         if (string.IsNullOrEmpty(key))

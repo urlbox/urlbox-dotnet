@@ -17,7 +17,7 @@ public sealed class UrlboxWebhookValidator
     {
         if (String.IsNullOrEmpty(secret))
         {
-            throw new ArgumentException("Unable to verify signature as Webhook Secret is not set. You can find your webhook secret inside your project\'s settings - https://www.urlbox.io/dashboard/projects");
+            throw new ArgumentException("Unable to verify signature as Webhook Secret is not set. You can find your webhook secret inside your project\'s settings - https://www.urlbox.com/dashboard/projects");
         }
         this.webhookSecret = secret;
     }

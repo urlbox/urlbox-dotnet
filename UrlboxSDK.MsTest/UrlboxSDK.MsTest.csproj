@@ -6,8 +6,7 @@
     <IsPackable>false</IsPackable>
     <UserSecretsId>af903291-8a0e-4c45-a74c-59122b38f976</UserSecretsId>
 
-    <!-- Run the parallel test settings whenever we run dotnet test -->
-    <RunSettingsFilePath>$(MSBuildProjectDirectory)/ParallelTest.runsettings</RunSettingsFilePath>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)/Test.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,9 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-  </ItemGroup>
 
-  <ItemGroup>
     <ProjectReference Include="../UrlboxSDK/UrlboxSDK.csproj" />
   </ItemGroup>
 </Project>

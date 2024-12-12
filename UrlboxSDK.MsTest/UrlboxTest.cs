@@ -150,6 +150,13 @@ public class UrlTests
     }
 
     [TestMethod]
+    public void WithBaseUrl_Exception()
+    {
+        Urlbox urlbox = Urlbox.FromCredentials("test_key", "test_secret", "test_webhook", baseUrl: "TEST");
+        Assert.IsInstanceOfType(urlbox, typeof(Urlbox));
+    }
+
+    [TestMethod]
     public void GenerateRenderLink_WithAllOptions()
     {
         string output = urlbox.GenerateRenderLink(urlboxAllOptions);
@@ -298,6 +305,14 @@ public class UrlTests
     }
 
     [TestMethod]
+    public void GenerateSignedRenderLink_Succeeds()
+    {
+        UrlboxOptions options = new(url: "https://bbc.co.uk");
+        string output = urlbox.GenerateSignedRenderLink(options, "jpeg");
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
+    }
+
+    [TestMethod]
     public void GenerateRenderLink_FormatWorks()
     {
         UrlboxOptions options = new(url: "https://bbc.co.uk");
@@ -338,6 +353,26 @@ public class UrlTests
         string output = renderLinkFactory.GenerateRenderLink(Urlbox.BASE_URL, options);
 
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/855d8a6d2d3a1ec3879860fac320005feb3df0bc/png?full_page=true&url=https%3A%2F%2Furlbox.com", output);
+    }
+
+    [TestMethod]
+    public void GeneratePdfUrl_succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        string output = urlbox.GeneratePDFUrl(options);
+
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/1322f8355419c03be28cfc18191d647a055bc73c/pdf?url=https%3A%2F%2Furlbox.com", output);
+    }
+
+    [TestMethod]
+    public void GeneratePngUrl_succeeds()
+    {
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        string output = urlbox.GeneratePNGUrl(options);
+
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/1322f8355419c03be28cfc18191d647a055bc73c/png?url=https%3A%2F%2Furlbox.com", output);
     }
 
     [TestMethod]
@@ -785,6 +820,174 @@ public class UrlTests
     }
 
     [TestMethod]
+    public async Task TakeFullPage_Succeeds()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.png"",
+            ""size"": 123456
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
+
+        AsyncUrlboxResponse result = await urlbox.TakeFullPageScreenshot(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("abc123", result.RenderId);
+        Assert.AreEqual("https://example.com/screenshot.png", result.RenderUrl);
+        Assert.AreEqual(123456, result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeMobile_Succeeds()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.png"",
+            ""size"": 123456
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
+
+        AsyncUrlboxResponse result = await urlbox.TakeMobileScreenshot(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("abc123", result.RenderId);
+        Assert.AreEqual("https://example.com/screenshot.png", result.RenderUrl);
+        Assert.AreEqual(123456, result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakeMp4_Succeeds()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.mp4"",
+            ""size"": 123456
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        AsyncUrlboxResponse result = await urlbox.TakeMp4(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("abc123", result.RenderId);
+        Assert.AreEqual("https://example.com/screenshot.mp4", result.RenderUrl);
+        Assert.AreEqual(123456, result.Size);
+    }
+
+    [TestMethod]
+    public async Task TakePdf_Succeeds()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.pdf"",
+            ""size"": 123456
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        AsyncUrlboxResponse result = await urlbox.TakePdf(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("abc123", result.RenderId);
+        Assert.AreEqual("https://example.com/screenshot.pdf", result.RenderUrl);
+        Assert.AreEqual(123456, result.Size);
+    }
+
+    [TestMethod]
     public async Task TakeMetadata_Succeeds()
     {
         string initialResponse = @"
@@ -892,7 +1095,28 @@ public class UrlTests
     }
 
     [TestMethod]
-    public async Task TestDownloadToFile_succeeds()
+    public async Task DownloadToFile_succeeds_overload()
+    {
+        string urlboxUrl = "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Furlbox.com";
+
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
+        string filename = "someFileName";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            urlboxUrl,
+            (HttpStatusCode)200,
+            "somebuffer" // No response body or error headers
+        );
+
+        string result = await urlbox.DownloadToFile(options, filename, format: "png", sign: false);
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(String));
+        Assert.IsTrue(result.Length >= 0);
+    }
+
+    [TestMethod]
+    public async Task DownloadToFile_succeeds()
     {
         string urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/5ee277f206869517d00cf1951f30d48ef9c64bfe/png?url=google.com";
 
@@ -910,7 +1134,7 @@ public class UrlTests
     }
 
     [TestMethod]
-    public async Task TestDownloadToFile_fails()
+    public async Task DownloadToFile_fails()
     {
         string urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/5ee277f206869517d00cf1951f30d48ef9c64bfe/png?url=google.com";
         client.StubRequest(
@@ -931,7 +1155,7 @@ public class UrlTests
     }
 
     [TestMethod]
-    public async Task TestDownloadBase64()
+    public async Task DownloadBase64_succeeds()
     {
         string urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/59148a4e454a2c7051488defdb8b246bdea61ace/jpeg?url=bbc.co.uk";
         string mockContent = "Test Image Content";
@@ -953,10 +1177,33 @@ public class UrlTests
     }
 
     [TestMethod]
-    public async Task TestDownloadFail()
+    public async Task DownloadBase64_succeeds_overload()
+    {
+        string urlboxUrl = "https://api.urlbox.com/v1/MY_API_KEY/png?url=https%3A%2F%2Furlbox.com";
+        string mockContent = "Test Image Content";
+
+        string encodedContent = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(mockContent));
+        string expectedBase64 = "text/plain; charset=utf-8;base64," + encodedContent;
+
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
+
+        client.StubRequest(
+            HttpMethod.Get,
+            urlboxUrl,
+            HttpStatusCode.OK,
+            mockContent
+        );
+        string base64result = await urlbox.DownloadAsBase64(options, "png", sign: false);
+
+        Assert.IsNotNull(base64result);
+        Assert.AreEqual(expectedBase64, base64result, "Expected the base64 string to match the mocked content.");
+    }
+
+    [TestMethod]
+    public async Task DownloadFail()
     {
         string urlboxUrl = "https://api.urlbox.com/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/59148a4e454a2c7051488defdb8b246bdea61ac/jpeg?url=bbc.co.uk";
-        string expectedErrorMessage = "The generated token was incorrect. Please look in the docs (https://urlbox.io/docs) for how to generate your token correctly in the language you are using. TLDR: It should be the HMAC SHA256 of your query string, *signed* by your user secret, which you can find by logging into the urlbox dashboard>. Expected the error message to match the mocked content.";
+        string expectedErrorMessage = "The generated token was incorrect. Please look in the docs (https://urlbox.com/docs) for how to generate your token correctly in the language you are using. TLDR: It should be the HMAC SHA256 of your query string, *signed* by your user secret, which you can find by logging into the urlbox dashboard>. Expected the error message to match the mocked content.";
 
         client.StubRequest(
             HttpMethod.Get,
