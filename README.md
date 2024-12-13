@@ -78,7 +78,6 @@ We also have guides for how to set up uploading your final render to your own [S
 # Requirements
 
 To use this SDK, you need .NET Core 6.0 or later.
- 
 
 # Installation
 
@@ -92,11 +91,11 @@ dotnet add package urlbox.sdk.dotnet
 
 ## Start here
 
-Visiting [Urlbox](https://urlbox.com) to sign up for a trial. You'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
+Visit [Urlbox](https://urlbox.com) to sign up for a trial. You'll need to visit your [projects](https://urlbox.com/dashboard/projects) page, and gather your Publishable Key, Secret Key, and Webhook Secret key (if you intend on using webhooks).
 
-With a new account you'll only have one project, so click on it, and you should see something like this:
+With a new account you'll only have one project, so visit its configuration page, where you should see something like this:
 
-![The project settings page](./projectKeys.png)
+![The project settings page](images/projectKeys.png)
 
 ## Getting Started - `TakeScreenshot()`
 
@@ -121,10 +120,11 @@ namespace MyNamespace
 
             // Create an instance of Urlbox and the Urlbox options you'd like to use
             Urlbox urlbox = Urlbox.FromCredentials(apiKey, apiSecret, webhookSecret);
-            UrlboxOptions options = Urlbox.Options(url: "https://google.com").Build();
+            // Builder pattern for fluent options
+            UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Build();
           
-            // Take a screenshot
-            AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
+            // Take a screenshot - The default format is PNG
+            AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
             
             // This is the URL destination where you can find your finalized screenshot.
             Console.Writeline(response.RenderUrl); 
@@ -133,7 +133,7 @@ namespace MyNamespace
 }
 ```
 
-If you use the above with your own keys, it should look something like this:
+If you use the above with your own keys, it will give you back an object with a `renderUrl`. Makeing a GET to that renderUrl will give you back a PNG back like this:
 
 ![](./images/urlbox-png.png)
 
@@ -141,65 +141,69 @@ If you use the above with your own keys, it should look something like this:
 
 ## Configuring Options 
 
-Options are simply extra inputs that we use to adapt the way we take the screenshot, or adapt any of the other steps involved in the rendering process.
+Passing options are where the magic comes in. Options are simply extra inputs that we use to adapt the way we take the screenshot, or adapt any of the other steps involved in the rendering process.
 
 >**Note:** Almost all of our options are optional. However, you must at least provide a URL or some HTML in your options in order for us to know what we are rendering for you.
 
 You could, for example, change the way the request is made to your desired URL (like using a proxy server, passing in extra headers, an authorization token or some cookies), or change the way the page looks (like injecting Javascript, highlighting words, or making the background a tasteful fuchsia pink). 
 
 There are a few ways to retrieve a screenshot from Urlbox, depending on how and when you need it. You could retrieve it as a [raw file](https://urlbox.com/docs/options#response_type) (using `UrlboxOptions.ResponseType = "binary"` ), or by default, as a JSON
-object with its size and location. 
+object with its size and stored location. 
 
 There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/overview) for more information.
 
-To initialise your urlbox options, we advise using the option builder. Start by calling the static method `Urlbox.Options()` with your url or HTML.
+To initialise your urlbox options, we advise using the option builder. Start by calling the static method `Urlbox.Options()` with the URL or HTML you want to screenshot.
 
-The builder will pre-validate your options on `.Build()`, and allow for a more readable/fluent interface in your code.
+The builder will validate your options on `.Build()`, and allow for a more readable/fluent interface in your code.
 
 ### Using the options builder
 ```CS
+using UrlboxSDK;
+using UrlboxSDK.Options.Resource;
+using UrlboxSDK.Response.Resource;
+
 Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
 UrlboxOptions options = Urlbox.Options(
-                    url: "https://google.com"
+                    url: "https://urlbox.com"
                 )
-                .Format("pdf")
-                .FullPage() // Sets to true with no args
+                // Any Bool option sets to true when called with no arguments
+                .FullPage()
+                .Cookie("some=cookie", "someother=cookie")
                 .Gpu()
-                .ResponseType("json")
+                // Enumerables can be accessed/imported by their name:
+                .ResponseType(ResponseType.Json)
                 .BlockAds()
                 .HideCookieBanners()
                 .BlockUrls("https://ads.com", "https://trackers.com")
                 .Build();
 
-AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
+AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
+
+Console.WriteLine(response.Status);
+Console.WriteLine(response.RenderUrl);
 ```
 
 You can alternatively set the Urlbox options with the `new` keyword.
 
 ### Using the `new` keyword, setting during initialization
-```CS
 
-UrlboxOptions options = new(url: "https://urlbox.com/docs")
+We advise against using the `new` keyword. If you would like to anyway, here's an example:
+
+```CS
+UrlboxOptions options = new(url: "https://urlbox.com")
 {
-  Format = "png",
-  FullPage = true,
-  Gpu = true,
-  Retina = true,
-  DarkMode = true
+    Format = Format.Pdf,
+    Gpu = true,
+    Retina = true,
+    DarkMode = true
 };
 
-AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
-```
-
-### Using the `new` keyword, setting after initalization
-```CS
-UrlboxOptions options = new(url: "https://onemillionscreenshots.com/");
+// Or set them after init:
 options.FullPage = true;
 
-AsyncUrlboxResponse response = urlbox.TakeScreenshot(options);
+AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
 ```
-
 ***
 
 ## Render Links - `GenerateRenderLink()`
@@ -208,9 +212,11 @@ With Urlbox you can get a screenshot in a number of ways. It may seem a little c
 
 Take a look at the [section in our docs](https://urlbox.com/docs/api/rest-api-vs-render-links#render-links) which explains the main benefits of using a render link over our `/sync` and `/async` methods.
 
-To get a render link, run the `GenerateRenderLink(options)` method on an instance of Urlbox. Pass in a `UrlboxOptions` instance and you should receive a render link.
+To get a render link, run the `GenerateRenderLink(options)` method on an instance of Urlbox with your options.
 
-Once you have that render link, you're free to embed it anywhere you please. Making a GET request to that render link will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an `<img>` tag.
+Once you have that render link, you're free to embed it anywhere you please. Make a GET request to that render link, and it will synchronously run a render, and return a screenshot. This is particularly handy for embedding into an `<img>` tag.
+
+The method will, by default, sign the render link, for enhanced security. You can opt out of this by passing `urlbox.GenerateRenderLink(options, sign: false);`
 
 Here's an example:
 
@@ -218,12 +224,14 @@ Here's an example:
 Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
 UrlboxOptions options = Urlbox.Options(
-                    url: "https://google.com"
+                    url: "https://bbc.com"
                 )
-                .Format("pdf")
+                .Format(Format.Pdf)
                 .Build();
 
-string renderLink = urlbox.GenerateRenderLink(options);
+string renderLink = urlbox.GenerateRenderLink(options, sign: true);
+
+Console.WriteLine(renderLink);
 ```
 
 ## Sync Requests - `Render()`
@@ -232,7 +240,7 @@ We have 2 other ways to get a screenshot from Urlbox, `render/sync` and `render/
 
 Making a request to the [`/sync`](https://urlbox.com/docs/api#create-a-render-synchronously) endpoint means making a request that waits for your screenshot to be taken, and only then returns the response with your finished screenshot.
 
-You can achieve this by using the `render(options)` method within this SDK. It takes the UrlboxOptions, and makes a POST request to the `/sync` endpoint.
+You can achieve this by using the main `render(options)` method within this SDK. It takes the UrlboxOptions, and makes a POST request to the `/sync` endpoint.
 
 Here is an example of its usage:
 
@@ -240,26 +248,26 @@ Here is an example of its usage:
 Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
 
 UrlboxOptions options = Urlbox.Options(
-                    url: "https://google.com"
+                    url: "https://youtube.com"
                 )
-                .Format("pdf")
+                .Format(Format.Pdf)
                 .Build();
 
-SyncUrlboxResponse = urlbox.Render(options);
+SyncUrlboxResponse response = await urlbox.Render(options);
 ```
 
-If you haven't explicitly asked for a binary response in your options, a 200 response would look like this:
+If you haven't explicitly asked for a binary response in your options, you'll get a JSON 200 response like this:
 
 ```JSON
 {
-    # Where the final screenshot is stored -- If you setup S3, it will be your bucket in the URL.
+    # Where the final screenshot is stored -- If you setup S3, it will be your bucket name / cdn host in the URL.
     "renderUrl": "https://renders.urlbox.com/ub-temp-renders/renders/662facc1f3b58e0a6df7a98b/2024/10/23/1b4df8c9-f347-4661-9b6a-1c969beb7522.mp4",
     # The size of the file in bytes
     "size": 272154
 }
 ```
 
-If you find that the kind of screenshot you are taking requires some time, and you don't want your network connection to be open for that long, the `/async` method may be better suited to your needs. 
+If you find that the kind of screenshot you are taking requires some time, and you don't want your network connection to be open for that long, the `/async` method may be better suited to your needs. Our `TakeScreenshot()` method already implements a timeout feature with the `/async` endpoint, so you don't have to set one up yourself!
 
 ***
 
@@ -267,9 +275,7 @@ If you find that the kind of screenshot you are taking requires some time, and y
 
 Some renders can take some time to complete (think full page screenshots of infinitely scrolling sites, MP4 with retina level quality, or large full page PDF renders).
 
-If you anticipate your request being larger, then we would recommend using the [`/async`](https://urlbox.com/docs/api#create-a-render-asynchronously) endpoint, to reduce your network request time.
-
-Within the SDK you'll find the `renderAsync(options)` method. This method hits the `/async` endpoint.
+If you anticipate your request being larger, then we would recommend using the [`/async`](https://urlbox.com/docs/api#create-a-render-asynchronously) endpoint by calling the `renderAsync(options)` method.
 
 Here is an example of its usage:
 
@@ -279,10 +285,10 @@ Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_
 UrlboxOptions options = Urlbox.Options(
                     url: "https://google.com"
                 )
-                .Format("pdf")
+                .Format(Format.Pdf)
                 .Build();
 
-AsyncUrlboxResponse = urlbox.RenderAsync(options);
+AsyncUrlboxResponse = await urlbox.RenderAsync(options);
 ```
 
 This returns you:
@@ -304,7 +310,7 @@ You can find out _when_ your async render has been successfully made in two ways
 
 You can [poll](https://en.wikipedia.org/wiki/Polling_(computer_science)) the `statusUrl` endpoint that comes back from the `/async` response via an HTTP GET request. When the render has succeeded, the response from the polling endpoint will include `"status": "succeeded"`, as well as your final render URL. 
 
-You could set up your own polling mechanism to check for this and the renderUrl, though our `TakeScreenshot(options, timeout)` has the polling mechanism built in. The method accepts an optional timeout to tell it exactly when to stop polling. The method will try for 60 seconds by default.
+Use `TakeScreenshot()` to achieve this without any custom code, which accepts an optional timeout to tell the method when to stop polling. The method will try for 60 seconds by default.
 
 ### Webhooks
 
@@ -312,8 +318,76 @@ The other way to find out when your render has succeeded is to use [webhooks](ht
 
 See the [Using Webhooks](#using-webhooks) section in our popular use cases for how to use webhooks with Urlbox in your application.
 
+## Handling Errors
+
+The SDK deserializes our API errors for you into an Exception you can handle.
+
+The UrlboxException gives you some useful data. Here's an example:
+
+```CS
+Urlbox urlbox = new(apiKey, apiSecret);
+
+UrlboxOptions options = Urlbox.Options(
+        url: "https://notaresolvableurlbox.com"
+    )
+    .Build();
+
+try
+{
+    AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
+}
+catch (UrlboxException exception)
+{
+    Console.WriteLine("EXCEPTION EXAMPLE");
+    Console.WriteLine(exception.Message); // EG Invalid options, please check errors
+    Console.WriteLine(exception.Code); // EG InvalidOptions
+    Console.WriteLine(exception.Errors); // EG {"url":["error resolving URL - ENOTFOUND notresolvableurlbox.com"]}
+    Console.WriteLine(exception.RequestId); // EG 06u6e285-ahd3-45vc-ac8c-36b95e6c15b5 
+}
+```
+
+The `Code` will typically result in one of [these](https://urlbox.com/docs/api#error-codes).
 ## Dependency Injection
 
+We've set up an extension for DI. When you're configuring your DI you can run `AddUrlbox()` to define the Urlbox instance once. Here's an example ASP.net app:
+
+```CS
+using UrlboxSDK.DI.Extension;
+using UrlboxSDK;
+using UrlboxSDK.Response.Resource;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add The Urlbox service to the DI container
+builder.Services.AddUrlbox(options =>
+{
+    options.Key = "YOUR_API_KEY";
+    options.Secret = "YOUR_SECRET";
+    options.WebhookSecret = "YOUR-WEBHOOK-SECRET"; // Optional
+    options.BaseUrl = "https://api-eu.urlbox.com";    // Optional
+});
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+
+// Urlbox gets injected from service container
+app.MapGet("/screenshot", async (HttpContext context, IUrlbox urlbox) =>
+{
+    var options = Urlbox.Options(url: "https://example.com").Build();
+    try
+    {
+        AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
+        return Results.Json(new { message = "Screenshot generated!", response });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { message = "Failed to generate screenshot", error = ex.Message });
+    }
+});
+
+app.Run();
+```
 Using the `new` keyword is often considered a big ❌, because it makes unit testing more difficult, and means defining _how_ an instance of something should be made in many places and not one, violating the Dependency Inversion principle in SOLID.
 
 To avoid this, we recommend that you make your Urlbox instance a singleton, defining how the Urlbox instance should be made once, and injecting it into the classes that are needed.
