@@ -77,8 +77,8 @@ public class UrlTests
         Unique = "test",
         Ttl = 123,
         Proxy = "test",
-        Header = "test",
-        Cookie = "test",
+        Header = new string[] { "test" },
+        Cookie = new string[] { "test" },
         UserAgent = "test",
         Platform = "Linux x86_64",
         AcceptLang = "test",
@@ -96,9 +96,9 @@ public class UrlTests
         FailOn4Xx = true,
         FailOn5Xx = true,
         ScrollTo = "test",
-        Click = "test",
-        ClickAll = "test",
-        Hover = "test",
+        Click = new string[] { "test" },
+        ClickAll = new string[] { "test" },
+        Hover = new string[] { "test" },
         BgColor = "test",
         DisableJs = true,
         FullPageMode = FullPageMode.Stitch,
@@ -202,10 +202,7 @@ public class UrlTests
     [TestMethod]
     public void GenerateRenderLink_withOneCookie()
     {
-        UrlboxOptions options = new(url: "https://urlbox.com")
-        {
-            Cookie = "some=cookie"
-        };
+        UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com").Cookie("some=cookie").Build();
 
         string output = urlbox.GenerateRenderLink(options);
 
@@ -295,8 +292,8 @@ public class UrlTests
             Format = Format.Pdf,
             Selector = "",
             WaitFor = "",
-            BlockUrls = new string[] { },
-            Cookie = ""
+            BlockUrls = new string[] { "" },
+            Cookie = new string[] { "" },
         };
 
         string output = urlbox.GenerateRenderLink(options);

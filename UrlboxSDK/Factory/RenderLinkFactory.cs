@@ -9,7 +9,7 @@ namespace UrlboxSDK.Factory;
 /// <summary>
 /// A class encompassing render link generation logic.
 /// </summary>
-public sealed class RenderLinkFactory
+sealed class RenderLinkFactory
 {
     private readonly string key;
     private readonly string secret;
@@ -129,38 +129,8 @@ public sealed class RenderLinkFactory
         return value switch
         {
             string[] stringArray => string.Join(",", stringArray),
-
             Enum enumValue => enumValue.ToString().ToLower(),
-
-            // Handle StrLike:
-            // - Return its string property if present
-            // - Otherwise, return its double value as a string
-            StrLike strlike => strlike.String ?? strlike.Double?.ToString()
-                ?? throw new System.Exception("StrLike contains no value."),
-
-            // Handle SingleToArraySplit:
-            // - Return its string property if present
-            // - Otherwise, join its string array into a single comma-separated string
-            SingleToArraySplit singleToArraySplit => singleToArraySplit.String
-                ?? string.Join(",", singleToArraySplit.StringArray ?? Array.Empty<string>())
-                ?? throw new System.Exception("SingleToArraySplit contains no value."),
-
-            // Handle BooleanLike:
-            // - Return its boolean property as a lowercase string if present
-            // - Return its (1/0) value as a string if present
-            // - Return its string property if present
-            BooleanLike booleanLike => booleanLike.Bool?.ToString().ToLower()
-                ?? booleanLike.Double?.ToString()
-                ?? booleanLike.String
-                ?? throw new System.Exception("BooleanLike contains no value."),
-
-            // Handle NumLike:
-            // - Return its integer value as a string if present
-            // - Otherwise, return its string property
-            NumLike numLike => numLike.Integer?.ToString()
-                ?? numLike.String
-                ?? throw new System.Exception("NumLike contains no value."),
-
+            bool boolValue => boolValue.ToString().ToLower(),
             // Default case: Convert all other types using Convert.ToString
             _ => Convert.ToString(value)
                 ?? throw new System.Exception("Could not convert value to string.")

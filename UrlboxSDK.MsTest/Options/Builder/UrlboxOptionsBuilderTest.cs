@@ -23,7 +23,7 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual(Format.Png, options.Format);
         Assert.AreEqual(1280, options.Width);
         Assert.AreEqual(720, options.Height);
-        Assert.IsTrue(options.FullPage.HasValue && options.FullPage.Value.Bool == true);
+        Assert.IsTrue(options.FullPage.HasValue && options.FullPage == true);
         Assert.AreEqual("#main", options.Selector);
     }
 
@@ -46,22 +46,22 @@ public class UrlboxOptionsBuilderTests
             .BlockSockets()
             .Build();
 
-        Assert.IsTrue(options.BlockAds.HasValue && options.BlockAds.Value.Bool == true);
-        Assert.IsTrue(options.HideCookieBanners.HasValue && options.HideCookieBanners.Value.Bool == true);
-        Assert.IsTrue(options.ClickAccept.HasValue && options.ClickAccept.Value.Bool == true);
-        if (options.BlockUrls.HasValue)
+        Assert.IsTrue(options.BlockAds.HasValue && options.BlockAds == true);
+        Assert.IsTrue(options.HideCookieBanners.HasValue && options.HideCookieBanners == true);
+        Assert.IsTrue(options.ClickAccept.HasValue && options.ClickAccept == true);
+        if (options.BlockUrls.Length > 0)
         {
-            CollectionAssert.AreEqual(new[] { "https://ads.example.com", "https://trackers.example.com" }, options.BlockUrls.Value.StringArray);
+            CollectionAssert.AreEqual(new[] { "https://ads.example.com", "https://trackers.example.com" }, options.BlockUrls);
         }
-        Assert.IsTrue(options.BlockImages.HasValue && options.BlockImages.Value.Bool == true);
-        Assert.IsTrue(options.BlockFonts.HasValue && options.BlockFonts.Value.Bool == true);
-        Assert.IsTrue(options.BlockMedias.HasValue && options.BlockMedias.Value.Bool == true);
-        Assert.IsTrue(options.BlockStyles.HasValue && options.BlockStyles.Value.Bool == true);
-        Assert.IsTrue(options.BlockScripts.HasValue && options.BlockScripts.Value.Bool == true);
-        Assert.IsTrue(options.BlockFrames.HasValue && options.BlockFrames.Value.Bool == true);
-        Assert.IsTrue(options.BlockFetch.HasValue && options.BlockFetch.Value.Bool == true);
-        Assert.IsTrue(options.BlockXhr.HasValue && options.BlockXhr.Value.Bool == true);
-        Assert.IsTrue(options.BlockSockets.HasValue && options.BlockSockets.Value.Bool == true);
+        Assert.IsTrue(options.BlockImages.HasValue && options.BlockImages == true);
+        Assert.IsTrue(options.BlockFonts.HasValue && options.BlockFonts == true);
+        Assert.IsTrue(options.BlockMedias.HasValue && options.BlockMedias == true);
+        Assert.IsTrue(options.BlockStyles.HasValue && options.BlockStyles == true);
+        Assert.IsTrue(options.BlockScripts.HasValue && options.BlockScripts == true);
+        Assert.IsTrue(options.BlockFrames.HasValue && options.BlockFrames == true);
+        Assert.IsTrue(options.BlockFetch.HasValue && options.BlockFetch == true);
+        Assert.IsTrue(options.BlockXhr.HasValue && options.BlockXhr == true);
+        Assert.IsTrue(options.BlockSockets.HasValue && options.BlockSockets == true);
     }
 
     [TestMethod]
@@ -77,9 +77,9 @@ public class UrlboxOptionsBuilderTests
 
         Assert.AreEqual("document.body.style.backgroundColor = 'lightblue';", options.Js);
         Assert.AreEqual("body { font-size: 16px; }", options.Css);
-        Assert.IsTrue(options.DarkMode.HasValue && options.DarkMode.Value.Bool == true);
-        Assert.IsTrue(options.ReducedMotion.HasValue && options.ReducedMotion.Value.Bool == true);
-        Assert.IsTrue(options.Retina.HasValue && options.Retina.Value.Bool == true);
+        Assert.IsTrue(options.DarkMode.HasValue && options.DarkMode == true);
+        Assert.IsTrue(options.ReducedMotion.HasValue && options.ReducedMotion == true);
+        Assert.IsTrue(options.Retina.HasValue && options.Retina == true);
 
     }
 
@@ -106,7 +106,7 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual("#FFFFFF", options.ImgBg);
         Assert.AreEqual("10", options.ImgPad);
         Assert.AreEqual(90, options.Quality);
-        Assert.IsTrue(options.Transparent.HasValue && options.Transparent.Value.Bool == true);
+        Assert.IsTrue(options.Transparent.HasValue && options.Transparent == true);
         Assert.AreEqual(2000, options.MaxHeight);
         Assert.AreEqual("screenshot.png", options.Download);
     }
@@ -147,15 +147,15 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual(10, options.PdfMarginRight);
         Assert.AreEqual(10, options.PdfMarginBottom);
         Assert.AreEqual(10, options.PdfMarginLeft);
-        Assert.IsTrue(options.PdfAutoCrop.HasValue && options.PdfAutoCrop.Value.Bool == true);
+        Assert.IsTrue(options.PdfAutoCrop.HasValue && options.PdfAutoCrop == true);
         Assert.AreEqual(1.0, options.PdfScale);
         Assert.AreEqual(PdfOrientation.Portrait, options.PdfOrientation);
-        Assert.IsTrue(options.PdfBackground.HasValue && options.PdfBackground.Value.Bool == true);
-        Assert.IsTrue(options.DisableLigatures.HasValue && options.DisableLigatures.Value.Bool == true);
+        Assert.IsTrue(options.PdfBackground.HasValue && options.PdfBackground == true);
+        Assert.IsTrue(options.DisableLigatures.HasValue && options.DisableLigatures == true);
         Assert.AreEqual(Media.Print, options.Media);
-        Assert.IsTrue(options.PdfShowHeader.HasValue && options.PdfShowHeader.Value.Bool == true);
+        Assert.IsTrue(options.PdfShowHeader.HasValue && options.PdfShowHeader == true);
         Assert.AreEqual("Header content", options.PdfHeader);
-        Assert.IsTrue(options.PdfShowFooter.HasValue && options.PdfShowFooter.Value.Bool == true);
+        Assert.IsTrue(options.PdfShowFooter.HasValue && options.PdfShowFooter == true);
         Assert.AreEqual("Footer content", options.PdfFooter);
     }
 
@@ -168,7 +168,7 @@ public class UrlboxOptionsBuilderTests
             .Ttl(3600)
             .Build();
 
-        Assert.IsTrue(options.Force.HasValue && options.Force.Value.Bool == true);
+        Assert.IsTrue(options.Force.HasValue && options.Force == true);
         Assert.AreEqual("unique-id", options.Unique);
         Assert.AreEqual(3600, options.Ttl);
     }
@@ -176,10 +176,12 @@ public class UrlboxOptionsBuilderTests
     [TestMethod]
     public void RequestOptions_ShouldSetCorrectly()
     {
+        string cookieAsParam = "sessionid=abc123";
+        string[] cookie = { cookieAsParam };
         string[] expectedHeaderValue = new[] { "value1", "value2" };
         UrlboxOptions options = Urlbox.Options(url: "https://example.com")
             .Header(expectedHeaderValue)
-            .Cookie("sessionid=abc123")
+            .Cookie(cookieAsParam)
             .UserAgent("Mozilla/5.0")
             .Platform("Win32")
             .AcceptLang("en-US")
@@ -188,10 +190,10 @@ public class UrlboxOptionsBuilderTests
             .EngineVersion(EngineVersion.Latest)
             .Build();
 
-        Assert.IsInstanceOfType(options.Header, typeof(SingleToArraySplit), "Header should be a SingleToArraySplit.");
-        CollectionAssert.AreEqual(expectedHeaderValue, options.Header.Value.StringArray);
+        Assert.IsInstanceOfType(options.Header, typeof(string[]), "Header should be a string[].");
+        CollectionAssert.AreEqual(expectedHeaderValue, options.Header);
 
-        Assert.AreEqual("sessionid=abc123", options.Cookie);
+        CollectionAssert.AreEqual(cookie, options.Cookie, "Cookie should be set correctly.");
         Assert.AreEqual("Mozilla/5.0", options.UserAgent);
         Assert.AreEqual("Win32", options.Platform);
         Assert.AreEqual("en-US", options.AcceptLang);
@@ -222,10 +224,10 @@ public class UrlboxOptionsBuilderTests
         Assert.AreEqual("#content", options.WaitFor);
         Assert.AreEqual(".loading", options.WaitToLeave);
         Assert.AreEqual(5000, options.WaitTimeout);
-        Assert.IsTrue(options.FailIfSelectorMissing.HasValue && options.FailIfSelectorMissing.Value.Bool == true);
-        Assert.IsTrue(options.FailIfSelectorPresent.HasValue && options.FailIfSelectorPresent.Value.Bool == true);
-        Assert.IsTrue(options.FailOn4Xx.HasValue && options.FailOn4Xx.Value.Bool == true);
-        Assert.IsTrue(options.FailOn5Xx.HasValue && options.FailOn4Xx.Value.Bool == true);
+        Assert.IsTrue(options.FailIfSelectorMissing.HasValue && options.FailIfSelectorMissing == true);
+        Assert.IsTrue(options.FailIfSelectorPresent.HasValue && options.FailIfSelectorPresent == true);
+        Assert.IsTrue(options.FailOn4Xx.HasValue && options.FailOn4Xx == true);
+        Assert.IsTrue(options.FailOn5Xx.HasValue && options.FailOn4Xx == true);
     }
 
     [TestMethod]
@@ -701,7 +703,7 @@ public class UrlboxOptionsBuilderTests
 
         UrlboxOptions otherOptions = Urlbox.Options(url: "https://someotherurl.com").Build();
 
-        Assert.IsFalse(otherOptions.FullPage.HasValue);
+        Assert.IsNull(otherOptions.FullPage);
         Assert.AreNotSame(options, otherOptions);
     }
 }
