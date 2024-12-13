@@ -133,6 +133,10 @@ namespace MyNamespace
 }
 ```
 
+If you use the above with your own keys, it should look something like this:
+
+![](./images/urlbox-png.png)
+
 ***
 
 ## Configuring Options 
