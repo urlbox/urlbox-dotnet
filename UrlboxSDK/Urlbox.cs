@@ -154,28 +154,6 @@ public sealed partial class Urlbox : IUrlbox
     }
 
     /// <summary>
-    /// Takes a screenshot async with fullpage = true
-    /// </summary>
-    /// <param name="options"></param>
-    /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
-    public async Task<AsyncUrlboxResponse> TakeFullPageScreenshot(UrlboxOptions options)
-    {
-        options.FullPage = true;
-        return await TakeScreenshot(options);
-    }
-
-    /// <summary>
-    /// Takes a screenshot async with width at 375 to emulate a mobile viewport
-    /// </summary>
-    /// <param name="options"></param>
-    /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
-    public async Task<AsyncUrlboxResponse> TakeMobileScreenshot(UrlboxOptions options)
-    {
-        options.Width = 375;
-        return await TakeScreenshot(options);
-    }
-
-    /// <summary>
     /// Takes a screenshot async, requesting metadata about the page
     /// </summary>
     /// <param name="options"></param>
