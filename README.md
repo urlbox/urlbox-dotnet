@@ -1,5 +1,4 @@
-[![image](/Urlbox/Urlbox/urlbox-io-graphic.jpg)](https://www.urlbox.com)
-
+[![image](Images/urlbox-graphic.jpg)](https://www.urlbox.com)
 
 ***
 
@@ -101,7 +100,7 @@ Visit [Urlbox](https://urlbox.com) to sign up for a trial. You'll need to visit 
 
 With a new account you'll only have one project, so visit the project configuration page for it, where you should see something like this:
 
-![The project settings page](images/projectKeys.png)
+![The project settings page](Images/projectKeys.png)
 
 ## Getting Started - `TakeScreenshot()`
 
@@ -141,7 +140,7 @@ namespace MyNamespace
 
 If you use the above with your own keys, it will give you back an object with a `renderUrl`. Making a GET request to that renderUrl will give you back a PNG back like this:
 
-![](./images/urlbox-png.png)
+![](Images/urlbox-png.png)
 
 ***
 
@@ -451,6 +450,8 @@ SyncUrlboxResponse response = await urlbox.Render(options);
 
 This can save you renders over the month, particularly when tackling websites like tricky social media pages.
 
+If there is a failure, it will give you back a [UrlboxException](#urlboxexception). 
+
 ## Extracting Markdown/Metadata/HTML
 
 In addition to your main render format for your URL/HTML, you can additionally render and save the same screenshot as HTML, Markdown and/or Metadata in the same request.
@@ -512,7 +513,7 @@ SyncUrlboxResponse response = await urlbox.Render(options);
 
 This will take the ID selector ".octicon-mark-github", and return a screenshot that looks like this:
 
-![](./images/gh.png)
+![](Images/gh.png)
 
 ## Uploading to the cloud via an S3 bucket
 
@@ -828,6 +829,14 @@ VideoMethod - one of `Extension`, `Psr`, `Screencast`
 VideoPreset - one of `Fast`, `Faster`, `Medium`, `Slow`, `Slower`, `Superfast`, `Ultrafast`, `Veryfast`, `Veryslow`
 
 WaitUntil - one of `Domloaded`, `Loaded`, `Mostrequestsfinished`, `Requestsfinished`
+
+## Examples
+
+### [Example MP4 (Full Page)](Examples/mp4.mp4)
+### [Example HTML](Examples/html.html)
+### [Example PDF](Examples/pdf.pdf)
+### [Example PDF Highlighting](Examples/highlight.pdf)
+### [Example PNG injecting Javascript](Examples/javascript.png)
 
 ## Feedback
 
