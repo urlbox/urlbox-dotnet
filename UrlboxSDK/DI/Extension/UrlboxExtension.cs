@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using UrlboxSDK.DI.Resource;
-using UrlboxSDK;
 
 namespace UrlboxSDK.DI.Extension;
 /// <summary>

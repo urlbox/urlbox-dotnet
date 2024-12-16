@@ -11,7 +11,6 @@ public sealed class AsyncUrlboxResponse : AbstractUrlboxResponse
     public string Status { get; } // EG 'succeeded'
     public string RenderId { get; } // A UUID for the request
     public string StatusUrl { get; } // A url which you can poll to check the render's status
-
     public string? RenderUrl { get; } // only on status succeeded
     public int? Size { get; } // only on status succeeded
 
