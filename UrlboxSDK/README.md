@@ -411,12 +411,6 @@ Convert any URL or HTML into a PDF.
 ### `TakeMp4(options)`
 Turn any URL or HTML into an MP4 video. For a scrolling effect over the entire page, set `FullPage = true` to capture the full length of the content.
 
-### `TakeFullPage(options)`
-Capture a full-page screenshot of a website/HTML, scrolling through the entire page.
-
-### `TakeMobileScreenshot(options)`
-Render a screenshot that simulates a mobile device view.
-
 ### `DownloadAsBase64(options)` 
 
 Gets a render link, runs a GET to that link to render your screenshot, then downloads the screenshot file as a Base64 string.
@@ -438,6 +432,55 @@ Gets a render link for a screenshot in JPEG format.
 Gets a render link for a screenshot in PDF format.
 
 # Popular Use Cases
+
+## Taking a Full Page Screenshot
+
+Want to take a screenshot of the full page from top to bottom?
+
+For almost all formats, this is available by simply running a request with the full page option
+
+```CS
+UrlboxOptions options = Urlbox.Options(url: "https://google.com")
+  .FullPage()
+  .Build();
+
+SyncUrlboxResponse response = await urlbox.Render(options);
+```
+
+This will generate you a tall render, from the top to the bottom of the page.
+
+For video renders, there a bit more to it. To simply take a video of the website scrolling from top to bottom run a request like this:
+
+```CS
+UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
+        .Format(Format.Mp4)
+        .FullPage()
+        .VideoScroll()
+        .Build();
+
+SyncUrlboxResponse response = await urlbox.Render(options);
+```
+This will render you a full page MP4 as the example below shows:
+
+### [Example MP4 (Full Page)](../Examples/mp4.mp4)
+
+## Taking a Mobile view screenshot
+
+You may want to take a screenshot of a website/HTML as though it were being accessed from a mobile device.
+
+To achieve this you can simply change the width of the viewport to suit your needs. Here's an example for mobile:
+
+```CS
+UrlboxOptions options = Urlbox.Options(url: "https://urlbox.com")
+  .Width(375)
+  .Build();
+
+SyncUrlboxResponse response = await urlbox.Render(options);
+```
+
+Which should render you something like the below example:
+
+![](../Examples/mobile.png)
 
 ## Failing a request on 4XX-5XX
 
@@ -839,7 +882,6 @@ WaitUntil - one of `Domloaded`, `Loaded`, `Mostrequestsfinished`, `Requestsfinis
 
 ## Examples
 
-### [Example MP4 (Full Page)](../Examples/mp4.mp4)
 ### [Example HTML](../Examples/html.html)
 ### [Example PDF](../Examples/pdf.pdf)
 ### [Example PDF Highlighting](../Examples/highlight.pdf)
