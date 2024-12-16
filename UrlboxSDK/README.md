@@ -68,6 +68,12 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
       * [`AsyncUrlboxResponse`](#asyncurlboxresponse)
       * [`UrlboxException`](#urlboxexception)
     * [Available Enums](#available-enums)
+  * [Examples](#examples)
+    * [Example MP4 (Full Page)](#example-mp4--full-page-)
+    * [Example HTML](#example-html)
+    * [Example PDF](#example-pdf)
+    * [Example PDF Highlighting](#example-pdf-highlighting)
+    * [Example PNG injecting Javascript](#example-png-injecting-javascript)
   * [Feedback](#feedback)
   * [Changelog](#changelog)
 <!-- TOC -->
