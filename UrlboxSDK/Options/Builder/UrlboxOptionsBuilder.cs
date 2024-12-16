@@ -700,4 +700,10 @@ public sealed class UrlboxOptionsBuilder
         _options.Metadata = true;
         return this;
     }
+
+    public UrlboxOptionsBuilder VideoScroll()
+    {
+        _options.VideoScroll = true;
+        return this;
+    }
 }
