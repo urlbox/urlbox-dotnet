@@ -46,6 +46,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [`GenerateJPEGUrl(options)`](#generatejpegurloptions-)
     * [`GeneratePDFUrl(options)`](#generatepdfurloptions-)
 * [Popular Use Cases](#popular-use-cases)
+  * [Failing a request on 4XX-5XX](#failing-a-request-on-4xx-5xx)
   * [Extracting Markdown/Metadata/HTML](#extracting-markdownmetadatahtml)
   * [Generating a Screenshot Using a Selector](#generating-a-screenshot-using-a-selector)
   * [Uploading to the cloud via an S3 bucket](#uploading-to-the-cloud-via-an-s3-bucket)
@@ -63,6 +64,11 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [Download and File Handling Methods](#download-and-file-handling-methods)
     * [URL Generation Methods](#url-generation-methods)
     * [Status and Validation Methods](#status-and-validation-methods)
+    * [Response Classes](#response-classes)
+      * [`SyncUrlboxResponse`](#syncurlboxresponse)
+      * [`AsyncUrlboxResponse`](#asyncurlboxresponse)
+      * [`UrlboxException`](#urlboxexception)
+    * [Available Enums](#available-enums)
   * [Feedback](#feedback)
   * [Changelog](#changelog)
 <!-- TOC -->
@@ -344,6 +350,8 @@ catch (UrlboxException exception)
 
 The `Code` property will typically result in one of [these](https://urlbox.com/docs/api#error-codes). We're adding to this consistently to make you're error handling experience more streamlined.
 
+Got an unexpected 4XX or 5XX? You can ensure renders fail and don't count toward your render count for [non-2XX responses](#failing-a-request-on-4xx-5xx).
+
 ## Dependency Injection
 
 We've set up an extension for DI. When you're configuring your DI you can run `services.AddUrlbox()` to define the Urlbox instance once. Here's a simple ASP.net app:
@@ -425,6 +433,23 @@ Gets a render link for a screenshot in JPEG format.
 Gets a render link for a screenshot in PDF format.
 
 # Popular Use Cases
+
+## Failing a request on 4XX-5XX
+
+By default, Urlbox treats HTTP responses with status codes in the 400-599 range as successful renders, counting them toward your total render count.
+
+This feature enables you to capture screenshots of error responses when needed. If you prefer your render requests to fail when the response falls within this range, you can configure this behavior by passing `FailOn4xx()` and/or `FailOn5xx` as such:
+
+```CS
+UrlboxOptions options = Urlbox.Options(url: "https://google.com")
+  .FailOn4xx()
+  .FailOn5xx()
+  .Build();
+
+SyncUrlboxResponse response = await urlbox.Render(options);
+```
+
+This can save you renders over the month, particularly when tackling websites like tricky social media pages.
 
 ## Extracting Markdown/Metadata/HTML
 
