@@ -19,7 +19,7 @@ namespace UrlboxSDK;
 /// <param name="secret">Your Urlbox.com API Secret.</param>
 /// <param name="webhookSecret">Your Urlbox.com webhook Secret.</param>
 /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
-public sealed class Urlbox : IUrlbox
+public sealed partial class Urlbox : IUrlbox
 {
     private readonly string secret;
     private readonly RenderLinkFactory renderLinkFactory;
@@ -98,21 +98,6 @@ public sealed class Urlbox : IUrlbox
         return new Urlbox(apiKey, apiSecret, webhookSecret, baseUrl);
     }
 
-    /// <summary>
-    /// Gets the x-urlbox-error-message from a request
-    /// </summary>
-    /// <returns>The Error message as a string</returns>
-    private static string GetUrlboxErrorMessage(HttpResponseMessage response)
-    {
-        response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string>? values);
-
-        if (values != null)
-        {
-            return $"Request failed: {values.FirstOrDefault()}";
-        }
-        return $"Request failed: No x-urlbox-error-message header found";
-    }
-
     // PUBLIC
 
     // ** Screenshot and File Generation Methods **
@@ -144,33 +129,6 @@ public sealed class Urlbox : IUrlbox
             throw new TimeoutException("Invalid Timeout Length. Must be between 5000 (5 seconds) and 120000 (2 minutes).");
         }
         return await TakeScreenshotAsyncWithTimeout(options, timeout);
-    }
-
-    /// <summary>
-    /// Private method to avoid duplication when getting screenshot async
-    /// </summary>
-    /// <param name="options"></param>
-    /// <param name="timeout"></param>
-    /// <returns></returns>
-    /// <exception cref="TimeoutException"></exception>
-    private async Task<AsyncUrlboxResponse> TakeScreenshotAsyncWithTimeout(UrlboxOptions options, int timeout)
-    {
-        AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
-        int pollingInterval = 2000; // 2 seconds
-        DateTime startTime = DateTime.Now;
-
-        while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
-        {
-            AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.RenderId);
-
-            if (asyncUrlboxResponse.Status == "succeeded")
-            {
-                return asyncUrlboxResponse;
-            }
-
-            await Task.Delay(pollingInterval);
-        }
-        throw new TimeoutException("The screenshot request timed out.");
     }
 
     /// <summary>
@@ -490,6 +448,103 @@ public sealed class Urlbox : IUrlbox
     }
 
     // PRIVATE
+
+    /// <summary>
+    /// Private method to avoid duplication when getting screenshot async
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
+    /// <exception cref="TimeoutException"></exception>
+    private async Task<AsyncUrlboxResponse> TakeScreenshotAsyncWithTimeout(UrlboxOptions options, int timeout)
+    {
+        AsyncUrlboxResponse asyncResponse = await RenderAsync(options);
+        int pollingInterval = 2000; // 2 seconds
+        DateTime startTime = DateTime.Now;
+
+        while ((DateTime.Now - startTime).TotalMilliseconds < timeout)
+        {
+            AsyncUrlboxResponse asyncUrlboxResponse = await GetStatus(asyncResponse.RenderId);
+
+            if (asyncUrlboxResponse.Status == "succeeded")
+            {
+                return asyncUrlboxResponse;
+            }
+
+            await Task.Delay(pollingInterval);
+        }
+        throw new TimeoutException("The screenshot request timed out.");
+    }
+
+    /// <summary>
+    /// Gets the x-urlbox-error-message from a request
+    /// </summary>
+    /// <returns>The Error message as a string</returns>
+    private static string GetUrlboxErrorMessage(HttpResponseMessage response)
+    {
+        response.Headers.TryGetValues("x-urlbox-error-message", out IEnumerable<string>? values);
+
+        if (values != null)
+        {
+            return $"Request failed: {values.FirstOrDefault()}";
+        }
+        return $"Request failed: No x-urlbox-error-message header found";
+    }
+
+    /// <summary>
+    /// Makes an HTTP POST request to the Urlbox API endpoint and returns the response as a <see cref="UrlboxResponse"/> object.
+    /// </summary>
+    /// <param name="endpoint">The Urlbox API endpoint to send the request to. Must be either /render/sync or /render/async.</param>
+    /// <param name="options">The <see cref="UrlboxOptions"/> object containing the configuration options for the API request.</param>
+    /// <returns>A <see cref="AbstractUrlboxResponse"/> object containing the result of the API call, which includes the rendered URL and additional data.</returns>
+    /// <exception cref="ArgumentException">Thrown when an invalid endpoint is provided or when the request fails with a non-successful response code.</exception>
+    /// <remarks>
+    /// The method first validates the endpoint, then constructs the request with the provided options, serializing them to JSON using the snake_case naming policy. 
+    /// The request is authenticated via a Bearer token, and the response is deserialized from camelCase to PascalCase to fit C# conventions.
+    /// </remarks>
+    private async Task<AbstractUrlboxResponse> MakeUrlboxPostRequest(string endpoint, UrlboxOptions options)
+    {
+        if (endpoint != SYNC_ENDPOINT && endpoint != ASYNC_ENDPOINT)
+        {
+            throw new ArgumentException("Endpoint must be one of /render/sync or /render/async.");
+        }
+        string url = baseUrl + endpoint;
+
+        // UrlboxOptions uses it's own custom serialiser
+        string optionsAsJson = Serialize.ToJson(options);
+
+        HttpRequestMessage request = new(HttpMethod.Post, url)
+        {
+            Content = new StringContent(optionsAsJson, Encoding.UTF8, "application/json")
+        };
+
+        request.Headers.Add("Authorization", $"Bearer {secret}");
+        JsonSerializerOptions deserializerOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+        };
+
+        HttpResponseMessage response = await httpClient.SendAsync(request);
+
+        string responseData = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            return endpoint switch
+            {
+                SYNC_ENDPOINT => JsonSerializer.Deserialize<SyncUrlboxResponse>(responseData, deserializerOptions)
+                    ?? throw new System.Exception("Could not deserialize response from Urlbox API."),
+                ASYNC_ENDPOINT => JsonSerializer.Deserialize<AsyncUrlboxResponse>(responseData, deserializerOptions)
+                    ?? throw new System.Exception("Could not deserialize response from Urlbox API."),
+                _ => throw new ArgumentException("Invalid endpoint."),
+            };
+        }
+        else
+        {
+            throw UrlboxException.FromResponse(responseData, deserializerOptions);
+        }
+    }
 
     /// <summary>
     /// Makes an HTTP POST request to the Urlbox API endpoint and returns the response as a <see cref="UrlboxResponse"/> object.
