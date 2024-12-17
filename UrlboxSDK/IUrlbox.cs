@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using UrlboxSDK.Metadata.Resource;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Response.Resource;
 using UrlboxSDK.Webhook.Resource;
@@ -12,9 +14,18 @@ public interface IUrlbox
     Task<AsyncUrlboxResponse> TakeScreenshot(UrlboxOptions options, int timeout);
     Task<AsyncUrlboxResponse> TakePdf(UrlboxOptions options);
     Task<AsyncUrlboxResponse> TakeMp4(UrlboxOptions options);
-    Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options);
     Task<SyncUrlboxResponse> Render(UrlboxOptions options);
+    Task<SyncUrlboxResponse> Render(IDictionary<string, object> options);
     Task<AsyncUrlboxResponse> RenderAsync(UrlboxOptions options);
+    Task<AsyncUrlboxResponse> RenderAsync(IDictionary<string, object> options);
+    Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options);
+
+    // Extraction Methods
+
+    Task<UrlboxMetadata> ExtractMetadata(UrlboxOptions options);
+    Task<string> ExtractMarkdown(UrlboxOptions options);
+    Task<string> ExtractHtml(UrlboxOptions options);
+    Task<string> ExtractMhtml(UrlboxOptions options);
 
     // Download and File Handling Methods
     Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = true);

@@ -10,6 +10,8 @@ using UrlboxSDK.Webhook.Resource;
 using UrlboxSDK.Webhook.Validator;
 using UrlboxSDK.Response.Resource;
 using System.Diagnostics.CodeAnalysis;
+using UrlboxSDK.Metadata.Resource;
+using System.Reflection;
 
 namespace UrlboxSDK;
 /// <summary>
@@ -154,17 +156,6 @@ public sealed partial class Urlbox : IUrlbox
     }
 
     /// <summary>
-    /// Takes a screenshot async, requesting metadata about the page
-    /// </summary>
-    /// <param name="options"></param>
-    /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
-    public async Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options)
-    {
-        options.Metadata = true;
-        return await TakeScreenshot(options);
-    }
-
-    /// <summary>
     /// Sends a synchronous render request to the Urlbox API and returns the rendered screenshot url and size.
     /// </summary>
     /// <param name="options">An instance of <see cref="UrlboxOptions"/> that contains the options for the render request.</param>
@@ -240,6 +231,90 @@ public sealed partial class Urlbox : IUrlbox
             AsyncUrlboxResponse asyncResponse => asyncResponse,
             _ => throw new System.Exception("Response expected from .Render was one of AsyncUrlboxResponse."),
         };
+    }
+
+    /// <summary>
+    /// Takes a screenshot async, requesting metadata about the page aside from the main render
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns > A <see cref="AsyncUrlboxResponse"></returns>
+    public async Task<AsyncUrlboxResponse> TakeScreenshotWithMetadata(UrlboxOptions options)
+    {
+        options.Metadata = true;
+        return await TakeScreenshot(options);
+    }
+
+    // ** Extraction Methods **
+
+    /// <summary>
+    /// Takes a screenshot async, extracting only the metadata about the page, rather than the render itself.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns > A <see cref="UrlboxMetadata"></returns>
+
+    public async Task<UrlboxMetadata> ExtractMetadata(UrlboxOptions options)
+    {
+        options.Metadata = true;
+        AsyncUrlboxResponse response = await TakeScreenshot(options);
+        if (response.Metadata == null)
+        {
+            throw new System.Exception("Could not extract metadata from response.");
+        }
+        return response.Metadata;
+    }
+
+    /// <summary>
+    /// Takes a screenshot async, extracting only the markdown and returning it as a string
+    /// </summary>
+    /// <param name="options"></param>
+    public async Task<string> ExtractMarkdown(UrlboxOptions options)
+    {
+        options.Format = Format.Md;
+        AsyncUrlboxResponse response = await TakeScreenshot(options);
+        if (response == null || response.RenderUrl == null)
+        {
+            throw new System.Exception("Could not extract markdown from result, no render URL.");
+        }
+        return await Download(
+            response.RenderUrl,
+            async result => await result.Content.ReadAsStringAsync()
+        );
+    }
+
+    /// <summary>
+    /// Takes a screenshot async, extracting only the HTML and returning it as a string
+    /// </summary>
+    /// <param name="options"></param>
+    public async Task<string> ExtractHtml(UrlboxOptions options)
+    {
+        options.Format = Format.Html;
+        AsyncUrlboxResponse response = await TakeScreenshot(options);
+        if (response == null || response.RenderUrl == null)
+        {
+            throw new System.Exception("Could not extract HTML from result, no render URL.");
+        }
+        return await Download(
+            response.RenderUrl,
+            async result => await result.Content.ReadAsStringAsync()
+        );
+    }
+
+    /// <summary>
+    /// Takes a screenshot async, extracting only the MHTML and returning it as a string
+    /// </summary>
+    /// <param name="options"></param>
+    public async Task<string> ExtractMhtml(UrlboxOptions options)
+    {
+        options.Format = Format.Html;
+        AsyncUrlboxResponse response = await TakeScreenshot(options);
+        if (response == null || response.RenderUrl == null)
+        {
+            throw new System.Exception("Could not extract MHTML from result, no render URL.");
+        }
+        return await Download(
+            response.RenderUrl,
+            async result => await result.Content.ReadAsStringAsync()
+        );
     }
 
     // ** Download and File Handling Methods **
