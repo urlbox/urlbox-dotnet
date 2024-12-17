@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UrlboxSDK.Options.Resource;
 using UrlboxSDK.Response.Resource;
+using UrlboxSDK.Metadata.Resource;
 using UrlboxSDK.Factory;
 using System.Net.Http;
 using System.Net;
 using System.Collections.Generic;
 using UrlboxSDK.Exception;
 using UrlboxSDK.MsTest.Utils;
+using System.Reflection;
 
 namespace UrlboxSDK.MsTest;
 
@@ -1135,5 +1137,391 @@ public class UrlTests
 
         Assert.IsNotNull(exception);
         Assert.AreEqual("Request failed: " + expectedErrorMessage, exception.Message, "Expected the error message to match the mocked content.");
+    }
+
+    [TestMethod]
+    public async Task ExtractMetadata()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.png"",
+            ""size"": 123456,
+            ""metadata"": {
+                ""urlRequested"": ""https://urlbox.com"",
+                ""url"": ""https://urlbox.com"",
+                ""urlResolved"": ""https://example.com"",
+                ""title"": ""Example Title""
+            }
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        UrlboxMetadata result = await urlbox.ExtractMetadata(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("https://urlbox.com", result.UrlRequested);
+        Assert.AreEqual("https://example.com", result.UrlResolved);
+        Assert.AreEqual("Example Title", result.Title);
+    }
+
+    [TestMethod]
+    public async Task ExtractMetadata_Throws()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://example.com/status""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://example.com/screenshot.png"",
+            ""size"": 123456
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMetadata(options));
+    }
+
+    [TestMethod]
+    public async Task ExtractMarkdown()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://renders.urlbox.com/screenshot.md""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string base64Md = "text/markdown; charset=utf-8;base64,W0Fib3V0XVsxXVtTdG9yZV1bMl0KCltHbWFpbF1bM10KCltJbWFnZXNdWzRdCgpbXVs1XQoKW1NpZ24gaW5dWzZdCgpbU2Vhc29uYWwgSG9saWRheXMgMjAyNF0KCiAgCgpDaG9vc2Ugd2hhdCB5b3XigJlyZSBnaXZpbmcgZmVlZGJhY2sgb24KCi0gICBbXQogICAgCiAgICBbXVtdCiAgICAKICAgIFNlZSBtb3JlCiAgICAKICAgIERlbGV0ZQogICAgCi0gICBbXQogICAgCiAgICBbXVtdCiAgICAKLSAgIERlbGV0ZQogICAgCgpbXQoKW11bXQoKIAoKUmVwb3J0IGluYXBwcm9wcmlhdGUgcHJlZGljdGlvbnMKCiAKCkknbSBGZWVsaW5nIEN1cmlvdXMKCkknbSBGZWVsaW5nIEh1bmdyeQoKSSdtIEZlZWxpbmcgQWR2ZW50dXJvdXMKCkknbSBGZWVsaW5nIFBsYXlmdWwKCkknbSBGZWVsaW5nIFN0ZWxsYXIKCkknbSBGZWVsaW5nIERvb2RsZXkKCkknbSBGZWVsaW5nIFRyZW5keQoKSSdtIEZlZWxpbmcgQXJ0aXN0aWMKCkknbSBGZWVsaW5nIEZ1bm55CgpDYW4ndCBhZGQuIFVzZSBhIFBERiBGaWxlIHVuZGVyIDIwME1CIHRvIGFzayBhIHF1ZXN0aW9uLgoKICAKCltBZHZlcnRpc2luZ11bN11bQnVzaW5lc3NdWzhdIFtIb3cgU2VhcmNoIHdvcmtzXVs5XQoKW1tnb2xYS2hNczVYcWEweFUxbHlvYTJmWEZ5UU9zREczOHFzTHk0VGFWK3NGaXNsb3Z5aFB6TEpKckJ1NmVRT3RwVzBMamJKa3pUdVRETFJWTkthM3V4SkkrVmRpUnFYU2V1NkdXK1F4aTI5ZUxJaThIN0VzWXJUNDJCRCttUXROTzVKTWpSdUM0bFNZOFY0aHNMWDBlZ0dpanZVU0VQOUFieWxFc09rZUNnV0FBQUFBRWxGVGtTdVFtQ0NdT3VyIHRoaXJkIGRlY2FkZSBvZiBjbGltYXRlIGFjdGlvbjogam9pbiB1c11bMTBdCgpbUHJpdmFjeV1bMTFdW1Rlcm1zXVsxMl0KClNldHRpbmdzCgpbU2VhcmNoIHNldHRpbmdzXVsxM10KCltBZHZhbmNlZCBzZWFyY2hdWzE0XQoKW1lvdXIgZGF0YSBpbiBTZWFyY2hdWzE1XQoKW1NlYXJjaCBoaXN0b3J5XVsxNl0KCltTZWFyY2ggaGVscF1bMTddCgpTZW5kIGZlZWRiYWNrCgpEYXJrIHRoZW1lOiBPZmYKCkdvb2dsZSBhcHBzCgpbMV06IGh0dHBzOi8vYWJvdXQuZ29vZ2xlLz9mZz0xJnV0bV9zb3VyY2U9Z29vZ2xlLVVTJnV0bV9tZWRpdW09cmVmZXJyYWwmdXRtX2NhbXBhaWduPWhwLWhlYWRlcgpbMl06IGh0dHBzOi8vc3RvcmUuZ29vZ2xlLmNvbS9VUz91dG1fc291cmNlPWhwX2hlYWRlciZ1dG1fbWVkaXVtPWdvb2dsZV9vb28mdXRtX2NhbXBhaWduPUdTMTAwMDQyJmhsPWVuLVVTClszXTogaHR0cHM6Ly9tYWlsLmdvb2dsZS5jb20vbWFpbC8mb2dibApbNF06IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vaW1naHA/aGw9ZW4mb2dibApbNV06IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vaW50bC9lbi9hYm91dC9wcm9kdWN0cwpbNl06IGh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbS9TZXJ2aWNlTG9naW4/aGw9ZW4mcGFzc2l2ZT10cnVlJmNvbnRpbnVlPWh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vJmVjPUdBWkFtZ1EKWzddOiBodHRwczovL3d3dy5nb29nbGUuY29tL2ludGwvZW5fdXMvYWRzLz9zdWJpZD13dy13dy1ldC1nLWF3YS1hLWdfaHBhZm9vdDFfMSFvMiZ1dG1fc291cmNlPWdvb2dsZS5jb20mdXRtX21lZGl1bT1yZWZlcnJhbCZ1dG1fY2FtcGFpZ249Z29vZ2xlX2hwYWZvb3RlciZmZz0xCls4XTogaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9zZXJ2aWNlcy8/c3ViaWQ9d3ctd3ctZXQtZy1hd2EtYS1nX2hwYmZvb3QxXzEhbzImdXRtX3NvdXJjZT1nb29nbGUuY29tJnV0bV9tZWRpdW09cmVmZXJyYWwmdXRtX2NhbXBhaWduPWdvb2dsZV9ocGJmb290ZXImZmc9MQpbOV06IGh0dHBzOi8vZ29vZ2xlLmNvbS9zZWFyY2gvaG93c2VhcmNod29ya3MvP2ZnPTEKWzEwXTogaHR0cHM6Ly9zdXN0YWluYWJpbGl0eS5nb29nbGUvP3V0bV9zb3VyY2U9Z29vZ2xlaHBmb290ZXImdXRtX21lZGl1bT1ob3VzZXByb21vcyZ1dG1fY2FtcGFpZ249Ym90dG9tLWZvb3RlciZ1dG1fY29udGVudD0KWzExXTogaHR0cHM6Ly9wb2xpY2llcy5nb29nbGUuY29tL3ByaXZhY3k/aGw9ZW4mZmc9MQpbMTJdOiBodHRwczovL3BvbGljaWVzLmdvb2dsZS5jb20vdGVybXM/aGw9ZW4mZmc9MQpbMTNdOiBodHRwczovL3d3dy5nb29nbGUuY29tL3ByZWZlcmVuY2VzP2hsPWVuJmZnPTEKWzE0XTogL2FkdmFuY2VkX3NlYXJjaD9obD1lbiZmZz0xClsxNV06IC9oaXN0b3J5L3ByaXZhY3lhZHZpc29yL3NlYXJjaC91bmF1dGg/dXRtX3NvdXJjZT1nb29nbGVtZW51JmZnPTEmY2N0bGQ9Y29tClsxNl06IC9oaXN0b3J5L29wdG91dD9obD1lbiZmZz0xClsxN106IGh0dHBzOi8vc3VwcG9ydC5nb29nbGUuY29tL3dlYnNlYXJjaC8/cD13c19yZXN1bHRzX2hlbHAmaGw9ZW4mZmc9MQ==";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.md",
+            (HttpStatusCode)200,
+            base64Md
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        string result = await urlbox.ExtractMarkdown(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(base64Md, result);
+    }
+
+    [TestMethod]
+    public async Task ExtractMarkdown_result_null_throws()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string base64Md = "text/markdown; charset=utf-8;base64,W0Fib3V0XVsxXVtTdG9yZV1bMl0KCltHbWFpbF1bM10KCltJbWFnZXNdWzRdCgpbXVs1XQoKW1NpZ24gaW5dWzZdCgpbU2Vhc29uYWwgSG9saWRheXMgMjAyNF0KCiAgCgpDaG9vc2Ugd2hhdCB5b3XigJlyZSBnaXZpbmcgZmVlZGJhY2sgb24KCi0gICBbXQogICAgCiAgICBbXVtdCiAgICAKICAgIFNlZSBtb3JlCiAgICAKICAgIERlbGV0ZQogICAgCi0gICBbXQogICAgCiAgICBbXVtdCiAgICAKLSAgIERlbGV0ZQogICAgCgpbXQoKW11bXQoKIAoKUmVwb3J0IGluYXBwcm9wcmlhdGUgcHJlZGljdGlvbnMKCiAKCkknbSBGZWVsaW5nIEN1cmlvdXMKCkknbSBGZWVsaW5nIEh1bmdyeQoKSSdtIEZlZWxpbmcgQWR2ZW50dXJvdXMKCkknbSBGZWVsaW5nIFBsYXlmdWwKCkknbSBGZWVsaW5nIFN0ZWxsYXIKCkknbSBGZWVsaW5nIERvb2RsZXkKCkknbSBGZWVsaW5nIFRyZW5keQoKSSdtIEZlZWxpbmcgQXJ0aXN0aWMKCkknbSBGZWVsaW5nIEZ1bm55CgpDYW4ndCBhZGQuIFVzZSBhIFBERiBGaWxlIHVuZGVyIDIwME1CIHRvIGFzayBhIHF1ZXN0aW9uLgoKICAKCltBZHZlcnRpc2luZ11bN11bQnVzaW5lc3NdWzhdIFtIb3cgU2VhcmNoIHdvcmtzXVs5XQoKW1tnb2xYS2hNczVYcWEweFUxbHlvYTJmWEZ5UU9zREczOHFzTHk0VGFWK3NGaXNsb3Z5aFB6TEpKckJ1NmVRT3RwVzBMamJKa3pUdVRETFJWTkthM3V4SkkrVmRpUnFYU2V1NkdXK1F4aTI5ZUxJaThIN0VzWXJUNDJCRCttUXROTzVKTWpSdUM0bFNZOFY0aHNMWDBlZ0dpanZVU0VQOUFieWxFc09rZUNnV0FBQUFBRWxGVGtTdVFtQ0NdT3VyIHRoaXJkIGRlY2FkZSBvZiBjbGltYXRlIGFjdGlvbjogam9pbiB1c11bMTBdCgpbUHJpdmFjeV1bMTFdW1Rlcm1zXVsxMl0KClNldHRpbmdzCgpbU2VhcmNoIHNldHRpbmdzXVsxM10KCltBZHZhbmNlZCBzZWFyY2hdWzE0XQoKW1lvdXIgZGF0YSBpbiBTZWFyY2hdWzE1XQoKW1NlYXJjaCBoaXN0b3J5XVsxNl0KCltTZWFyY2ggaGVscF1bMTddCgpTZW5kIGZlZWRiYWNrCgpEYXJrIHRoZW1lOiBPZmYKCkdvb2dsZSBhcHBzCgpbMV06IGh0dHBzOi8vYWJvdXQuZ29vZ2xlLz9mZz0xJnV0bV9zb3VyY2U9Z29vZ2xlLVVTJnV0bV9tZWRpdW09cmVmZXJyYWwmdXRtX2NhbXBhaWduPWhwLWhlYWRlcgpbMl06IGh0dHBzOi8vc3RvcmUuZ29vZ2xlLmNvbS9VUz91dG1fc291cmNlPWhwX2hlYWRlciZ1dG1fbWVkaXVtPWdvb2dsZV9vb28mdXRtX2NhbXBhaWduPUdTMTAwMDQyJmhsPWVuLVVTClszXTogaHR0cHM6Ly9tYWlsLmdvb2dsZS5jb20vbWFpbC8mb2dibApbNF06IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vaW1naHA/aGw9ZW4mb2dibApbNV06IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vaW50bC9lbi9hYm91dC9wcm9kdWN0cwpbNl06IGh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbS9TZXJ2aWNlTG9naW4/aGw9ZW4mcGFzc2l2ZT10cnVlJmNvbnRpbnVlPWh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vJmVjPUdBWkFtZ1EKWzddOiBodHRwczovL3d3dy5nb29nbGUuY29tL2ludGwvZW5fdXMvYWRzLz9zdWJpZD13dy13dy1ldC1nLWF3YS1hLWdfaHBhZm9vdDFfMSFvMiZ1dG1fc291cmNlPWdvb2dsZS5jb20mdXRtX21lZGl1bT1yZWZlcnJhbCZ1dG1fY2FtcGFpZ249Z29vZ2xlX2hwYWZvb3RlciZmZz0xCls4XTogaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9zZXJ2aWNlcy8/c3ViaWQ9d3ctd3ctZXQtZy1hd2EtYS1nX2hwYmZvb3QxXzEhbzImdXRtX3NvdXJjZT1nb29nbGUuY29tJnV0bV9tZWRpdW09cmVmZXJyYWwmdXRtX2NhbXBhaWduPWdvb2dsZV9ocGJmb290ZXImZmc9MQpbOV06IGh0dHBzOi8vZ29vZ2xlLmNvbS9zZWFyY2gvaG93c2VhcmNod29ya3MvP2ZnPTEKWzEwXTogaHR0cHM6Ly9zdXN0YWluYWJpbGl0eS5nb29nbGUvP3V0bV9zb3VyY2U9Z29vZ2xlaHBmb290ZXImdXRtX21lZGl1bT1ob3VzZXByb21vcyZ1dG1fY2FtcGFpZ249Ym90dG9tLWZvb3RlciZ1dG1fY29udGVudD0KWzExXTogaHR0cHM6Ly9wb2xpY2llcy5nb29nbGUuY29tL3ByaXZhY3k/aGw9ZW4mZmc9MQpbMTJdOiBodHRwczovL3BvbGljaWVzLmdvb2dsZS5jb20vdGVybXM/aGw9ZW4mZmc9MQpbMTNdOiBodHRwczovL3d3dy5nb29nbGUuY29tL3ByZWZlcmVuY2VzP2hsPWVuJmZnPTEKWzE0XTogL2FkdmFuY2VkX3NlYXJjaD9obD1lbiZmZz0xClsxNV06IC9oaXN0b3J5L3ByaXZhY3lhZHZpc29yL3NlYXJjaC91bmF1dGg/dXRtX3NvdXJjZT1nb29nbGVtZW51JmZnPTEmY2N0bGQ9Y29tClsxNl06IC9oaXN0b3J5L29wdG91dD9obD1lbiZmZz0xClsxN106IGh0dHBzOi8vc3VwcG9ydC5nb29nbGUuY29tL3dlYnNlYXJjaC8/cD13c19yZXN1bHRzX2hlbHAmaGw9ZW4mZmc9MQ==";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.md",
+            (HttpStatusCode)200,
+            base64Md
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMarkdown(options));
+    }
+
+    [TestMethod]
+    public async Task ExtractHtml()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://renders.urlbox.com/screenshot.html""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string html = "<!DOCTYPE html>";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.html",
+            (HttpStatusCode)200,
+            html
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        string result = await urlbox.ExtractHtml(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(html, result);
+    }
+
+    [TestMethod]
+    public async Task ExtractHtml_throws()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string html = "<!DOCTYPE html>";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.html",
+            (HttpStatusCode)200,
+            html
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractHtml(options));
+    }
+
+    [TestMethod]
+    public async Task ExtractMhtml()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123"",
+            ""renderUrl"": ""https://renders.urlbox.com/screenshot.mhtml""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string mhtml = @"
+            MIME-Version: 1.0
+            Content-Type: multipart/related; boundary=""----=_NextPart_000_0000""
+
+            ------=_NextPart_000_0000
+            Content-Type: text/html; charset=""utf-8""
+            Content-Transfer-Encoding: quoted-printable
+
+            <html>
+            <head>
+            <title>Sample Page</title>
+            </head>
+            <body>
+            <h1>Hello, World!</h1>
+            <img src=""cid:image001.jpg@01D12345"" alt=""Sample Image"">
+            </body>
+            </html>
+
+            ------=_NextPart_000_0000
+            Content-Type: image/jpeg
+            Content-Transfer-Encoding: base64
+            Content-Location: image001.jpg@01D12345
+
+            /9j/4AAQSkZJRgABAQEAYABgAAD/2wCEABALD//2Q==
+            ------=_NextPart_000_0000--
+        ";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.mhtml",
+            (HttpStatusCode)200,
+            mhtml
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        string result = await urlbox.ExtractMhtml(options);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(mhtml, result);
+    }
+
+    [TestMethod]
+    public async Task ExtractMhtml_throws()
+    {
+        string initialResponse = @"
+        {
+            ""status"": ""created"",
+            ""renderId"": ""abc123"",
+            ""statusUrl"": ""https://urlbox.com""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Post,
+            Urlbox.BASE_URL + "/v1/render/async",
+            (HttpStatusCode)200,
+            initialResponse
+        );
+
+        string statusResponse = @"
+        {
+            ""status"": ""succeeded"",
+            ""renderId"": ""abc123""
+        }";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"{Urlbox.BASE_URL}/v1/render/abc123",
+            (HttpStatusCode)200,
+            statusResponse
+        );
+
+        string html = "<!DOCTYPE html>";
+
+        client.StubRequest(
+            HttpMethod.Get,
+            $"https://renders.urlbox.com/screenshot.html",
+            (HttpStatusCode)200,
+            html
+        );
+
+        UrlboxOptions options = new(url: "https://urlbox.com");
+
+        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMhtml(options));
     }
 }
