@@ -15,6 +15,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 #### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 ***
 
+
 # Table Of Contents
  
 <!-- TOC -->
@@ -27,6 +28,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
   * [Configuring Options](#configuring-options-)
     * [Using the options builder](#using-the-options-builder)
     * [Using the `new` keyword, setting during initialization](#using-the-new-keyword-setting-during-initialization)
+    * [What to do if an option isn't available in the builder](#what-to-do-if-an-option-isnt-available-in-the-builder)
   * [Render Links - `GenerateRenderLink()`](#render-links---generaterenderlink)
   * [Sync Requests - `Render()`](#sync-requests---render)
   * [Async Requests - `RenderAsync()`](#async-requests---renderasync)
@@ -35,16 +37,23 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
   * [Handling Errors](#handling-errors)
   * [Dependency Injection](#dependency-injection)
 * [Utility Functions](#utility-functions)
+    * [`TakeScreenshot(options)`](#takescreenshotoptions)
     * [`TakePdf(options)`](#takepdfoptions)
     * [`TakeMp4(options)`](#takemp4options)
-    * [`TakeFullPage(options)`](#takefullpageoptions)
-    * [`TakeMobileScreenshot(options)`](#takemobilescreenshotoptions)
+    * [`TakeScreenshotWithMetadata(options)`](#takescreenshotwithmetadataoptions)
+    * [`ExtractMetadata(options)`](#extractmetadataoptions)
+    * [`ExtractMarkdown(options)`](#extractmarkdownoptions)
+    * [`ExtractHtml(options)`](#extracthtmloptions)
+    * [`ExtractMhtml(options)`](#extractmhtmloptions)
     * [`DownloadAsBase64(options)`](#downloadasbase64options-)
     * [`DownloadToFile(options, filePath)`](#downloadtofileoptions-filepath-)
     * [`GeneratePNGUrl(options)`](#generatepngurloptions-)
     * [`GenerateJPEGUrl(options)`](#generatejpegurloptions-)
     * [`GeneratePDFUrl(options)`](#generatepdfurloptions-)
 * [Popular Use Cases](#popular-use-cases)
+  * [Taking a Full Page Screenshot](#taking-a-full-page-screenshot)
+    * [Example MP4 (Full Page)](#example-mp4--full-page-)
+  * [Taking a Mobile view screenshot](#taking-a-mobile-view-screenshot)
   * [Failing a request on 4XX-5XX](#failing-a-request-on-4xx-5xx)
   * [Extracting Markdown/Metadata/HTML](#extracting-markdownmetadatahtml)
   * [Generating a Screenshot Using a Selector](#generating-a-screenshot-using-a-selector)
@@ -67,9 +76,9 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
       * [`SyncUrlboxResponse`](#syncurlboxresponse)
       * [`AsyncUrlboxResponse`](#asyncurlboxresponse)
       * [`UrlboxException`](#urlboxexception)
+      * [`UrlboxMetadata`](#urlboxmetadata)
     * [Available Enums](#available-enums)
   * [Examples](#examples)
-    * [Example MP4 (Full Page)](#example-mp4--full-page-)
     * [Example HTML](#example-html)
     * [Example PDF](#example-pdf)
     * [Example PDF Highlighting](#example-pdf-highlighting)
@@ -214,6 +223,28 @@ options.FullPage = true;
 
 AsyncUrlboxResponse response = await urlbox.TakeScreenshot(options);
 ```
+
+### What to do if an option isn't available in the builder
+
+Our [latest](https://urlbox.com/docs/options#engine_version) engine is updated regularly, including new options which are released to better help you render screenshots.
+
+If you can't find an option within the builder, because our SDK isn't yet in sync with any latest changes, please do use our overloads for `render` and `renderAsync` which take an `IDictionary<string, object>` instead of a `UrlboxOptions` type.
+
+Here's an example:
+
+```CS
+IDictionary<string, object> options = new Dictionary<string, object>
+    {
+        { "click_accept", true },
+        { "url", "https://urlbox.com" }
+        { "theOption", "YouCouldntFind" }
+    };
+SyncUrlboxResponse response = await urlbox.Render(options);
+
+Console.WriteLine(response);
+```
+Please Bear in mind that this won't have the benefit of pre-validation.
+
 ***
 
 ## Render Links - `GenerateRenderLink()`
@@ -405,30 +436,43 @@ app.Run();
 
 To make capturing and rendering screenshots even simpler, we’ve created several methods for common scenarios. Use these methods to quickly generate specific types of screenshots or files based on your needs:
 
+### `TakeScreenshot(options)`
+Our simplest method to take a screenshot. Uses the `/async` Urlbox endpoint, and polls until the render is ready to reduce the time network requests stay open.
+
 ### `TakePdf(options)`
 Convert any URL or HTML into a PDF.
 
 ### `TakeMp4(options)`
 Turn any URL or HTML into an MP4 video. For a scrolling effect over the entire page, set `FullPage = true` to capture the full length of the content.
 
-### `DownloadAsBase64(options)` 
+### `TakeScreenshotWithMetadata(options)`
+Takes a screenshot of any URL or HTML, bringing back a [UrlboxMetadata](#urlboxmetadata) object too with more information about the site.
 
+### `ExtractMetadata(options)`
+Takes a screenshot of any URL or HTML, but extracts only the metadata from the render. Useful when you only need the `UrlboxMetadata` object from the render.
+
+### `ExtractMarkdown(options)`
+Takes a screenshot of any URL or HTML, downloads it and gives back the extracted markdown file as a string.
+
+### `ExtractHtml(options)`
+Takes a screenshot of any URL or HTML, downloads it and gives back the extracted HTML file as a string.
+
+### `ExtractMhtml(options)`
+Takes a screenshot of any URL or HTML, downloads it and gives back the extracted MHTML file as a string.
+
+### `DownloadAsBase64(options)` 
 Gets a render link, runs a GET to that link to render your screenshot, then downloads the screenshot file as a Base64 string.
 
 ### `DownloadToFile(options, filePath)` 
-
 Gets a render link, runs a GET to that link to render your screenshot, then downloads and stores the screenshot to the given filePath.
 
 ### `GeneratePNGUrl(options)` 
-
 Gets a render link for a screenshot in PNG format.
 
 ### `GenerateJPEGUrl(options)` 
-
 Gets a render link for a screenshot in JPEG format.
 
 ### `GeneratePDFUrl(options)` 
-
 Gets a render link for a screenshot in PDF format.
 
 # Popular Use Cases
@@ -480,7 +524,7 @@ SyncUrlboxResponse response = await urlbox.Render(options);
 
 Which should render you something like the below example:
 
-![](../Examples/mobile.png)
+![](/Examples/mobile.png)
 
 ## Failing a request on 4XX-5XX
 
@@ -841,6 +885,32 @@ Properties:
 - **`Code`** - The error code for the request. See a list [here](https://urlbox.com/docs/api#error-codes).
 - **`Errors`** - A more detailed list of errors that occurred in the request.
 
+#### `UrlboxMetadata`
+
+Properties:
+
+- **`UrlRequested`** - The original URL requested for rendering.
+- **`UrlResolved`** - The final resolved URL after any redirects.
+- **`Url`** - The canonical URL of the rendered page.
+- **`Author`** - The author of the content, if available.
+- **`Date`** - The publication date of the content, if available.
+- **`Description`** - The meta description of the page.
+- **`Image`** - The primary image of the page, if available.
+- **`Logo`** - The logo associated with the page or publisher.
+- **`Publisher`** - The name of the publisher of the content.
+- **`Title`** - The title of the page.
+- **`OgTitle`** - The Open Graph title of the page.
+- **`OgImages`** - A list of Open Graph images found on the page.
+- **`OgDescription`** - The Open Graph description of the page.
+- **`OgUrl`** - The Open Graph URL of the page.
+- **`OgType`** - The Open Graph type of the page (e.g., article, website).
+- **`OgSiteName`** - The Open Graph site name of the page.
+- **`OgLocale`** - The locale specified by Open Graph metadata.
+- **`Charset`** - The character encoding used by the page.
+- **`TwitterCard`** - The Twitter card type for the page.
+- **`TwitterSite`** - The Twitter site associated with the page.
+- **`TwitterCreator`** - The Twitter creator associated with the page.
+
 ### Available Enums
 
 There are a number of options which are one of a select few. We have made enums for these, which can be accessed directly from the UrlboxOptions namespace:
@@ -878,7 +948,6 @@ VideoMethod - one of `Extension`, `Psr`, `Screencast`
 VideoPreset - one of `Fast`, `Faster`, `Medium`, `Slow`, `Slower`, `Superfast`, `Ultrafast`, `Veryfast`, `Veryslow`
 
 WaitUntil - one of `Domloaded`, `Loaded`, `Mostrequestsfinished`, `Requestsfinished`
-
 
 ## Examples
 
