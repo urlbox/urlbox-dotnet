@@ -28,10 +28,15 @@ public abstract class AbstractUrlboxResponse
         return url;
     }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? HtmlUrl { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MhtmlUrl { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MetadataUrl { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MarkdownUrl { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public UrlboxMetadata? Metadata { get; }
 
     [JsonConstructor]
