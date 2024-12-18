@@ -23,6 +23,12 @@ namespace UrlboxSDK;
 /// <exception cref="ArgumentException">Thrown when the API key or secret is invalid.</exception>
 public sealed partial class Urlbox : IUrlbox
 {
+    private static readonly string fullVersion = Assembly.GetExecutingAssembly()
+           .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+           .InformationalVersion ?? "Unknown";
+
+    private readonly string version = fullVersion.Split('+')[0];  // Trim the commit hash if present
+
     private readonly string secret;
     private readonly RenderLinkFactory renderLinkFactory;
     private readonly UrlboxWebhookValidator? urlboxWebhookValidator;
@@ -59,6 +65,7 @@ public sealed partial class Urlbox : IUrlbox
         this.secret = secret;
         this.baseUrl = baseUrl ?? BASE_URL;
         httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"Urlbox.net/{version}");
         renderLinkFactory = new RenderLinkFactory(key, secret);
         if (!string.IsNullOrEmpty(webhookSecret))
         {
