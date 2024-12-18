@@ -1221,7 +1221,7 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://urlbox.com");
 
-        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMetadata(options));
+        await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMetadata(options));
     }
 
     [TestMethod]
@@ -1313,7 +1313,7 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://urlbox.com");
 
-        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMarkdown(options));
+        await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMarkdown(options));
     }
 
     [TestMethod]
@@ -1405,7 +1405,7 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://urlbox.com");
 
-        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractHtml(options));
+        await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractHtml(options));
     }
 
     [TestMethod]
@@ -1522,6 +1522,6 @@ public class UrlTests
 
         UrlboxOptions options = new(url: "https://urlbox.com");
 
-        Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMhtml(options));
+        await Assert.ThrowsExceptionAsync<System.Exception>(async () => await urlbox.ExtractMhtml(options));
     }
 }
