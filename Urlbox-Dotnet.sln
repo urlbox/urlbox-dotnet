@@ -1,9 +1,11 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox", "UrlboxSDK/UrlboxSDK.csproj", "{EB9CA65B-8F85-4CF9-913A-A8C75E72A926}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox", "UrlboxSDK\UrlboxSDK.csproj", "{EB9CA65B-8F85-4CF9-913A-A8C75E72A926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox.MsTest", "UrlboxSDK.MsTest/UrlboxSDK.MsTest.csproj", "{B9E8D269-174F-42C1-9569-FCA4CC8C05E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urlbox.MsTest", "UrlboxSDK.MsTest\UrlboxSDK.MsTest.csproj", "{B9E8D269-174F-42C1-9569-FCA4CC8C05E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{E7F7CC5B-F8B1-4D9E-B1DA-CABEB394AD85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +25,9 @@ Global
 		{B547F383-6112-4C6D-9651-1FA35D5FF70F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B547F383-6112-4C6D-9651-1FA35D5FF70F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B547F383-6112-4C6D-9651-1FA35D5FF70F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7F7CC5B-F8B1-4D9E-B1DA-CABEB394AD85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7F7CC5B-F8B1-4D9E-B1DA-CABEB394AD85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F7CC5B-F8B1-4D9E-B1DA-CABEB394AD85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F7CC5B-F8B1-4D9E-B1DA-CABEB394AD85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
