@@ -1,0 +1,42 @@
+name: Deploy to NuGet
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    name: Deploy to NuGet
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [6.0]
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+          cache: true
+          cache-dependency-path: "./UrlboxSDK"
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore ./UrlboxSDK
+
+      # Build the project
+      - name: Build the project
+        run: dotnet build ./UrlboxSDK --configuration Release --no-restore
+
+      # Pack the NuGet package
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./package
+
+      # Push the NuGet package to NuGet.org
+#      - name: Publish to NuGet
+#        run: dotnet nuget push "./package/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
