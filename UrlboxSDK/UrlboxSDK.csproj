@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <LangVersion>10.0</LangVersion>
     <PackageId>Urlbox.sdk.dotnet</PackageId>
     <Nullable>enable</Nullable>
