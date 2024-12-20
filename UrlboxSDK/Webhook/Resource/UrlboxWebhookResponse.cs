@@ -7,7 +7,9 @@ public sealed class UrlboxWebhookResponse
 {
     public string Event { get; }
     public string RenderId { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ErrorUrlboxResponse.UrlboxError? Error { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public SyncUrlboxResponse? Result { get; }
     public Meta Meta { get; }
 

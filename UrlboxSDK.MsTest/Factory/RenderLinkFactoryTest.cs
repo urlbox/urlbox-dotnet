@@ -46,12 +46,12 @@ namespace UrlboxSDK.MSTest.Factory
         [TestMethod]
         public void GenerateRenderLink_WithDiffFormatFormat_ShouldReturnExpectedLink()
         {
-            var options = new UrlboxOptions(url: "https://example.com");
+            var options = Urlbox.Options(url: "https://example.com").Format(Format.Jpeg).Build();
 
             string expectedQueryString = "url=https%3A%2F%2Fexample.com";
-            string expectedLink = $"{BaseUrl}/v1/{TestKey}/jpg?{expectedQueryString}";
+            string expectedLink = $"{BaseUrl}/v1/{TestKey}/jpeg?{expectedQueryString}";
 
-            string result = renderLinkFactory.GenerateRenderLink(BaseUrl, options, "jpg", sign: false);
+            string result = renderLinkFactory.GenerateRenderLink(BaseUrl, options, sign: false);
 
             Assert.AreEqual(expectedLink, result);
         }

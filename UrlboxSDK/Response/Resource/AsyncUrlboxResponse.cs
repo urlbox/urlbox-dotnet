@@ -10,8 +10,11 @@ public sealed class AsyncUrlboxResponse : AbstractUrlboxResponse
 {
     public string Status { get; } // EG 'succeeded'
     public string RenderId { get; } // A UUID for the request
-    public string StatusUrl { get; } // A url which you can poll to check the render's status
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? StatusUrl { get; } // A url which you can poll to check the render's status
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? RenderUrl { get; } // only on status succeeded
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Size { get; } // only on status succeeded
 
     [JsonConstructor]

@@ -143,8 +143,11 @@ sealed class RenderLinkFactory
     /// <param name="options"></param>
     /// <param name="format"></param>
     /// <returns>The Urlbox Render Link</returns>
-    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, string format = "png", bool sign = true)
+    public string GenerateRenderLink(string baseUrl, UrlboxOptions options, bool sign = true)
     {
+        // Either the options.Format or PNG as default
+        string format = options.Format?.ToString().ToLower() ?? "png";
+
         string queryString = ToQueryString(options);
         if (sign)
         {

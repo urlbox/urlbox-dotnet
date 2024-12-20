@@ -75,6 +75,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
     * [Response Classes](#response-classes)
       * [`SyncUrlboxResponse`](#syncurlboxresponse)
       * [`AsyncUrlboxResponse`](#asyncurlboxresponse)
+      * [`WebhookUrlboxResponse`](#webhookurlboxresponse)
       * [`UrlboxException`](#urlboxexception)
       * [`UrlboxMetadata`](#urlboxmetadata)
     * [Available Enums](#available-enums)
@@ -658,6 +659,8 @@ SyncUrlboxResponse response = await urlbox.Render(options);
 
 Webhooks are awesome. They save you time, money and headaches, and can quite equally cause just as many setting them up. Setting up a webhook with Urlbox has some optional steps, but we recommend you take them all for the most security.
 
+Please look at our example directory in the repo.
+
 ### 1. Visit your Urlbox dashboard, and get your Webhook Secret.
 
 Go to your [projects](https://urlbox.com/dashboard/projects) page, select a project (you may only have one if you're just starting out with Urlbox), and copy the webhook secret key.
@@ -672,9 +675,9 @@ Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_
 
 The most common use case for a webhook is when you need to use the `/async` endpoint to handle a larger render.
 
-If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and making your webhook URL hit that ngrok endpoint. Ngrok simply exposes a port on your machine to a UUID style domain. You can locally serve your application from that port.
+If you're developing locally, we would recommend using a service like [ngrok](https://ngrok.com/), and setting your webhook URL in the options to that ngrok endpoint. 
 
-After you've added the endpoint to your application, for example at the endpoint `webhooks/urlbox`, make a request to that endpoint like this:
+After you've added the endpoint, for example at the endpoint `/webhooks/urlbox`, make a request to that endpoint like this:
 
 ```CS
 static async Task Main()
@@ -708,48 +711,14 @@ Once you have made your request, you should see it come in as a POST request to 
 }
 ```
 
-There will also be our handy header `X-Urlbox-Signature` that looks like this: `t={timestamp},sha256={token}`.
+There will also be our header `X-Urlbox-Signature` that should have a value like this: `t={timestamp},sha256={token}`.
 
-Extract both the header and the content, and pass it into `Urlbox.VerifyWebhookSignature(header, content)`.
+Extract both the header and the content, and pass it into `Urlbox.VerifyWebhookSignature(header, content)`, which, if successful, will return you a [WebhookUrlboxResponse](#webhookurlboxresponse).
 
-Here's an example of verifying the webhook in a basic ASP.Net app:
+Please see the `Example` project in this repo which should help you get started.
 
-```CS
+---
 
-using System.Text;
-using UrlboxSDK;
-using Microsoft.AspNetCore.Mvc;
-
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-app.UseHttpsRedirection();
-
-app.MapPost("/webhook/urlbox", async (HttpContext context) =>
-{
-    using StreamReader stream = new StreamReader(context.Request.Body);
-
-    string header = context.Request.Headers["x-urlbox-signature"];
-   
-    // Create an instance of Urlbox
-    Urlbox urlbox = Urlbox.FromCredentials("YOUR_KEY", "YOUR_SECRET", "YOUR_WEBHOOK_SECRET");
-    
-    bool isVerified = urlbox.VerifyWebhookSignature(header, await stream.ReadToEndAsync());
-
-    Console.WriteLine(isVerified);
-
-    if (isVerified)
-    {
-        return "{\"message\" : \"Woohoo ! This is from Urlbox.\"}";
-    }
-    else
-    {
-        return "{\"message\" : \"Uh oh, not verified! \"}";
-    }
-});
-
-app.Run();
-
-```
 # API Reference
 
 Below is a brief description of every publicly available method our SDK provides:
@@ -876,6 +845,16 @@ Properties:
 - **`MetadataUrl`** - The URL to run a GET request to in order to access your final render as Metadata (JSON).
 - **`MarkdownUrl`** - The URL to run a GET request to in order to access your final render as Markdown.
 - **`Metadata`** - The Metadata object describing the rendered website.
+
+#### `WebhookUrlboxResponse`
+
+Properties:
+
+- **`Event`** - The event that happened to the render EG "render.succeeded"
+- **`RenderId`** - The unique ID of the render request.
+- **`Error`** - The error from Urlbox, showing the code, message and any errors
+- **`Result`** - An instance of the SyncUrlboxResponse
+- **`Meta`** - Includes the start and end times for the render
 
 #### `UrlboxException`
 

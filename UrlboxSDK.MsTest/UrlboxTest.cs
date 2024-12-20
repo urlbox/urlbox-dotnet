@@ -299,7 +299,7 @@ public class UrlTests
         };
 
         string output = urlbox.GenerateRenderLink(options);
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/png?url=https%3A%2F%2Fbbc.co.uk",
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/pdf?url=https%3A%2F%2Fbbc.co.uk",
                         output);
     }
 
@@ -307,7 +307,8 @@ public class UrlTests
     public void GenerateSignedRenderLink_Succeeds()
     {
         UrlboxOptions options = new(url: "https://bbc.co.uk");
-        string output = urlbox.GenerateSignedRenderLink(options, "jpeg");
+        options.Format = Format.Jpeg;
+        string output = urlbox.GenerateSignedRenderLink(options);
         Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
@@ -315,8 +316,9 @@ public class UrlTests
     public void GenerateRenderLink_FormatWorks()
     {
         UrlboxOptions options = new(url: "https://bbc.co.uk");
-        string output = urlbox.GenerateRenderLink(options, "jpeg");
-        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/jpeg?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
+        options.Format = Format.Avif;
+        string output = urlbox.GenerateRenderLink(options);
+        Assert.AreEqual("https://api.urlbox.com/v1/MY_API_KEY/8e00ad9a8d7c4abcd462a9b8ec041c3661f13995/avif?url=https%3A%2F%2Fbbc.co.uk", output, "Not OK!");
     }
 
     [TestMethod]
@@ -1024,7 +1026,7 @@ public class UrlTests
             "somebuffer" // No response body or error headers
         );
 
-        string result = await urlbox.DownloadToFile(options, filename, format: "png", sign: false);
+        string result = await urlbox.DownloadToFile(options, filename, sign: false);
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(String));
         Assert.IsTrue(result.Length >= 0);
@@ -1108,7 +1110,7 @@ public class UrlTests
             HttpStatusCode.OK,
             mockContent
         );
-        string base64result = await urlbox.DownloadAsBase64(options, "png", sign: false);
+        string base64result = await urlbox.DownloadAsBase64(options, sign: false);
 
         Assert.IsNotNull(base64result);
         Assert.AreEqual(expectedBase64, base64result, "Expected the base64 string to match the mocked content.");

@@ -28,16 +28,16 @@ public interface IUrlbox
     Task<string> ExtractMhtml(UrlboxOptions options);
 
     // Download and File Handling Methods
-    Task<string> DownloadAsBase64(UrlboxOptions options, string format = "png", bool sign = true);
+    Task<string> DownloadAsBase64(UrlboxOptions options, bool sign = true);
     Task<string> DownloadAsBase64(string urlboxUrl);
     Task<string> DownloadToFile(string urlboxUrl, string filename);
-    Task<string> DownloadToFile(UrlboxOptions options, string filename, string format = "png", bool sign = true);
+    Task<string> DownloadToFile(UrlboxOptions options, string filename, bool sign = true);
 
     // URL Generation Methods
     string GeneratePNGUrl(UrlboxOptions options, bool sign = true);
     string GenerateJPEGUrl(UrlboxOptions options, bool sign = true);
     string GeneratePDFUrl(UrlboxOptions options, bool sign = true);
-    string GenerateRenderLink(UrlboxOptions options, string format = "png", bool sign = true);
+    string GenerateRenderLink(UrlboxOptions options, bool sign = true);
 
     // Status and Validation Methods
     Task<AsyncUrlboxResponse> GetStatus(string statusUrl);
