@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      - iss-1
+      - release-please-test
 
 permissions:
   contents: write
