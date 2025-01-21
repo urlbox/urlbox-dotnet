@@ -13,7 +13,7 @@ jobs:
   release:
     # if: github.event.pull_request.merged == true
     name: Release Using Release Please
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         dotnet-version: [6.0]
@@ -49,7 +49,7 @@ jobs:
   #   needs: release
   #   if: ${{ needs.release.outputs.release_created == true }}
   #   name: Deploy to NuGet
-  #   runs-on: ubuntu-latest
+  #   runs-on: ubuntu-24.04
   #   strategy:
   #     matrix:
   #       dotnet-version: [6.0]
