@@ -6,8 +6,7 @@ on:
     branches:
       - master
       - iss-1
-  pull_request:
-    types: [ closed ]
+      - release-please-test
 
 permissions:
   contents: write
@@ -50,7 +49,7 @@ jobs:
   deploy:
     needs: release
     if: ${{ needs.release.outputs.release_created == true }}
-    name: Deploy to NuGet
+    name: Push to NuGet registry
     runs-on: ubuntu-24.04
     strategy:
       matrix:
