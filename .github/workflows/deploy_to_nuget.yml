@@ -42,7 +42,6 @@ jobs:
       - name: Create Release
         uses: googleapis/release-please-action@v4
         with:
-          release-type: simple
           target-branch: release-please-test
 
   # deploy:
