@@ -15,10 +15,6 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 #### Checkout [OneMillionScreenshots](https://onemillionscreenshots.com/) - A site that uses Urlbox to show over 1 million of the web's homepages!
 ***
 
-
-
-
-
 # Table Of Contents
  
 <!-- TOC -->

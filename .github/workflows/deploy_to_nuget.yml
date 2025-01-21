@@ -46,7 +46,7 @@ jobs:
       - name: Create Release
         uses: googleapis/release-please-action@v4
         with:
-          target-branch: release-please-test
+          target-branch: iss-1
 
   # deploy:
   #   needs: release
