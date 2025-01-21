@@ -36,13 +36,15 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: dotnet test --no-restore
+        run: dotnet test
     
       # https://github.com/googleapis/release-please/blob/72b0ab360c3d6635397e8b02f4d3f9f53932e23c/docs/customizing.md
       - name: Create Release
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
+          target-branch: release-please-test
+
   # deploy:
   #   needs: release
   #   if: ${{ needs.release.outputs.release_created == true }}
