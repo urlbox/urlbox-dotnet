@@ -3,7 +3,7 @@
     "tag-separator": "@",
     "commit-search-depth": 100,
     "packages": {
-      "*": {
+      ".": {
         "release-type": "simple",
         "include-component-in-tag": false,
         "include-v-in-tag": true,
