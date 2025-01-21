@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - iss-1
-      - release-please-test
 
 permissions:
   contents: write
@@ -42,13 +41,16 @@ jobs:
     
       # https://github.com/googleapis/release-please/blob/72b0ab360c3d6635397e8b02f4d3f9f53932e23c/docs/customizing.md
       - name: Create Release
+        id: create_release
         uses: googleapis/release-please-action@v4
         with:
           target-branch: release-please-test
+    outputs:
+      release_created: ${{ steps.create_release.outputs.release_created }}
 
   deploy:
     needs: release
-    if: ${{ needs.release.outputs.release_created == true }}
+    if: ${{ needs.release.outputs.release_created }}
     name: Push to NuGet registry
     runs-on: ubuntu-24.04
     strategy:
