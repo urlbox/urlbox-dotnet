@@ -47,22 +47,22 @@ jobs:
         with:
           target-branch: release-please-test
 
-  # deploy:
-  #   needs: release
-  #   if: ${{ needs.release.outputs.release_created == true }}
-  #   name: Deploy to NuGet
-  #   runs-on: ubuntu-24.04
-  #   strategy:
-  #     matrix:
-  #       dotnet-version: [6.0]
-  #   steps:
-  #     # Build the project
-  #     - name: Build the project
-  #       run: dotnet build ./UrlboxSDK --configuration Release --no-restore
+  deploy:
+    needs: release
+    if: ${{ needs.release.outputs.release_created == true }}
+    name: Deploy to NuGet
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        dotnet-version: [6.0]
+    steps:
+      # Build the project
+      - name: Build the project
+        run: dotnet build ./UrlboxSDK --configuration Release --no-restore
 
-  #     # Pack the NuGet package somewhere unique
-  #     - name: Pack NuGet package
-  #       run: dotnet pack --configuration Release --no-build --output ./package
+      # Pack the NuGet package somewhere unique
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./package
 
   #     # Push the NuGet package to NuGet.org
   #     - name: Publish to NuGet
