@@ -6,7 +6,7 @@
     <PackageId>Urlbox.sdk.dotnet</PackageId>
     <Nullable>enable</Nullable>
     <!-- x-release-please-start-version -->
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
      <!-- x-release-please-end -->
 
     <Author>Urlbox</Author>
