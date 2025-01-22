@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/urlbox/urlbox-dotnet/compare/v1.3.0...v2.0.0) (2025-01-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **iss-1:** version 2.0.0 overhaul ([#2](https://github.com/urlbox/urlbox-dotnet/issues/2))
+
+### Miscellaneous Chores
+
+* **iss-1:** version 2.0.0 overhaul ([#2](https://github.com/urlbox/urlbox-dotnet/issues/2)) ([1d641be](https://github.com/urlbox/urlbox-dotnet/commit/1d641be24dffce74edf052081cdbf1f80826af72))
+
 ## [1.3.0](https://github.com/urlbox/urlbox-dotnet/compare/v1.2.0...v1.3.0) (2025-01-21)
 
 
