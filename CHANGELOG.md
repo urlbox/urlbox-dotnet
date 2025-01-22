@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/urlbox/urlbox-dotnet/compare/v2.0.0...v2.0.1) (2025-01-22)
+
+
+### Bug Fixes
+
+* **repo:** update readme ([#30](https://github.com/urlbox/urlbox-dotnet/issues/30)) ([ab1c72d](https://github.com/urlbox/urlbox-dotnet/commit/ab1c72d390e5c4b93e0302c0dd1a556be0cbbd65))
+
 ## [2.0.0](https://github.com/urlbox/urlbox-dotnet/compare/v1.3.0...v2.0.0) (2025-01-22)
 
 
