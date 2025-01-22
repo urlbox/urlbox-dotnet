@@ -1,0 +1,17 @@
+{
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "tag-separator": "@",
+    "commit-search-depth": 100,
+    "packages": {
+      ".": {
+        "release-type": "simple",
+        "include-component-in-tag": false,
+        "include-v-in-tag": true,
+        "changelog-path": "CHANGELOG.md",
+        "extra-files": [
+          "UrlboxSDK/UrlboxSDK.csproj"
+        ]
+      }
+    }
+  }
+  
