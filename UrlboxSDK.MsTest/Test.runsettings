@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- MSTest adapter configuration -->
+  <MSTest>
+    <Parallelize>
+      <!-- Number of parallel threads to use -->
+      <Workers>4</Workers>
+      <!-- Level of parallelization: MethodLevel or ClassLevel -->
+      <Scope>MethodLevel</Scope>
+    </Parallelize>
+  </MSTest>
+</RunSettings>

@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <LangVersion>10.0</LangVersion>
+    <PackageId>Urlbox.sdk.dotnet</PackageId>
+    <Nullable>enable</Nullable>
+    <!-- x-release-please-start-version -->
+    <Version>1.3.0</Version>
+     <!-- x-release-please-end -->
+
+    <Author>Urlbox</Author>
+    <Company>Urlbox</Company>
+    <Product>urlbox-dotnet</Product>
+    <Description>Urlbox captures flawless full page automated screenshots. Get web data from the screenshot API you can depend on.</Description>
+
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <RepositoryUrl>https://github.com/urlbox/urlbox-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://urlbox.com</PackageProjectUrl>
+
+    <PackageIcon>icon-128x128.png</PackageIcon>
+    <PackageTags>screenshot, urlbox, automation, api, puppeteers, screenshots, playwright, url to png </PackageTags>
+    <ReleaseNotes>Patch README.md with clarified code comments</ReleaseNotes>
+    <Copyright>© 2024 Urlbox</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="icon-128x128.png">
+      <Pack>true</Pack>
+      <PackagePath>./</PackagePath>
+    </None>
+
+    <None Update="LICENSE.txt">
+      <Pack>true</Pack>
+      <PackagePath>./</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>true</Pack>
+      <!-- Unfortunately you can't access above root for this, and GH readmes need to be in root. -->
+      <!-- So we need a duplicate if we want to keep readmes simple... -->
+      <PackagePath>./README.md</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UrlboxSDK.MsTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+
+</Project>

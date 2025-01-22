@@ -1,0 +1,28 @@
+name: run tests
+
+on:
+  push:
+
+jobs:
+  test:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [6.0]
+    steps:
+      - name: Checkout urlbox-dotnet
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+          cache: true
+          cache-dependency-path: "./UrlboxSDK"
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Run tests
+        run: dotnet test

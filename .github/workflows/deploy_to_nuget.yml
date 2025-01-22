@@ -1,0 +1,69 @@
+name: Deploy to NuGet
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release Using Release Please
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        dotnet-version: [6.0]
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+          cache: true
+          cache-dependency-path: "./UrlboxSDK"
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore ./UrlboxSDK
+
+      # Run tests
+      - name: Run tests
+        run: dotnet test
+    
+      # https://github.com/googleapis/release-please/blob/72b0ab360c3d6635397e8b02f4d3f9f53932e23c/docs/customizing.md
+      - name: Create Release
+        id: create_release
+        uses: googleapis/release-please-action@v4
+        with:
+          target-branch: release-please-test
+    outputs:
+      release_created: ${{ steps.create_release.outputs.release_created }}
+
+  deploy:
+    needs: release
+    if: ${{ needs.release.outputs.release_created }}
+    name: Push to NuGet registry
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        dotnet-version: [6.0]
+    steps:
+      # Build the project
+      - name: Build the project
+        run: dotnet build ./UrlboxSDK --configuration Release --no-restore
+
+      # Pack the NuGet package somewhere unique
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./package
+
+      # Push the NuGet package to NuGet.org
+      - name: Publish to NuGet
+        run: dotnet nuget push "./package/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
