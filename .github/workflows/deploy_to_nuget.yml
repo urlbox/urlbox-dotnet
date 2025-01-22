@@ -41,8 +41,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: googleapis/release-please-action@v4
-        with:
-          target-branch: release-please-test
+
     outputs:
       release_created: ${{ steps.create_release.outputs.release_created }}
 
