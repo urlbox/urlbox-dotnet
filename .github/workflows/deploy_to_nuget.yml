@@ -1,11 +1,9 @@
 name: Deploy to NuGet
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
-      - release-please-test
 
 permissions:
   contents: write
@@ -65,7 +63,7 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --no-build --output ./package
 
-  #     # Push the NuGet package to NuGet.org
-  #     - name: Publish to NuGet
-  #       run: dotnet nuget push "./package/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      # Push the NuGet package to NuGet.org
+      - name: Publish to NuGet
+        run: dotnet nuget push "./package/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
