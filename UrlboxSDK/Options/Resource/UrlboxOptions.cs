@@ -40,6 +40,10 @@ namespace UrlboxSDK.Options.Resource
         public double? Accuracy { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("add_cors")]
+        public bool? AddCors { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("allow_coin")]
         public bool? AllowCoin { get; set; }
 
@@ -387,6 +391,14 @@ namespace UrlboxSDK.Options.Resource
         [JsonPropertyName("fail_if_selector_present")]
         public bool? FailIfSelectorPresent { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("fail_on")]
+        public FailOn? FailOn { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("fail_on_3xx")]
+        public bool? FailOn3Xx { get; set; }
+
         /// <summary>
         /// If `fail_on_4xx=true` and the requested URL returns a status code between 400 and 499,
         /// Urlbox will fail the request with error code 400 and the message: `Failed to render.
@@ -427,6 +439,10 @@ namespace UrlboxSDK.Options.Resource
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("force")]
         public bool? Force { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("force_dpr")]
+        public bool? ForceDpr { get; set; }
 
         /// <summary>
         /// The output format of the resulting render.
@@ -585,6 +601,14 @@ namespace UrlboxSDK.Options.Resource
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("html")]
         public string Html { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("https_upgrade")]
+        public bool? HttpsUpgrade { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("ignore_load_errors")]
+        public bool? IgnoreLoadErrors { get; set; }
 
         /// <summary>
         /// Background colour to use when [img_fit](#img_fit) is `contain`, or [`img_pad`](#img_pad)
@@ -1075,6 +1099,14 @@ namespace UrlboxSDK.Options.Resource
         public S3Storageclass? S3Storageclass { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("save_clicks")]
+        public bool? SaveClicks { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("save_cookies")]
+        public bool? SaveCookies { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("save_html")]
         public bool? SaveHtml { get; set; }
 
@@ -1193,6 +1225,14 @@ namespace UrlboxSDK.Options.Resource
         [JsonPropertyName("thumb_width")]
         public long? ThumbWidth { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("thumbnails")]
+        public Thumbnail[] Thumbnails { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("thumbnails_object")]
+        public bool? ThumbnailsObject { get; set; }
+
         /// <summary>
         /// The amount of time to wait for the requested URL to load, in milliseconds. The timeout
         /// value needs to be between 5,000 and 100,000 milliseconds. The default is 30000 or 30
@@ -1248,12 +1288,20 @@ namespace UrlboxSDK.Options.Resource
         public string Url { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("urlbox_proxy")]
+        public string UrlboxProxy { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_chrome")]
         public bool? UseChrome { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("use_chromium")]
         public bool? UseChromium { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("use_proxy")]
+        public bool? UseProxy { get; set; }
 
         /// <summary>
         /// Save the render directly to the S3 (or S3-Compatible) bucket configured on your account.
@@ -1472,6 +1520,53 @@ namespace UrlboxSDK.Options.Resource
         public string Wrap { get; set; }
     }
 
+    public partial class Thumbnail
+    {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("bg")]
+        public string Bg { get; set; }
+
+        /// <summary>
+        /// ImgFit
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("fit")]
+        public ImgFit? Fit { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("height")]
+        public Height? Height { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("key")]
+        [JsonConverter(typeof(MinMaxLengthCheckConverter))]
+        public string Key { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("position")]
+        public Position? Position { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("preset")]
+        public Preset? Preset { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("presigned_url")]
+        public string PresignedUrl { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("size")]
+        public Height? Size { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("suffix")]
+        public string Suffix { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("width")]
+        public Height? Width { get; set; }
+    }
+
     public enum ColorProfile { Colorspingamma24, Default, Dp3, Hdr10, Rec2020, Scrgblinear, Srgb };
 
     /// <summary>
@@ -1479,7 +1574,7 @@ namespace UrlboxSDK.Options.Resource
     /// be useful for testing how a page will render in the latest version of our rendering
     /// engine.
     /// </summary>
-    public enum EngineVersion { Latest, Lts, Stable };
+    public enum EngineVersion { Experimental, Latest, Lts, Stable };
 
     /// <summary>
     /// The output format of the resulting render.
@@ -1496,6 +1591,8 @@ namespace UrlboxSDK.Options.Resource
     /// <summary>
     /// How the screenshot should be resized or cropped to fit the dimensions when using
     /// [`thumb_width`](#thumb_width) and/or [`thumb_height`](#thumb_height) options
+    ///
+    /// ImgFit
     /// </summary>
     public enum ImgFit { Contain, Cover, Fill, Inside, Outside };
 
@@ -1538,6 +1635,10 @@ namespace UrlboxSDK.Options.Resource
     /// </summary>
     public enum S3Storageclass { DeepArchive, Glacier, IntelligentTiering, OnezoneIa, Outposts, ReducedRedundancy, S3StorageclassDeepArchive, S3StorageclassGlacier, S3StorageclassIntelligentTiering, S3StorageclassOnezoneIa, S3StorageclassOutposts, S3StorageclassReducedRedundancy, S3StorageclassStandard, S3StorageclassStandardIa, Standard, StandardIa };
 
+    public enum Position { Bottom, Center, Left, Right, Top };
+
+    public enum Preset { Lg, Md, Sm, The12, The14, The2Xl, The34, The3Xl, The4Xl, The5Xl, Xl, Xs };
+
     public enum VideoCodec { H264, Vp8, Vp9 };
 
     public enum VideoEase { BackIn, BackInout, BackOut, BounceIn, BounceInout, BounceOut, CircularIn, CircularInout, CircularOut, CubicIn, CubicInout, CubicOut, ElasticIn, ElasticInout, ElasticOut, ExponentialIn, ExponentialInout, ExponentialOut, LinearNone, QuadraticIn, QuadraticInout, QuadraticOut, QuarticIn, QuarticInout, QuarticOut, QuinticIn, QuinticInout, QuinticOut, SinusoidalIn, SinusoidalInout, SinusoidalOut };
@@ -1554,6 +1655,24 @@ namespace UrlboxSDK.Options.Resource
     /// network connections for at least 500 ms) * `loaded` (the `load` event is fired)
     /// </summary>
     public enum WaitUntil { Domloaded, Loaded, Mostrequestsfinished, Requestsfinished };
+
+    public partial struct FailOn
+    {
+        public double? Double;
+        public double[] DoubleArray;
+
+        public static implicit operator FailOn(double Double) => new FailOn { Double = Double };
+        public static implicit operator FailOn(double[] DoubleArray) => new FailOn { DoubleArray = DoubleArray };
+    }
+
+    public partial struct Height
+    {
+        public double? Double;
+        public string String;
+
+        public static implicit operator Height(double Double) => new Height { Double = Double };
+        public static implicit operator Height(string String) => new Height { String = String };
+    }
 
     public partial class UrlboxOptions
     {
@@ -1573,6 +1692,7 @@ namespace UrlboxSDK.Options.Resource
             {
                 ColorProfileConverter.Singleton,
                 EngineVersionConverter.Singleton,
+                FailOnConverter.Singleton,
                 FormatConverter.Singleton,
                 FullPageModeConverter.Singleton,
                 ImgFitConverter.Singleton,
@@ -1583,6 +1703,9 @@ namespace UrlboxSDK.Options.Resource
                 PdfPageSizeConverter.Singleton,
                 ResponseTypeConverter.Singleton,
                 S3StorageclassConverter.Singleton,
+                HeightConverter.Singleton,
+                PositionConverter.Singleton,
+                PresetConverter.Singleton,
                 VideoCodecConverter.Singleton,
                 VideoEaseConverter.Singleton,
                 VideoMethodConverter.Singleton,
@@ -1663,6 +1786,8 @@ namespace UrlboxSDK.Options.Resource
             var value = reader.GetString();
             switch (value)
             {
+                case "experimental":
+                    return EngineVersion.Experimental;
                 case "latest":
                     return EngineVersion.Latest;
                 case "lts":
@@ -1677,6 +1802,9 @@ namespace UrlboxSDK.Options.Resource
         {
             switch (value)
             {
+                case EngineVersion.Experimental:
+                    JsonSerializer.Serialize(writer, "experimental", options);
+                    return;
                 case EngineVersion.Latest:
                     JsonSerializer.Serialize(writer, "latest", options);
                     return;
@@ -1691,6 +1819,42 @@ namespace UrlboxSDK.Options.Resource
         }
 
         public static readonly EngineVersionConverter Singleton = new EngineVersionConverter();
+    }
+
+    internal class FailOnConverter : JsonConverter<FailOn>
+    {
+        public override bool CanConvert(Type t) => t == typeof(FailOn);
+
+        public override FailOn Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.Number:
+                    var doubleValue = reader.GetDouble();
+                    return new FailOn { Double = doubleValue };
+                case JsonTokenType.StartArray:
+                    var arrayValue = JsonSerializer.Deserialize<double[]>(ref reader, options);
+                    return new FailOn { DoubleArray = arrayValue };
+            }
+            throw new Exception("Cannot unmarshal type FailOn");
+        }
+
+        public override void Write(Utf8JsonWriter writer, FailOn value, JsonSerializerOptions options)
+        {
+            if (value.Double != null)
+            {
+                JsonSerializer.Serialize(writer, value.Double.Value, options);
+                return;
+            }
+            if (value.DoubleArray != null)
+            {
+                JsonSerializer.Serialize(writer, value.DoubleArray, options);
+                return;
+            }
+            throw new Exception("Cannot marshal type FailOn");
+        }
+
+        public static readonly FailOnConverter Singleton = new FailOnConverter();
     }
 
     internal class FormatConverter : JsonConverter<Format>
@@ -2376,6 +2540,202 @@ namespace UrlboxSDK.Options.Resource
         }
 
         public static readonly S3StorageclassConverter Singleton = new S3StorageclassConverter();
+    }
+
+    internal class HeightConverter : JsonConverter<Height>
+    {
+        public override bool CanConvert(Type t) => t == typeof(Height);
+
+        public override Height Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.Number:
+                    var doubleValue = reader.GetDouble();
+                    return new Height { Double = doubleValue };
+                case JsonTokenType.String:
+                    var stringValue = reader.GetString();
+                    return new Height { String = stringValue };
+            }
+            throw new Exception("Cannot unmarshal type Height");
+        }
+
+        public override void Write(Utf8JsonWriter writer, Height value, JsonSerializerOptions options)
+        {
+            if (value.Double != null)
+            {
+                JsonSerializer.Serialize(writer, value.Double.Value, options);
+                return;
+            }
+            if (value.String != null)
+            {
+                JsonSerializer.Serialize(writer, value.String, options);
+                return;
+            }
+            throw new Exception("Cannot marshal type Height");
+        }
+
+        public static readonly HeightConverter Singleton = new HeightConverter();
+    }
+
+    internal class MinMaxLengthCheckConverter : JsonConverter<string>
+    {
+        public override bool CanConvert(Type t) => t == typeof(string);
+
+        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            if (value.Length <= 10)
+            {
+                return value;
+            }
+            throw new Exception("Cannot unmarshal type string");
+        }
+
+        public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+        {
+            if (value.Length <= 10)
+            {
+                JsonSerializer.Serialize(writer, value, options);
+                return;
+            }
+            throw new Exception("Cannot marshal type string");
+        }
+
+        public static readonly MinMaxLengthCheckConverter Singleton = new MinMaxLengthCheckConverter();
+    }
+
+    internal class PositionConverter : JsonConverter<Position>
+    {
+        public override bool CanConvert(Type t) => t == typeof(Position);
+
+        public override Position Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            switch (value)
+            {
+                case "bottom":
+                    return Position.Bottom;
+                case "center":
+                    return Position.Center;
+                case "left":
+                    return Position.Left;
+                case "right":
+                    return Position.Right;
+                case "top":
+                    return Position.Top;
+            }
+            throw new Exception("Cannot unmarshal type Position");
+        }
+
+        public override void Write(Utf8JsonWriter writer, Position value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case Position.Bottom:
+                    JsonSerializer.Serialize(writer, "bottom", options);
+                    return;
+                case Position.Center:
+                    JsonSerializer.Serialize(writer, "center", options);
+                    return;
+                case Position.Left:
+                    JsonSerializer.Serialize(writer, "left", options);
+                    return;
+                case Position.Right:
+                    JsonSerializer.Serialize(writer, "right", options);
+                    return;
+                case Position.Top:
+                    JsonSerializer.Serialize(writer, "top", options);
+                    return;
+            }
+            throw new Exception("Cannot marshal type Position");
+        }
+
+        public static readonly PositionConverter Singleton = new PositionConverter();
+    }
+
+    internal class PresetConverter : JsonConverter<Preset>
+    {
+        public override bool CanConvert(Type t) => t == typeof(Preset);
+
+        public override Preset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            switch (value)
+            {
+                case "1/2":
+                    return Preset.The12;
+                case "1/4":
+                    return Preset.The14;
+                case "2xl":
+                    return Preset.The2Xl;
+                case "3/4":
+                    return Preset.The34;
+                case "3xl":
+                    return Preset.The3Xl;
+                case "4xl":
+                    return Preset.The4Xl;
+                case "5xl":
+                    return Preset.The5Xl;
+                case "lg":
+                    return Preset.Lg;
+                case "md":
+                    return Preset.Md;
+                case "sm":
+                    return Preset.Sm;
+                case "xl":
+                    return Preset.Xl;
+                case "xs":
+                    return Preset.Xs;
+            }
+            throw new Exception("Cannot unmarshal type Preset");
+        }
+
+        public override void Write(Utf8JsonWriter writer, Preset value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case Preset.The12:
+                    JsonSerializer.Serialize(writer, "1/2", options);
+                    return;
+                case Preset.The14:
+                    JsonSerializer.Serialize(writer, "1/4", options);
+                    return;
+                case Preset.The2Xl:
+                    JsonSerializer.Serialize(writer, "2xl", options);
+                    return;
+                case Preset.The34:
+                    JsonSerializer.Serialize(writer, "3/4", options);
+                    return;
+                case Preset.The3Xl:
+                    JsonSerializer.Serialize(writer, "3xl", options);
+                    return;
+                case Preset.The4Xl:
+                    JsonSerializer.Serialize(writer, "4xl", options);
+                    return;
+                case Preset.The5Xl:
+                    JsonSerializer.Serialize(writer, "5xl", options);
+                    return;
+                case Preset.Lg:
+                    JsonSerializer.Serialize(writer, "lg", options);
+                    return;
+                case Preset.Md:
+                    JsonSerializer.Serialize(writer, "md", options);
+                    return;
+                case Preset.Sm:
+                    JsonSerializer.Serialize(writer, "sm", options);
+                    return;
+                case Preset.Xl:
+                    JsonSerializer.Serialize(writer, "xl", options);
+                    return;
+                case Preset.Xs:
+                    JsonSerializer.Serialize(writer, "xs", options);
+                    return;
+            }
+            throw new Exception("Cannot marshal type Preset");
+        }
+
+        public static readonly PresetConverter Singleton = new PresetConverter();
     }
 
     internal class VideoCodecConverter : JsonConverter<VideoCodec>
