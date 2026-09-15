@@ -347,7 +347,7 @@ You can find out _when_ your async render has been successfully made in two ways
 
 ### Polling
 
-You can [poll](https://en.wikipedia.org/wiki/Polling_(computer_science)) the `statusUrl` endpoint that comes back from the `/async` response via a GET request. The response from that status URL will include `"status": "succeeded"` when finished, as well as your final render URL.
+You can [poll](https://en.wikipedia.org/wiki/Polling_(computer_science)) the `statusUrl` endpoint that comes back from the `/async` response via a GET request, authenticated with the same secret key (`Authorization: Bearer YOUR_URLBOX_SECRET`). The response from that status URL will include `"status": "succeeded"` when finished, as well as your final render URL. `GetStatus(renderId)` does this for you.
 
 Use `TakeScreenshot()` to use our `/async` endpoint with a pre-built polling mechanism. The method will try for 60 seconds by default with an optional timeout.
 
