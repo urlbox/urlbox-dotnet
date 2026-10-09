@@ -91,7 +91,7 @@ Check out our [blog](https://urlbox.com/blog) for more insights on everything sc
 
 # Documentation
 
-See [here](https://urlbox.com/docs/overview) for the Urlbox API Docs. It includes an exhaustive list of all the options you could pass to our API, including what they do and example usage.
+See [here](https://urlbox.com/docs/) for the Urlbox API Docs. It includes an exhaustive list of all the options you could pass to our API, including what they do and example usage.
 
 We also have guides for how to set up uploading your final render to your own [S3](https://urlbox.com/docs/guides/s3) bucket, or use [proxies](https://urlbox.com/docs/guides/proxies) for geo-specific sites.
 
@@ -169,7 +169,7 @@ You could, for example, change the way the request is made to your desired URL (
 
 There are a few ways to retrieve a screenshot from Urlbox, depending on how and when you need it. You could retrieve it as a [raw file](https://urlbox.com/docs/options#response_type) (using `UrlboxOptions.ResponseType(ResponseType.Binary)` ), or by default, as a JSON object with its size and stored location. 
 
-There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/overview) for more information.
+There are a plethora of other options you can use. Checkout the [docs](https://urlbox.com/docs/) for more information.
 
 To initialise your urlbox options, we advise using the option builder. Start by calling the static method `Urlbox.Options()` with the URL or HTML you want to screenshot.
 
