@@ -456,7 +456,12 @@ public sealed partial class Urlbox : IUrlbox
     {
         string statusUrl = $"{baseUrl}{STATUS_ENDPOINT}/{renderId}";
 
-        HttpResponseMessage response = await httpClient.GetAsync(statusUrl);
+        // The status endpoint is scoped to the project that created the render:
+        // it must be polled with the same secret key, or Urlbox answers 401/404.
+        HttpRequestMessage request = new(HttpMethod.Get, statusUrl);
+        request.Headers.Add("Authorization", $"Bearer {secret}");
+
+        HttpResponseMessage response = await httpClient.SendAsync(request);
         if (response.IsSuccessStatusCode)
         {
             string responseData = await response.Content.ReadAsStringAsync();
